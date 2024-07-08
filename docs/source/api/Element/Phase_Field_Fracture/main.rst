@@ -4,7 +4,7 @@ Phase-Field Fracture
 Input Class
 -----------
 
-.. automodule:: phasefieldx.Element.Phase_Field_Fracture.ClassInput
+.. automodule:: phasefieldx.Element.Phase_Field_Fracture.Input
    :members:
    :undoc-members:
    :show-inheritance:

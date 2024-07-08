@@ -4,7 +4,7 @@ Phase-Field
 Input Class
 -----------
 
-.. automodule:: phasefieldx.Element.Phase_Field.ClassInputPhaseField
+.. automodule:: phasefieldx.Element.Phase_Field.Input
    :members:
    :undoc-members:
    :show-inheritance:

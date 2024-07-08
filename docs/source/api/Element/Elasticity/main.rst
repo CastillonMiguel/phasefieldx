@@ -4,7 +4,7 @@ Elasticity
 Input Class
 -----------
 
-.. automodule:: phasefieldx.Element.Elasticity.ClassInput
+.. automodule:: phasefieldx.Element.Elasticity.Input
    :members:
    :undoc-members:
    :show-inheritance:
