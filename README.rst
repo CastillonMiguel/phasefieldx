@@ -1,7 +1,7 @@
 PhaseFieldX
 ===========
 
-.. image:: https://github.com/CastillonMiguel/phasefieldx/blob/main/docs/source/_static/logo_name.png
+.. image:: https://raw.githubusercontent.com/CastillonMiguel/phasefieldx/main/docs/source/_static/logo_name.png
    :target: https://phasefieldx.readthedocs.io/en/latest/index.html
    :alt: PhaseFieldX
 
