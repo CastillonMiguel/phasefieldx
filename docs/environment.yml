@@ -6,11 +6,6 @@ channels:
 dependencies:
   - fenics-dolfinx
   - mpich
-  - pandas
-  - pyvista
-  - sphinx
-  - ipython
-  - numpydoc
   - pip
   - pip:
     - -r requirements.txt

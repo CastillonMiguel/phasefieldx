@@ -1,3 +1,6 @@
+pyvista==0.44.0
+pandas==2.2.2
+ipython==8.26.0
 cmocean==4.0.3
 colorcet==3.1.0
 enum-tools==0.12.0
@@ -37,4 +40,4 @@ soupsieve==2.5
 sphinx-math-dollar==1.2.1
 trame-client==3.2.1
 typing-extensions==4.12.2
-phasefieldx==0.0.1
+phasefieldx==0.0.2
