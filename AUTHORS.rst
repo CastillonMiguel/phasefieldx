@@ -24,5 +24,5 @@ to learn more about the developers of PhaseFieldX.
 Made with `contrib rocks`_.
 
 .. _contributors page: https://github.com/CastillonMiguel/phasefieldx/graphs/contributors
-.. _list of authors: https://github.com/CastillonMiguel/phasefieldx/graphs/contributors
+.. _list of authors: https://phasefieldx.readthedocs.io/en/latest/getting-started/Authors/main.html#
 .. _contrib rocks: https://contrib.rocks

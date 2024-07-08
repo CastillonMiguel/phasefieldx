@@ -2,11 +2,11 @@ PhaseFieldX
 ===========
 
 .. image:: https://github.com/CastillonMiguel/phasefieldx/blob/main/docs/source/_static/logo_name.png
-   :target: https://github.com
+   :target: https://phasefieldx.readthedocs.io/en/latest/index.html
    :alt: PhaseFieldX
 
 
-Welcome to **PhaseFieldX**. `documentation <https://github.com>`_
+Welcome to **PhaseFieldX**. `documentation <https://phasefieldx.readthedocs.io/en/latest/index.html>`_
 
 Introduction
 ------------
@@ -74,12 +74,12 @@ For more detailed installation options and information, please visit the `FEniCS
 
 Examples
 --------
-There are numerous examples available to demonstrate the usage of PhaseFieldX for various phase-field simulations. These examples cover different scenarios such as phase-field fracture, phase-field fatigue, and more complex material behavior simulations. Explore the examples in the `documentation <https://github.com>`_ to learn more.
+There are numerous examples available to demonstrate the usage of PhaseFieldX for various phase-field simulations. These examples cover different scenarios such as phase-field fracture, phase-field fatigue, and more complex material behavior simulations. Explore the examples in the `documentation <https://phasefieldx.readthedocs.io/en/latest/index.html>`_ to learn more.
 
 
 API Documentation
 -----------------
-For detailed API documentation, including class references, function definitions, and usage examples, please refer to the `API documentation <https://your-api-docs-url>`_.
+For detailed API documentation, including class references, function definitions, and usage examples, please refer to the `API documentation <https://phasefieldx.readthedocs.io/en/latest/api/index.html>`_.
 
 
 Contributions and Feedback
