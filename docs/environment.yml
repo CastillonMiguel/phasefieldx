@@ -1,0 +1,16 @@
+name: phasefieldx-env2
+channels:
+  - defaults
+  - conda-forge
+  - pypi
+dependencies:
+  - fenics-dolfinx
+  - mpich
+  - pandas
+  - pyvista
+  - sphinx
+  - ipython
+  - numpydoc
+  - pip
+  - pip:
+    - -r requirements.txt

@@ -1,0 +1,22 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "phasefieldx"
+version = "0.0.1"
+authors = [
+  { name="Miguel Castillon", email="phasefieldx@gmail.com" },
+]
+description = "PhaseFieldX: An Open-Source Framework for Advanced Phase-Field Simulations"
+readme = "README.rst"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/CastillonMiguel/phasefieldx"
+Issues = "https://github.com/CastillonMiguel/phasefieldx/issues"

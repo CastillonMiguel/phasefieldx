@@ -1,0 +1,70 @@
+"""
+Reaction Forces
+===============
+
+This module provides functions to calculate reaction forces based on displacement fields and material data.
+These functions are currently provisional, and a virtual work principle calculation will be applied in the future.
+
+"""
+
+import dolfinx
+import numpy as np
+
+from phasefieldx.Element.Phase_Field_Fracture.split_energy_stress_tangent_functions import sigma_a, sigma_b
+from phasefieldx.Element.Phase_Field_Fracture.g_degradation_functions import g
+
+
+def calculate_reaction_forces(u, Data, ds_bound, dimension):
+    """
+    Calculate reaction forces based on the provided displacement field and data.
+
+    Parameters
+    ----------
+    u : dolfinx.fem.Function
+        The displacement field.
+    Data : object
+        An object containing material data and properties.
+    ds_bound : dolfinx.fem.Measure
+        The boundary measure for integration.
+    dimension : int
+        The spatial dimension of the problem (e.g., 2 or 3).
+
+    Returns
+    -------
+    reaction_forces : numpy.ndarray
+        An array containing the reaction forces in each dimension.
+    """
+    reaction_forces = np.array([0.0, 0.0, 0.0])
+    for i in range(dimension):
+        for j in range(dimension):
+            reaction_forces[i] += dolfinx.fem.assemble_scalar(dolfinx.fem.form((sigma_a(u, Data)[i, j] + sigma_b(u, Data)[i, j]) * ds_bound))
+    return reaction_forces
+
+
+def calculate_reaction_forces_phi(u, phi, Data, ds_bound, dimension):
+    """
+    Calculate reaction forces considering a phase field variable.
+
+    Parameters
+    ----------
+    u : dolfinx.fem.Function
+        The displacement field.
+    phi : dolfinx.fem.Function
+        The phase field variable.
+    Data : object
+        An object containing material data and properties, including a degradation function.
+    ds_bound : dolfinx.fem.Measure
+        The boundary measure for integration.
+    dimension : int
+        The spatial dimension of the problem (e.g., 2 or 3).
+
+    Returns
+    -------
+    reaction_forces : numpy.ndarray
+        An array containing the reaction forces in each dimension.
+    """
+    reaction_forces = np.array([0.0, 0.0, 0.0])
+    for i in range(dimension):
+        for j in range(dimension):
+            reaction_forces[i] += dolfinx.fem.assemble_scalar(dolfinx.fem.form((g(phi, Data.degradation_function) * sigma_a(u, Data)[i, j] + sigma_b(u, Data)[i, j]) * ds_bound))
+    return reaction_forces
