@@ -207,7 +207,7 @@ ax_phi.plot(xt, phi_theory, 'k-', label='Theory')
 ax_phi.plot(file_vtu.points[:,0],  file_vtu['phi'],'r.', label=S.label)
 
 ax_phi.grid(color='k', linestyle='-', linewidth=0.3)  
-ax_phi.set_ylabel('phi(x)')
+ax_phi.set_ylabel('$\phi(x)$')
 ax_phi.set_xlabel('x')
 ax_phi.legend()
 
@@ -230,6 +230,7 @@ W = np.tanh(a_div_l)
 # simulation. It is noted that the solution coincides with the theoretical one.
 fig, energy = plt.subplots() 
 
+plt.rc('text', usetex=True) # Enable LaTeX rendering
 energy.plot(l_array, W_phi, 'r-', label = r'$W_{\phi}$')
 energy.plot(l_array, W_gradphi , 'b-', label = r'$W_{\nabla \phi}$')
 energy.plot(l_array, W,'k-', label = r'$W$')
