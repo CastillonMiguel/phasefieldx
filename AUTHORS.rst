@@ -12,7 +12,7 @@ The following is a list of authors who have made substantial contributions
 - Miguel Castillón, (`@CastillonMiguel <https://github.com/CastillonMiguel/>`_)
 
 
-.. |contrib.rocks| image:: https://contrib.rocks/image?repo=CastillonMiguel/phasefieldx
+.. |contrib.rocks| image:: https://contrib.rocks/image?repo=CastillonMiguel/PhaseFieldx
    :target: https://github.com/CastillonMiguel/phasefieldx/graphs/contributors
    :alt: contrib.rocks
 
