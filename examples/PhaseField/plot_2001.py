@@ -145,6 +145,7 @@ S1.set_label('$l_1$')
 # Plot phase-field $\phi$ for $l=1$
 file_vtu = pv.read(os.path.join(Data1.results_folder_name,"paraview-solutions_vtu","phasefieldx_p0_000000.vtu"))
 file_vtu_reflected = file_vtu.reflect((0, 1, 0), point=(0, 0, 0))
+pv.start_xvfb()
 p = pv.Plotter()
 p.add_mesh(file_vtu, show_edges=False)
 p.add_mesh(file_vtu_reflected, show_edges=False)
