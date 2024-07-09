@@ -43,7 +43,3 @@ Thank you for choosing our phase-field simulation code. We hope this tool proves
    api/index
    auto_examples/index
    extras/index
-   api2/source/modules
-
-
-
