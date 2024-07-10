@@ -84,7 +84,7 @@ Data = Input(E=210.0,   # young modulus
              fatigue_val=0.05625,
              k=0.0,
              min_stagger_iter=2,
-             max_stagger_iter=500,
+             max_stagger_iter=600,
              stagger_error_tol=1e-8,
              save_solution_xdmf=False,
              save_solution_vtu=True,
@@ -94,8 +94,8 @@ Data = Input(E=210.0,   # young modulus
 ###############################################################################
 # Mesh Definition
 # ---------------
-nx = 200
-ny = 100
+nx = 160
+ny = 80
 msh = dolfinx.mesh.create_rectangle(mpi4py.MPI.COMM_WORLD,
                                     [np.array([0, 0]),
                                      np.array([1, 0.5])],
@@ -166,20 +166,21 @@ bcs_list_phi=[]
 dt = 1.0
 final_time = 150.0
 
-solve(Data,
-      msh, 
-      final_time,
-      V_u,
-      V_phi,
-      bcs_list_u,
-      bcs_list_phi,
-      update_boundary_conditions,
-      f, 
-      T_list_u,
-      update_loading, 
-      ds_list,
-      dt,
-      path=None)
+# Uncomment the following lines to run the solver with the specified parameters
+# solve(Data,
+#       msh, 
+#       final_time,
+#       V_u,
+#       V_phi,
+#       bcs_list_u,
+#       bcs_list_phi,
+#       update_boundary_conditions,
+#       f, 
+#       T_list_u,
+#       update_loading, 
+#       ds_list,
+#       dt,
+#       path=None)
 
 
 ###############################################################################
@@ -243,9 +244,9 @@ ax_reaction.plot(Miehe[:, 0], Miehe[:, 1], 'g-', linewidth=2.0, label='Miehe')
 ax_reaction.plot(displacement, S.reaction_files['bottom.reaction']["Ry"], 'k.', linewidth=2.0, label=S.label)
 
 ax_reaction.grid(color='k', linestyle='-', linewidth=0.3)
-ax_reaction.set_xlabel('displacement - u $[mm]$' )  
+ax_reaction.set_xlabel('displacement - u $[mm]$')  
 ax_reaction.set_ylabel('reaction force - F $[kN]$')    
-ax_reaction.set_title('Reaction Force vs Vertical Displacement')   
+ax_reaction.set_title('Reaction Force vs Vertical Displacement')
 ax_reaction.legend() 
 
 
@@ -257,7 +258,7 @@ fig, ax_convergence = plt.subplots()
 ax_convergence.plot(displacement, S.convergence_files["phasefieldx.conv"]["stagger"], 'k.', linewidth=2.0, label='Stagger iterations')
 
 ax_convergence.grid(color='k', linestyle='-', linewidth=0.3)
-ax_convergence.set_xlabel('displacement - u $[mm]$' )  
+ax_convergence.set_xlabel('displacement - u $[mm]$')  
 ax_convergence.set_ylabel('stagger iterations - []')    
 ax_convergence.set_title('Stagger iterations vs vertical displacement')   
 ax_convergence.legend() 

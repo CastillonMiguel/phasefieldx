@@ -163,20 +163,21 @@ bcs_list_phi=[]
 dt = 1.0
 final_time = 150.0
 
-solve(Data,
-      msh, 
-      final_time,
-      V_u,
-      V_phi,
-      bcs_list_u,
-      bcs_list_phi,
-      update_boundary_conditions,
-      f, 
-      T_list_u,
-      update_loading, 
-      ds_list,
-      dt,
-      path=None)
+# Uncomment the following lines to run the solver with the specified parameters
+# solve(Data,
+#       msh, 
+#       final_time,
+#       V_u,
+#       V_phi,
+#       bcs_list_u,
+#       bcs_list_phi,
+#       update_boundary_conditions,
+#       f, 
+#       T_list_u,
+#       update_loading, 
+#       ds_list,
+#       dt,
+#       path=None)
 
 
 ###############################################################################
