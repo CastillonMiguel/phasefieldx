@@ -1,4 +1,4 @@
-"""
+r"""
 .. _ref_1800:
 
 Fatigue: Single edge notched tension test
@@ -8,7 +8,7 @@ A well-known benchmark simulation in fracture mechanics is performed, relying on
 
 The model consists of a square plate with a notch located halfway up, extending from the left to the center, as shown in the figure below. The bottom part is fixed in all directions, while the upper part can slide vertically. A vertical displacement is applied at the top. The geometry and boundary conditions are depicted in the figure. We discretize the model with triangular elements, refining the areas (element size h) where crack evolution is expected. The element size h must be sufficiently small to avoid mesh dependencies.
 
-A cyclic tensile test is conducted. A symmetric cyclic load is applied with a displacement amplitude of $\Delta u = 4 \times 10^{-3} mm$. The results are presented in terms of the accumulation of the fatigue history variable $\alpha$ versus the number of cycles N (fatigue life curves).
+A cyclic tensile test is conducted. A symmetric cyclic load is applied with a displacement amplitude of $\Delta u = 4 \times 10^{-3} mm$. The results are presented in terms of the accumulation of the fatigue history variable $\bar{\alpha}$ versus the number of cycles N (fatigue life curves).
 
 .. code-block::
 
@@ -43,7 +43,7 @@ A cyclic tensile test is conducted. A symmetric cyclic load is applied with a di
 | alpha_n  | 0.05625 | kN/mm2 |
 +----------+---------+--------+
 
-.. image:: 1800_Fatigue_Single_Edge_Notched_Tension_Test/animation.gif
+.. image:: ../../../../examples/Fatigue/1800_Fatigue_Single_Edge_Notched_Tension_Test/animation.gif
 
 
 .. [Carrara] A framework to model the fatigue behavior of brittle materials based on a variational phase-field approach. P. Carrara, M. Ambati, R. Alessi, L. De Lorenzis. https://doi.org/10.1016/j.cma.2019.112731.
