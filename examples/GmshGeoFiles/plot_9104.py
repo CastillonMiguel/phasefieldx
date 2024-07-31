@@ -1,5 +1,5 @@
 """
-.. _ref_9103:
+.. _ref_9104:
 
 .geo File: Rectangle
 ^^^^^^^^^^^^^^^^^^^^
@@ -32,7 +32,7 @@ geo_file = os.path.join(folder, "file.geo")
 gmsh.open(geo_file)
 
 # Generate the mesh (2D example, for 3D use generate(3))
-gmsh.model.mesh.generate(3)
+gmsh.model.mesh.generate(2)
 
 # Write the mesh to a .vtu file
 vtu_file = os.path.join(folder, "output_mesh_for_view.vtk")
@@ -45,4 +45,4 @@ print(f"Mesh successfully written to {vtu_file}")
 
 pv.start_xvfb()
 file_vtu = pv.read(vtu_file)
-file_vtu.plot(cpos='xy',color='white', show_edges=True)
+file_vtu.plot(cpos='xy', color='white', show_edges=True)

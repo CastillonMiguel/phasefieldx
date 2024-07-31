@@ -117,7 +117,3 @@ Transfinite Line {4} = ndiv_y + 1;
 // ------------------------------------------------------
 // B5)Mesh Algorithm
 Geometry.Tolerance = 1e-12;
-
-
-
-
