@@ -7,6 +7,7 @@ jupyter_sphinx
 jupyterlab
 lxml
 meshio
+mpi4py==3.1.6
 mypy
 mypy-extensions
 numpydoc

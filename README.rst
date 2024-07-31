@@ -8,6 +8,20 @@ PhaseFieldX
 
 Welcome to **PhaseFieldX**. `documentation <https://phasefieldx.readthedocs.io/en/latest/index.html>`_
 
+
+.. image:: https://img.shields.io/pypi/v/phasefieldx
+    :target: https://pypi.org/project/phasefieldx/
+    :alt: PyPI Version
+
+.. image:: https://img.shields.io/pypi/dm/phasefieldx.svg?label=Pypi%20downloads
+    :target: https://pypi.org/project/phasefieldx/
+    :alt: PyPI Downloads
+
+.. image:: https://img.shields.io/github/license/CastillonMiguel/phasefieldx
+    :target: https://github.com/CastillonMiguel/phasefieldx/blob/main/LICENSE
+    :alt: License
+
+
 Introduction
 ------------
 The **PhaseFieldX** project is designed to simulate and analyze material behavior using phase-field models, which provide a continuous approximation of interfaces, phase boundaries, and discontinuities such as cracks. Leveraging the robust capabilities of *FEniCSx*, a renowned finite element framework for solving partial differential equations, this project facilitates efficient and precise numerical simulations. It supports a wide range of applications, including phase-field fracture, solidification, and other complex material phenomena, making it an invaluable resource for researchers and engineers in materials science.
