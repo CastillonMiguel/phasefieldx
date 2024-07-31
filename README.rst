@@ -10,8 +10,8 @@ Welcome to **PhaseFieldX**. `documentation <https://phasefieldx.readthedocs.io/e
 
 .. image:: https://readthedocs.org/projects/phasefieldx/badge/?version=latest
     :target: https://phasefieldx.readthedocs.io/en/latest/?badge=latest
-    :alt: ∑
-
+    :alt: Documentation Status
+    
 .. image:: https://img.shields.io/pypi/v/phasefieldx
     :target: https://pypi.org/project/phasefieldx/
     :alt: PyPI Version
