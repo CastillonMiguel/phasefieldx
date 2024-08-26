@@ -24,6 +24,10 @@ Welcome to **PhaseFieldX**. `documentation <https://phasefieldx.readthedocs.io/e
     :target: https://github.com/CastillonMiguel/phasefieldx/blob/main/LICENSE
     :alt: License
 
+.. image:: https://joss.theoj.org/papers/7111b621625200b3d2c4b199ea9568c0/status.svg
+    :target: https://joss.theoj.org/papers/7111b621625200b3d2c4b199ea9568c0
+    :alt: Joss
+    
 
 Introduction
 ------------
