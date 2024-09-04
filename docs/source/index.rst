@@ -31,7 +31,7 @@ Whether you are new to phase-field fracture simulations or an experienced resear
 
 Contributions and Feedback
 --------------------------
-We welcome contributions and feedback from the community to enhance the code's functionality, reliability, and user experience. Feel free to engage with us through our [GitHub repository](https://github.com/CastillonMiguel/phasefieldx) and share your insights.
+We welcome contributions and feedback from the community to enhance the code's functionality, reliability, and user experience. Feel free to engage with us through our `GitHub repository <https://github.com/CastillonMiguel/phasefieldx>`_ and share your insights.
 
 Thank you for choosing our phase-field simulation code. We hope this tool proves indispensable in advancing your understanding of phase-field simulations and their practical applications.
 
