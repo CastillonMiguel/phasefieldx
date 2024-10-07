@@ -7,4 +7,5 @@ For more information on contributing and how you can support the development of 
 .. toctree::
    :hidden:
 
+   DeveloperNotes/main
    Acknowledgements/main
