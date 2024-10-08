@@ -114,7 +114,7 @@ def log_end_analysis(logger, totaltime=0.0):
     logger.info(f"\n\n End of computations")
     logger.info(f" Analysis finished correctly.")
     logger.info(f" total simulation time: {totaltime}")
-    logger.info(f"Analysis finished on {time.strftime("%a %b %d %H:%M:%S %Y", time.localtime())}")
+    logger.info(f"Analysis finished on {time.strftime('%a %b %d %H:%M:%S %Y', time.localtime())}")
 
 
 def log_model_information(msh, logger):
