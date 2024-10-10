@@ -217,4 +217,9 @@ def eval_error_L2_normalized(field_a, field_b, msh, dx=ufl.dx):
     error_L2_phi = np.sqrt(msh.comm.allreduce(local_error, op=mpi4py.MPI.SUM))
     error_L2_phi_normalized = np.sqrt(msh.comm.allreduce(dolfinx.fem.assemble_scalar(
         dolfinx.fem.form(ufl.dot(field_a, field_a) * ufl.dx)), op=mpi4py.MPI.SUM))
+    
+    # Check for division by zero
+    if error_L2_phi_normalized == 0:
+        return 0.0  # You can return a small number or handle this case differently if needed.
+    
     return error_L2_phi/error_L2_phi_normalized
