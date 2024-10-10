@@ -35,17 +35,17 @@ from phasefieldx.errors_functions import eval_error_L2, eval_error_L2_normalized
 from phasefieldx.files import prepare_simulation
 from phasefieldx.solvers.newton import NewtonSolver
 
-def solve(Data, 
-          msh, 
-          final_time, 
+def solve(Data,
+          msh,
+          final_time,
           V_u,
           V_phi,
           bc_list_u=[],
           bc_list_phi=[],
-          update_boundary_conditions=None, 
-          f_list_u=None, 
-          T_list_u=None, 
-          update_loading=None, 
+          update_boundary_conditions=None,
+          f_list_u=None,
+          T_list_u=None,
+          update_loading=None,
           ds_bound=None,
           dt=1.0,
           path = None):
