@@ -32,7 +32,8 @@ def solve(Data,
           update_loading=None, 
           ds_bound=None,
           dt=1.0,
-          path = None):
+          path = None,
+          quadrature_degree = 2):
     """
     Solver for elasticity problems.
 
@@ -109,6 +110,10 @@ def solve(Data,
     # Displacement ------------------------
     u = dolfinx.fem.Function(V_u, name="u")
     δu = ufl.TestFunction(V_u)
+    
+    metadata = {"quadrature_degree": quadrature_degree}
+    #ds = ufl.Measure('ds', domain=msh, subdomain_data=facet_tag, metadata=metadata)
+    dx = ufl.Measure("dx", domain=msh, metadata=metadata)
 
     # Displacement -----------------------------------------------------------
     F_u = ufl.inner(sigma(u,Data.lambda_, Data.mu), epsilon(δu)) * ufl.dx
@@ -218,3 +223,4 @@ def solve(Data,
 
     end = time.perf_counter()
     log_end_analysis(logger, end-start)
+    
