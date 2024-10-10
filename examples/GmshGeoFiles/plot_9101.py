@@ -1,7 +1,7 @@
 """
 .. _ref_9101:
 
-.geo File: Single Notched Tesnion Test
+.geo File: Single Notched Tension Test
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .geo file
