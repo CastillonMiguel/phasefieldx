@@ -6,6 +6,7 @@ This module provides utility functions for computing the Macaulay brackets, whic
 
 """
 
+
 def macaulay_bracket_positive(x):
     """
     Compute the Macaulay bracket (positive part) of a real number x.

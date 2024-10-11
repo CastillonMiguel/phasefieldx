@@ -24,16 +24,16 @@ from phasefieldx.Materials.elastic_isotropic import epsilon
 from phasefieldx.Element.Phase_Field_Fracture.reactions_forces_functions import calculate_reaction_forces_phi, calculate_reaction_forces
 
 
-
 from phasefieldx.Element.Phase_Field_Fracture.g_degradation_functions import dg, g
 from phasefieldx.Element.Phase_Field_Fracture.split_energy_stress_tangent_functions import (psi_a, psi_b, sigma_a,
-                                                   sigma_b)
+                                                                                            sigma_b)
 from phasefieldx.Element.Phase_Field_Fracture.fatigue_degradation_functions import fatigue_degradation
 
 from phasefieldx.Math.projection import project
 from phasefieldx.errors_functions import eval_error_L2, eval_error_L2_normalized
 from phasefieldx.files import prepare_simulation
 from phasefieldx.solvers.newton import NewtonSolver
+
 
 def solve(Data,
           msh,
@@ -48,7 +48,7 @@ def solve(Data,
           update_loading=None,
           ds_bound=None,
           dt=1.0,
-          path = None):
+          path=None):
     """
     Solve the phase-field fracture and fatigue problem.
 
@@ -87,10 +87,10 @@ def solve(Data,
     -------
     None
     """
-    
-    if path==None:
+
+    if path is None:
         path = os.getcwd()
-        
+
     # Common #############################################################
     ######################################################################
     result_folder_name = Data.results_folder_name
@@ -100,15 +100,15 @@ def solve(Data,
     log_library_versions(logger)  # log Library versions
     Data.save_log_info(logger)  # log Simulation input data
     log_model_information(msh, logger)
-    
+
     # Dolfinx cpp logger
-    dolfinx.log.set_log_level(dolfinx.log.LogLevel.INFO) 
-    dolfinx.cpp.log.set_output_file(os.path.join(result_folder_name, "dolfinx.log"))
-    
-    
+    dolfinx.log.set_log_level(dolfinx.log.LogLevel.INFO)
+    dolfinx.cpp.log.set_output_file(
+        os.path.join(result_folder_name, "dolfinx.log"))
+
     # Formulation ##########################################################
     ########################################################################
-    
+
     # Displacement ------------------------
     u_new = dolfinx.fem.Function(V_u, name="u")
     u_old = dolfinx.fem.Function(V_u, name="u_old")
@@ -134,20 +134,21 @@ def solve(Data,
         alpha_cum_bar_n = dolfinx.fem.Function(V_phi, name="alpha_cum_bar_n")
         delta_alpha = dolfinx.fem.Function(V_phi, name="delta_alpha")
 
-
     # Displacement -----------------------------------------------------------
-    F_u = ufl.inner( (g(phi_new, Data.degradation_function) + Data.k)*sigma_a(u_new,Data) + sigma_b(u_new, Data), epsilon(δu)) * ufl.dx
-    
+    F_u = ufl.inner((g(phi_new, Data.degradation_function) + Data.k) *
+                    sigma_a(u_new, Data) + sigma_b(u_new, Data), epsilon(δu)) * ufl.dx
+
     # External forces --------------------------------------------------------
     if T_list_u is not None:
-        L =  ufl.inner(T_list_u[0][0], δu) * T_list_u[0][1]
+        L = ufl.inner(T_list_u[0][0], δu) * T_list_u[0][1]
         for i in range(1, len(T_list_u)):
-            L +=  ufl.inner(T_list_u[i][0], δu) * T_list_u[i][1]
-            
+            L += ufl.inner(T_list_u[i][0], δu) * T_list_u[i][1]
+
         F_u -= L
 
     J_u = ufl.derivative(F_u, u_new)
-    U_problem = dolfinx.fem.petsc.NonlinearProblem(F_u, u_new, bcs=bc_list_u, J=J_u)
+    U_problem = dolfinx.fem.petsc.NonlinearProblem(
+        F_u, u_new, bcs=bc_list_u, J=J_u)
 
     solver_u = NewtonSolver(U_problem)
     logger.info(f" Newton solver parameters for: u  ")
@@ -155,14 +156,14 @@ def solve(Data,
     solver_u.save_log_info(logger)
 
     # Phase-field ------------------------------------------------------------
-    F_phi = dg(phi_new, Data.degradation_function) * H * δphi*ufl.dx
+    F_phi = dg(phi_new, Data.degradation_function) * H * δphi * ufl.dx
 
     if Data.fatigue:
-        F_phi += Fatigue*Data.Gc*(1/Data.l*ufl.inner(phi_new, δphi) + Data.l *
-                                  ufl.inner(ufl.grad(phi_new), ufl.grad(δphi))) * ufl.dx
+        F_phi += Fatigue * Data.Gc * (1 / Data.l * ufl.inner(phi_new, δphi) + Data.l *
+                                      ufl.inner(ufl.grad(phi_new), ufl.grad(δphi))) * ufl.dx
     else:
-        F_phi += Data.Gc*(1/Data.l*ufl.inner(phi_new, δphi) + Data.l *
-                          ufl.inner(ufl.grad(phi_new), ufl.grad(δphi))) * ufl.dx
+        F_phi += Data.Gc * (1 / Data.l * ufl.inner(phi_new, δphi) + Data.l *
+                            ufl.inner(ufl.grad(phi_new), ufl.grad(δphi))) * ufl.dx
 
     J_phi = ufl.derivative(F_phi, phi_new)
     PHI_problem = dolfinx.fem.petsc.NonlinearProblem(
@@ -176,7 +177,7 @@ def solve(Data,
     # Solve ################################################################
     ########################################################################
     start = time.perf_counter()
-    
+
     logger.info(f" start time: {start}")
 
     # Paraview ------------------------
@@ -196,7 +197,6 @@ def solve(Data,
             result_folder_name, "paraview-solutions_vtu")
         vtk_sol = dolfinx.io.VTKFile(msh.comm, os.path.join(
             paraview_solution_folder_name_vtu, "phasefieldx.pvd"), "w")
-        
 
     logger.info(f" S t a r t i n g    A n a l y s i s ")
     logger.info(f" ---------------------------------- ")
@@ -213,12 +213,12 @@ def solve(Data,
         if update_boundary_conditions is not None:
             bc_ux, bc_uy, bc_uz = update_boundary_conditions(bc_list_u, t)
         else:
-            bc_ux, bc_uy, bc_uz = 0 ,0 ,0 
-            
+            bc_ux, bc_uy, bc_uz = 0, 0, 0
+
         if update_loading is not None:
             T_ux, T_uy, T_uz = update_loading(T_list_u, t)
 
-        #if Data.fatigue:
+        # if Data.fatigue:
         #    delta_alpha = np.abs(alpha_c.x.array - alpha_n.x.array) * np.heaviside((alpha_c.x.array - alpha_n.x.array) / dt, 1)
         #    alpha_cum_bar_c.x.array[:] = alpha_cum_bar_n.x.array + delta_alpha
         #    Fatigue.x.array[:] = fatigue_degradation(alpha_cum_bar_c.x.array, Data)
@@ -226,7 +226,8 @@ def solve(Data,
         error_L2_phi = 1
         error_L2_u = 1
         stagger_iter = 0
-        while (error_L2_phi > Data.stagger_error_tol or error_L2_u > Data.stagger_error_tol or stagger_iter < Data.min_stagger_iter) and (stagger_iter < Data.max_stagger_iter):
+        while (error_L2_phi > Data.stagger_error_tol or error_L2_u > Data.stagger_error_tol or stagger_iter <
+               Data.min_stagger_iter) and (stagger_iter < Data.max_stagger_iter):
             stagger_iter += 1
             logger.info(f" Stagger Iteration : {stagger_iter}")
             logger.info(f" ---------------------- ")
@@ -236,9 +237,9 @@ def solve(Data,
             u_iterations, _ = solver_u.solver.solve(u_new)
             # residuals = solver_u.ksp.getConvergenceHistory()
             logger.info(f" Newton iterations: {u_iterations}")
-            #error_L2_u = eval_error_L2(u_new, u_old, msh)/1
+            # error_L2_u = eval_error_L2(u_new, u_old, msh)/1
             error_L2_u = eval_error_L2_normalized(u_new, u_old, msh)
-                      
+
             resisual_u = solver_u.ksp.getResidualNorm()
             logger.info(f" Residual norm u: {resisual_u}")
             logger.info(f" L2 error in u   direction:  {error_L2_u}")
@@ -251,24 +252,27 @@ def solve(Data,
                 H.x.array[:] = np.maximum(V_c.x.array, V_n.x.array)
             else:
                 H.x.array[:] = V_c.x.array
-                
+
             if Data.fatigue:
                 project(g(phi_old, Data.degradation_function) * V_c, alpha_c)
-                
+
                 accelerated = False
                 if accelerated:
                     N = 100
-                    delta_alpha = N*alpha_c.x.array
+                    delta_alpha = N * alpha_c.x.array
                 else:
-                    delta_alpha = np.abs(alpha_c.x.array - alpha_n.x.array) * np.heaviside((alpha_c.x.array - alpha_n.x.array) / dt, 1)
+                    delta_alpha = np.abs(alpha_c.x.array - alpha_n.x.array) * \
+                        np.heaviside(
+                            (alpha_c.x.array - alpha_n.x.array) / dt, 1)
                 alpha_cum_bar_c.x.array[:] = alpha_cum_bar_n.x.array + delta_alpha
-                Fatigue.x.array[:] = fatigue_degradation(alpha_cum_bar_c.x.array, Data)
+                Fatigue.x.array[:] = fatigue_degradation(
+                    alpha_cum_bar_c.x.array, Data)
 
             # Phase-field ---------------------------------------------
             logger.info(f">>> Solving phase for dofs: phi ")
             phi_iterations, _ = solver_phi.solver.solve(phi_new)
             logger.info(f" Newton iterations: {phi_iterations}")
-            #error_L2_phi = eval_error_L2(phi_new, phi_old, msh)/1
+            # error_L2_phi = eval_error_L2(phi_new, phi_old, msh)/1
             error_L2_phi = eval_error_L2_normalized(phi_new, phi_old, msh)
             resisual_phi = solver_phi.ksp.getResidualNorm()
             logger.info(f" Residual norm phi: {resisual_phi}")
@@ -280,11 +284,12 @@ def solve(Data,
             V_n.x.array[:] = np.maximum(V_c.x.array, V_n.x.array)
 
         if Data.fatigue:
-            #project(g(phi_new, Data.degradation_function) * V_c, alpha_c)
-            #delta_alpha = np.abs(alpha_c.x.array - alpha_n.x.array) * np.heaviside((alpha_c.x.array - alpha_n.x.array) / dt, 1)
-                
-            #alpha_cum_bar_c.x.array[:] = alpha_cum_bar_c.x.array + delta_alpha
-            alpha_cum_bar_n.x.array[:] = alpha_cum_bar_c.x.array #+ delta_alpha
+            # project(g(phi_new, Data.degradation_function) * V_c, alpha_c)
+            # delta_alpha = np.abs(alpha_c.x.array - alpha_n.x.array) * np.heaviside((alpha_c.x.array - alpha_n.x.array) / dt, 1)
+
+            # alpha_cum_bar_c.x.array[:] = alpha_cum_bar_c.x.array + delta_alpha
+            # + delta_alpha
+            alpha_cum_bar_n.x.array[:] = alpha_cum_bar_c.x.array
             alpha_n.x.array[:] = alpha_c.x.array
 
         # Save results
@@ -292,11 +297,12 @@ def solve(Data,
         logger.info(f"\n\n Saving results: ")
 
         # conv ---------------------------------------------------------------
-        append_results_to_file(os.path.join(result_folder_name, "phasefieldx.conv"), '#step\tstagger\titerPhi\titerU', step, stagger_iter, phi_iterations, u_iterations)
-        
+        append_results_to_file(os.path.join(result_folder_name, "phasefieldx.conv"),
+                               '#step\tstagger\titerPhi\titerU', step, stagger_iter, phi_iterations, u_iterations)
+
         # Degree of freedom --------------------------------------------------
-        append_results_to_file(os.path.join(result_folder_name, "top.dof"), '#step\tUx\tUy\tUz\tphi', step, bc_ux, bc_uy, bc_uz ,0.0)
-        
+        append_results_to_file(os.path.join(result_folder_name, "top.dof"),
+                               '#step\tUx\tUy\tUz\tphi', step, bc_ux, bc_uy, bc_uz, 0.0)
 
         # Reaction -----------------------------------------------------------
         for i in range(0, ds_bound.shape[0]):
@@ -306,31 +312,31 @@ def solve(Data,
                 u_new, Data, ds_bound[i][0], msh.topology.dim)
 
             append_results_to_file(os.path.join(
-                result_folder_name, ds_bound[i][1]+".reaction"), '#step\tRx\tRy\tRz', step, R_phi[0], R_phi[1], R_phi[2])
+                result_folder_name, ds_bound[i][1] + ".reaction"), '#step\tRx\tRy\tRz', step, R_phi[0], R_phi[1], R_phi[2])
 
             append_results_to_file(os.path.join(
-                result_folder_name, ds_bound[i][1]+"_natural.reaction"), '#step\tRx\tRy\tRz', step, R[0], R[1], R[2])
-            
+                result_folder_name, ds_bound[i][1] + "_natural.reaction"), '#step\tRx\tRy\tRz', step, R[0], R[1], R[2])
+
         # Energy -------------------------------------------------------------
         E = dolfinx.fem.assemble_scalar(dolfinx.fem.form(
-            (g(phi_new, Data.degradation_function)*psi_a(u_new, Data) + psi_b(u_new, Data)) * ufl.dx))
+            (g(phi_new, Data.degradation_function) * psi_a(u_new, Data) + psi_b(u_new, Data)) * ufl.dx))
 
         gamma_phi = dolfinx.fem.assemble_scalar(dolfinx.fem.form(
-            1/(2*Data.l) * ufl.inner(phi_new, phi_new) * ufl.dx))
+            1 / (2 * Data.l) * ufl.inner(phi_new, phi_new) * ufl.dx))
         gamma_gradphi = dolfinx.fem.assemble_scalar(dolfinx.fem.form(
-            Data.l/2 * ufl.inner(ufl.grad(phi_new), ufl.grad(phi_new)) * ufl.dx))
+            Data.l / 2 * ufl.inner(ufl.grad(phi_new), ufl.grad(phi_new)) * ufl.dx))
         gamma = gamma_phi + gamma_gradphi
 
         if Data.fatigue:
             W_phi = dolfinx.fem.assemble_scalar(dolfinx.fem.form(
-                Fatigue*Data.Gc * 1/(2*Data.l) * ufl.inner(phi_new, phi_new) * ufl.dx))
+                Fatigue * Data.Gc * 1 / (2 * Data.l) * ufl.inner(phi_new, phi_new) * ufl.dx))
             W_gradphi = dolfinx.fem.assemble_scalar(dolfinx.fem.form(
-                Fatigue*Data.Gc * Data.l/2 * ufl.inner(ufl.grad(phi_new), ufl.grad(phi_new)) * ufl.dx))
+                Fatigue * Data.Gc * Data.l / 2 * ufl.inner(ufl.grad(phi_new), ufl.grad(phi_new)) * ufl.dx))
             alpha_acum = dolfinx.fem.assemble_scalar(
                 dolfinx.fem.form(alpha_cum_bar_c * ufl.dx))
         else:
-            W_phi = Data.Gc*gamma_phi
-            W_gradphi = Data.Gc*gamma_gradphi
+            W_phi = Data.Gc * gamma_phi
+            W_gradphi = Data.Gc * gamma_gradphi
             alpha_acum = 0.0
 
         W = W_phi + W_gradphi
@@ -341,10 +347,9 @@ def solve(Data,
             dolfinx.fem.form(psi_b(u_new, Data) * ufl.dx))
         EplusW = E + W
 
-        
         header = '#step\tEplusW\tE\tW\tW_phi\tW_gradphi\tgamma\tgamma_phi\tgamma_gradphi\tPSI_a\tPSI_b\talpha_acum'
         append_results_to_file(os.path.join(result_folder_name, "total.energy"), header, step, EplusW,
-                                      E, W, W_phi, W_gradphi, gamma, gamma_phi, gamma_gradphi, PSI_a, PSI_b, alpha_acum)
+                               E, W, W_phi, W_gradphi, gamma, gamma_phi, gamma_gradphi, PSI_a, PSI_b, alpha_acum)
 
         # Paraview -----------------------------------------------------------
         if Data.save_solution_xdmf:
@@ -365,4 +370,4 @@ def solve(Data,
         vtk_sol.close()
 
     end = time.perf_counter()
-    log_end_analysis(logger, end-start)
+    log_end_analysis(logger, end - start)

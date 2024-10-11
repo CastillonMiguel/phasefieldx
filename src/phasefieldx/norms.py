@@ -38,7 +38,8 @@ def norm_semiH1(field, msh, dx=ufl.dx):
 
     where '∇' represents the gradient operator, and 'dx' represents the integration over the entire mesh.
     """
-    field_form = dolfinx.fem.form(ufl.inner(ufl.grad(field), ufl.grad(field)) * dx)
+    field_form = dolfinx.fem.form(
+        ufl.inner(ufl.grad(field), ufl.grad(field)) * dx)
     local_field = dolfinx.fem.assemble_scalar(field_form)
     norm_semiH1 = np.sqrt(msh.comm.allreduce(local_field, op=mpi4py.MPI.SUM))
     return norm_semiH1
@@ -69,7 +70,8 @@ def norm_H1(field, msh, dx=ufl.dx):
 
     where '∇' represents the gradient operator, and 'dx' represents the integration over the entire mesh.
     """
-    field_form = dolfinx.fem.form(ufl.dot(field, field) * dx + ufl.inner(ufl.grad(field), ufl.grad(field)) * dx)
+    field_form = dolfinx.fem.form(
+        ufl.dot(field, field) * dx + ufl.inner(ufl.grad(field), ufl.grad(field)) * dx)
     local_error = dolfinx.fem.assemble_scalar(field_form)
     norm_H1 = np.sqrt(msh.comm.allreduce(local_error, op=mpi4py.MPI.SUM))
     return norm_H1
@@ -104,7 +106,7 @@ def norm_LP(field, msh, p=2, dx=ufl.dx):
     """
     field_form = dolfinx.fem.form(ufl.pow(ufl.abs(field), p) * dx)
     local_error = dolfinx.fem.assemble_scalar(field_form)
-    norm_LP = (msh.comm.allreduce(local_error, op=mpi4py.MPI.SUM))**(1/p)
+    norm_LP = (msh.comm.allreduce(local_error, op=mpi4py.MPI.SUM))**(1 / p)
     return norm_LP
 
 

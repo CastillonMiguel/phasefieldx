@@ -2,8 +2,8 @@
 Logger/library versions
 =======================
 
-This functions provides utility functions for logging simulation information and system details using Python's logging module. 
-It also logs versions of important libraries such as Python, DolfinX, ufl, basix, numpy, and logging, along with system 
+This functions provides utility functions for logging simulation information and system details using Python's logging module.
+It also logs versions of important libraries such as Python, DolfinX, ufl, basix, numpy, and logging, along with system
 information like platform details and Python version.
 
 """
@@ -18,6 +18,7 @@ import ufl
 import time
 import basix
 import platform
+
 
 def set_logger(result_folder_name):
     """
@@ -70,7 +71,8 @@ def log_library_versions(logger):
     This function logs the versions of important libraries including Python, DolfinX,
     ufl, basix, numpy, and logging.
     """
-    logger.info(f"Python version: {sys.version_info.major}.{sys.version_info.minor}")
+    logger.info(f"Python version: {sys.version_info.major}.{
+                sys.version_info.minor}")
     logger.info("=========== Library Versions ===========")
     logger.info(f"PhaseFieldX : {phasefieldx.__version__}")
     logger.info(f"DolfinX : {dolfinx.__version__}")
@@ -114,10 +116,11 @@ def log_end_analysis(logger, totaltime=0.0):
     logger.info(f"\n\n End of computations")
     logger.info(f" Analysis finished correctly.")
     logger.info(f" total simulation time: {totaltime}")
-    logger.info(f"Analysis finished on {time.strftime('%a %b %d %H:%M:%S %Y', time.localtime())}")
+    logger.info(f"Analysis finished on {time.strftime(
+        '%a %b %d %H:%M:%S %Y', time.localtime())}")
 
 
 def log_model_information(msh, logger):
     logger.info("========== Mesh Information ===========")
     msh.geometry.dim
-    logger.info(f"Dimension: { msh.geometry.dim}")
+    logger.info(f"Dimension: {msh.geometry.dim}")

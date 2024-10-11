@@ -37,7 +37,8 @@ def calculate_reaction_forces(u, Data, ds_bound, dimension):
     reaction_forces = np.array([0.0, 0.0, 0.0])
     for i in range(dimension):
         for j in range(dimension):
-            reaction_forces[i] += dolfinx.fem.assemble_scalar(dolfinx.fem.form((sigma_a(u, Data)[i, j] + sigma_b(u, Data)[i, j]) * ds_bound))
+            reaction_forces[i] += dolfinx.fem.assemble_scalar(dolfinx.fem.form(
+                (sigma_a(u, Data)[i, j] + sigma_b(u, Data)[i, j]) * ds_bound))
     return reaction_forces
 
 
@@ -66,5 +67,6 @@ def calculate_reaction_forces_phi(u, phi, Data, ds_bound, dimension):
     reaction_forces = np.array([0.0, 0.0, 0.0])
     for i in range(dimension):
         for j in range(dimension):
-            reaction_forces[i] += dolfinx.fem.assemble_scalar(dolfinx.fem.form((g(phi, Data.degradation_function) * sigma_a(u, Data)[i, j] + sigma_b(u, Data)[i, j]) * ds_bound))
+            reaction_forces[i] += dolfinx.fem.assemble_scalar(dolfinx.fem.form(
+                (g(phi, Data.degradation_function) * sigma_a(u, Data)[i, j] + sigma_b(u, Data)[i, j]) * ds_bound))
     return reaction_forces

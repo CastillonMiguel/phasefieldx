@@ -8,6 +8,7 @@ This module provides functions for calculating various mechanical properties of 
 
 import ufl
 
+
 def epsilon(u):
     """
     Calculate the symmetric strain tensor.

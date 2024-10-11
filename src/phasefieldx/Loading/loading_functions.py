@@ -2,7 +2,7 @@
 Finite Element Loads
 ====================
 
-This module provides functions for creating loads. 
+This module provides functions for creating loads.
 
 Notes
 -----
@@ -16,6 +16,7 @@ See individual function documentation for usage examples.
 
 import dolfinx
 import petsc4py
+
 
 def loading_Tx(V_u, msh, ds):
     """

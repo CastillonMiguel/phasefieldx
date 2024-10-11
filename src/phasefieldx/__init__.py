@@ -1,6 +1,6 @@
 # phasefieldx/__init__.py
 
-__version__ = "0.1.0"
+__version__ = "0.0.3"
 __author__ = "Miguel Castillón"
 __email__ = "phasefieldx@gmail.com"
 __license__ = "MIT"
@@ -20,7 +20,8 @@ from .errors_functions import *
 from .files import *
 from .norms import *
 
-# Optionally, you can specify which symbols to export when using 'from phasefieldx import *'
+# Optionally, you can specify which symbols to export when using 'from
+# phasefieldx import *'
 __all__ = [
     'Boundary',
     'Element',

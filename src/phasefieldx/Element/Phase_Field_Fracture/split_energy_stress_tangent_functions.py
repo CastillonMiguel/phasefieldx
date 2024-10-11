@@ -51,7 +51,9 @@ def psi_a_spectral(u, lambda_, mu):
     """
     eps = epsilon(u)
     eps_P = spectral_positive_part(eps)
-    return 0.5*lambda_* macaulay_bracket_positive(ufl.tr(eps))**2 + mu*ufl.inner(eps_P, eps_P)
+    return 0.5 * lambda_ * \
+        macaulay_bracket_positive(ufl.tr(eps))**2 + \
+        mu * ufl.inner(eps_P, eps_P)
 
 
 def psi_b_spectral(u, lambda_, mu):
@@ -74,7 +76,9 @@ def psi_b_spectral(u, lambda_, mu):
     """
     eps = epsilon(u)
     eps_N = spectral_negative_part(eps)
-    return 0.5*lambda_* macaulay_bracket_negative(ufl.tr(eps))**2 + mu*ufl.inner(eps_N, eps_N)
+    return 0.5 * lambda_ * \
+        macaulay_bracket_negative(ufl.tr(eps))**2 + \
+        mu * ufl.inner(eps_N, eps_N)
 
 
 def sigma_a_spectral(u, lambda_, mu):
@@ -97,7 +101,9 @@ def sigma_a_spectral(u, lambda_, mu):
     """
     eps = epsilon(u)
     eps_P = spectral_positive_part(eps)
-    return lambda_ * macaulay_bracket_positive(ufl.tr(eps))*ufl.Identity(len(u)) + 2*mu*eps_P
+    return lambda_ * \
+        macaulay_bracket_positive(ufl.tr(eps)) * \
+        ufl.Identity(len(u)) + 2 * mu * eps_P
 
 
 def sigma_b_spectral(u, lambda_, mu):
@@ -118,9 +124,10 @@ def sigma_b_spectral(u, lambda_, mu):
     ufl.Expr
         The spectral negative part of the stress tensor.
     """
-    #eps = epsilon(u)
-    #eps_N = spectral_negative_part(eps)
-    #return lambda_ * macaulay_bracket_negative(ufl.tr(eps))*ufl.Identity(len(u)) + 2*mu*eps_N
+    # eps = epsilon(u)
+    # eps_N = spectral_negative_part(eps)
+    # return lambda_ *
+    # macaulay_bracket_negative(ufl.tr(eps))*ufl.Identity(len(u)) + 2*mu*eps_N
     return sigma(u, lambda_, mu) - sigma_a_spectral(u, lambda_, mu)
 
 
@@ -144,9 +151,10 @@ def psi_a_deviatoric(u, lambda_, mu):
     """
     eps = epsilon(u)
     epsD = deviatoric_part(eps)
-    #epsD = ufl.dev(eps)
-    k0 = lambda_ + 2/len(u)*mu
-    return 0.5 * k0 * macaulay_bracket_positive(ufl.tr(eps))**2 + mu*ufl.inner(epsD, epsD)
+    # epsD = ufl.dev(eps)
+    k0 = lambda_ + 2 / len(u) * mu
+    return 0.5 * k0 * \
+        macaulay_bracket_positive(ufl.tr(eps))**2 + mu * ufl.inner(epsD, epsD)
 
 
 def psi_b_deviatoric(u, lambda_, mu):
@@ -168,7 +176,7 @@ def psi_b_deviatoric(u, lambda_, mu):
         The deviatoric negative part of the strain energy density.
     """
     eps = epsilon(u)
-    k0 = lambda_ + 2/len(u)*mu
+    k0 = lambda_ + 2 / len(u) * mu
     return 0.5 * k0 * macaulay_bracket_negative(ufl.tr(eps))**2
 
 
@@ -192,9 +200,11 @@ def sigma_a_deviatoric(u, lambda_, mu):
     """
     eps = epsilon(u)
     epsD = deviatoric_part(eps)
-    #epsD= ufl.dev(eps)
-    k0 = lambda_+2/len(u)*mu
-    return k0 * macaulay_bracket_positive(ufl.tr(eps))*ufl.Identity(len(u)) + 2*mu*epsD
+    # epsD= ufl.dev(eps)
+    k0 = lambda_ + 2 / len(u) * mu
+    return k0 * \
+        macaulay_bracket_positive(ufl.tr(eps)) * \
+        ufl.Identity(len(u)) + 2 * mu * epsD
 
 
 def sigma_b_deviatoric(u, lambda_, mu):
@@ -215,9 +225,9 @@ def sigma_b_deviatoric(u, lambda_, mu):
     ufl.Expr
         The deviatoric negative part of the stress tensor.
     """
-    #eps = epsilon(u)
-    #k0 = lambda_+2/len(u)*mu
-    #return k0 * macaulay_bracket_negative(ufl.tr(eps))*ufl.Identity(len(u))
+    # eps = epsilon(u)
+    # k0 = lambda_+2/len(u)*mu
+    # return k0 * macaulay_bracket_negative(ufl.tr(eps))*ufl.Identity(len(u))
     return sigma(u, lambda_, mu) - sigma_a_deviatoric(u, lambda_, mu)
 
 
@@ -242,7 +252,8 @@ def psi_a(u, DataSimulation):
 
     elif DataSimulation.degradation == "anisotropic" or DataSimulation.degradation == "hybrid":
         if DataSimulation.split_energy == "deviatoric":
-            return psi_a_deviatoric(u, DataSimulation.lambda_, DataSimulation.mu)
+            return psi_a_deviatoric(
+                u, DataSimulation.lambda_, DataSimulation.mu)
         elif DataSimulation.split_energy == "spectral":
             return psi_a_spectral(u, DataSimulation.lambda_, DataSimulation.mu)
 
@@ -267,11 +278,13 @@ def psi_b(u, DataSimulation):
         The negative part of the strain energy density.
     """
     if DataSimulation.degradation == "isotropic":
-        return psi(u, DataSimulation.lambda_, DataSimulation.mu) - psi(u, DataSimulation.lambda_, DataSimulation.mu)
+        return psi(u, DataSimulation.lambda_, DataSimulation.mu) - \
+            psi(u, DataSimulation.lambda_, DataSimulation.mu)
 
     elif DataSimulation.degradation == "anisotropic" or DataSimulation.degradation == "hybrid":
         if DataSimulation.split_energy == "deviatoric":
-            return psi_b_deviatoric(u, DataSimulation.lambda_, DataSimulation.mu)
+            return psi_b_deviatoric(
+                u, DataSimulation.lambda_, DataSimulation.mu)
         elif DataSimulation.split_energy == "spectral":
             return psi_b_spectral(u, DataSimulation.lambda_, DataSimulation.mu)
 
@@ -300,9 +313,11 @@ def sigma_a(u, DataSimulation):
 
     elif DataSimulation.degradation == "anisotropic":
         if DataSimulation.split_energy == "deviatoric":
-            return sigma_a_deviatoric(u, DataSimulation.lambda_, DataSimulation.mu)
+            return sigma_a_deviatoric(
+                u, DataSimulation.lambda_, DataSimulation.mu)
         elif DataSimulation.split_energy == "spectral":
-            return sigma_a_spectral(u, DataSimulation.lambda_, DataSimulation.mu)
+            return sigma_a_spectral(
+                u, DataSimulation.lambda_, DataSimulation.mu)
 
     else:
         raise ValueError("Invalid")
@@ -325,13 +340,15 @@ def sigma_b(u, DataSimulation):
         The negative part of the stress tensor.
     """
     if DataSimulation.degradation == "isotropic" or DataSimulation.degradation == "hybrid":
-        return 0*sigma(u, DataSimulation.lambda_, DataSimulation.mu)
- 
+        return 0 * sigma(u, DataSimulation.lambda_, DataSimulation.mu)
+
     elif DataSimulation.degradation == "anisotropic":
         if DataSimulation.split_energy == "deviatoric":
-            return sigma_b_deviatoric(u, DataSimulation.lambda_, DataSimulation.mu)
+            return sigma_b_deviatoric(
+                u, DataSimulation.lambda_, DataSimulation.mu)
         elif DataSimulation.split_energy == "spectral":
-            return sigma_b_spectral(u, DataSimulation.lambda_, DataSimulation.mu)
+            return sigma_b_spectral(
+                u, DataSimulation.lambda_, DataSimulation.mu)
 
     else:
         raise ValueError("Invalid")

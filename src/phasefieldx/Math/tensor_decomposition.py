@@ -10,6 +10,7 @@ import ufl
 from phasefieldx.Math.functions import macaulay_bracket_positive, macaulay_bracket_negative
 from phasefieldx.Math.invariants import eigenstate2, eigenstate3
 
+
 def deviatoric_part(T):
     """
     Computes the deviatoric part of a given tensor.
@@ -24,7 +25,7 @@ def deviatoric_part(T):
     Tensor
         The deviatoric part of the input tensor, computed as the tensor minus
         one-third of its trace times the identity tensor.
-    
+
     Notes
     -----
     The deviatoric part of a tensor is defined as the part of the tensor that
@@ -78,21 +79,22 @@ def spectral_positive_part(T):
 
     * $\boldsymbol \epsilon^+: = \sum_{i=1}^{\alpha} \langle \epsilon^i \rangle^+ \boldsymbol n^i \otimes \boldsymbol n^i$,
     * $\boldsymbol \epsilon^-: = \sum_{i=1}^{\alpha} \langle \epsilon^i \rangle^- \boldsymbol n^i \otimes \boldsymbol n^i$.
-  
+
     In which $\langle\rangle^{\pm}$ are the bracket operators. $\langle x \rangle^+:=\frac{x+|x|}{2}$, and $\langle x \rangle^-:=\frac{x-|x|}{2}$.
- 
+
     """
     if ufl.shape(T) == (2, 2):
         eig, eig_vec = eigenstate2(T)
-        T_p  = macaulay_bracket_positive(eig[0]) * eig_vec[0]
+        T_p = macaulay_bracket_positive(eig[0]) * eig_vec[0]
         T_p += macaulay_bracket_positive(eig[1]) * eig_vec[1]
     else:
         eig, eig_vec = eigenstate3(T)
-        T_p  = macaulay_bracket_positive(eig[0]) * eig_vec[0]
+        T_p = macaulay_bracket_positive(eig[0]) * eig_vec[0]
         T_p += macaulay_bracket_positive(eig[1]) * eig_vec[1]
         T_p += macaulay_bracket_positive(eig[2]) * eig_vec[2]
- 
+
     return T_p
+
 
 def spectral_negative_part(T):
     r"""
@@ -120,11 +122,11 @@ def spectral_negative_part(T):
     """
     if ufl.shape(T) == (2, 2):
         eig, eig_vec = eigenstate2(T)
-        T_p  = macaulay_bracket_negative(eig[0]) * eig_vec[0]
+        T_p = macaulay_bracket_negative(eig[0]) * eig_vec[0]
         T_p += macaulay_bracket_negative(eig[1]) * eig_vec[1]
     else:
         eig, eig_vec = eigenstate3(T)
-        T_p  = macaulay_bracket_negative(eig[0]) * eig_vec[0]
+        T_p = macaulay_bracket_negative(eig[0]) * eig_vec[0]
         T_p += macaulay_bracket_negative(eig[1]) * eig_vec[1]
         T_p += macaulay_bracket_negative(eig[2]) * eig_vec[2]
     return T_p

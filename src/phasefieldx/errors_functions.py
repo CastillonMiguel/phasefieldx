@@ -12,7 +12,8 @@ import dolfinx
 import ufl
 import numpy as np
 import mpi4py
-from phasefieldx.norms import norm_semiH1, norm_H1, norm_LP , norm_L2
+from phasefieldx.norms import norm_semiH1, norm_H1, norm_LP, norm_L2
+
 
 def error_L2_higher_order_space(uh, u_ex, degree_raise=3, dx=ufl.dx):
     """
@@ -41,7 +42,7 @@ def error_L2_higher_order_space(uh, u_ex, degree_raise=3, dx=ufl.dx):
     family = uh.function_space.ufl_element().family()
     mesh = uh.function_space.mesh
     W = dolfinx.fem.FunctionSpace(mesh, (family, degree + degree_raise))
-  
+
     # Interpolate approximate solution
     u_W = dolfinx.fem.Function(W)
     u_W.interpolate(uh)
@@ -217,9 +218,11 @@ def eval_error_L2_normalized(field_a, field_b, msh, dx=ufl.dx):
     error_L2_phi = np.sqrt(msh.comm.allreduce(local_error, op=mpi4py.MPI.SUM))
     error_L2_phi_normalized = np.sqrt(msh.comm.allreduce(dolfinx.fem.assemble_scalar(
         dolfinx.fem.form(ufl.dot(field_a, field_a) * ufl.dx)), op=mpi4py.MPI.SUM))
-    
+
     # Check for division by zero
     if error_L2_phi_normalized == 0:
-        return 0.0  # You can return a small number or handle this case differently if needed.
-    
-    return error_L2_phi/error_L2_phi_normalized
+        # You can return a small number or handle this case differently if
+        # needed.
+        return 0.0
+
+    return error_L2_phi / error_L2_phi_normalized

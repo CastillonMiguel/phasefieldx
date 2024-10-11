@@ -2,7 +2,7 @@
 Finite Element Boundary Conditions and Mesh Tagging Utilities
 =============================================================
 
-This module provides functions for creating boundary conditions and handling mesh tagging. 
+This module provides functions for creating boundary conditions and handling mesh tagging.
 
 Notes
 -----
@@ -86,7 +86,8 @@ def bc_x(facet, V_u, fdim, value=0.0):
     """
 
     u_x_D = petsc4py.PETSc.ScalarType(value)
-    boundary_dofs = dolfinx.fem.locate_dofs_topological(V_u.sub(0), fdim, facet)
+    boundary_dofs = dolfinx.fem.locate_dofs_topological(
+        V_u.sub(0), fdim, facet)
     return dolfinx.fem.dirichletbc(u_x_D, boundary_dofs, V_u.sub(0))
 
 
@@ -121,7 +122,8 @@ def bc_y(facet, V_u, fdim, value=0.0):
     """
 
     u_y_D = petsc4py.PETSc.ScalarType(value)
-    boundary_dofs = dolfinx.fem.locate_dofs_topological(V_u.sub(1), fdim, facet)
+    boundary_dofs = dolfinx.fem.locate_dofs_topological(
+        V_u.sub(1), fdim, facet)
     return dolfinx.fem.dirichletbc(u_y_D, boundary_dofs, V_u.sub(1))
 
 
@@ -156,7 +158,8 @@ def bc_z(facet, V_u, fdim, value=0.0):
     """
 
     u_z_D = petsc4py.PETSc.ScalarType(value)
-    boundary_dofs = dolfinx.fem.locate_dofs_topological(V_u.sub(2), fdim, facet)
+    boundary_dofs = dolfinx.fem.locate_dofs_topological(
+        V_u.sub(2), fdim, facet)
     return dolfinx.fem.dirichletbc(u_z_D, boundary_dofs, V_u.sub(2))
 
 
@@ -225,7 +228,8 @@ def bc_xyz(facet, V_u, fdim, value_x=0.0, value_y=0.0, value_z=0.0):
     >>> bc_xyz_conditions = bc_xyz(facet_index, V_u_space, 2)
     """
 
-    u_xyz_D = np.array([value_x, value_y, value_z], dtype=petsc4py.PETSc.ScalarType)
+    u_xyz_D = np.array([value_x, value_y, value_z],
+                       dtype=petsc4py.PETSc.ScalarType)
     boundary_dofs = dolfinx.fem.locate_dofs_topological(V_u, fdim, facet)
     return dolfinx.fem.dirichletbc(u_xyz_D, boundary_dofs, V_u)
 
@@ -268,6 +272,8 @@ def get_ds_bound_from_marker(facet_marker, msh, fdim):
     marked_facets = np.hstack([facet_marker])
     marked_values = np.hstack([np.full_like(facet_marker, 1)])
     sorted_facets = np.argsort(marked_facets)
-    facet_tag = dolfinx.mesh.meshtags(msh, fdim, marked_facets[sorted_facets], marked_values[sorted_facets])
-    ds_bound = ufl.Measure("ds", domain=msh, subdomain_data=facet_tag, subdomain_id=1)
+    facet_tag = dolfinx.mesh.meshtags(
+        msh, fdim, marked_facets[sorted_facets], marked_values[sorted_facets])
+    ds_bound = ufl.Measure(
+        "ds", domain=msh, subdomain_data=facet_tag, subdomain_id=1)
     return ds_bound

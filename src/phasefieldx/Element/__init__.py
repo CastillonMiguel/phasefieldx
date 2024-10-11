@@ -6,7 +6,8 @@ from .Elasticity import *
 from .Phase_Field import *
 from .Phase_Field_Fracture import *
 
-# Optionally, you can specify which symbols to export when using 'from phasefieldx.Element import *'
+# Optionally, you can specify which symbols to export when using 'from
+# phasefieldx.Element import *'
 __all__ = [
     'Allen_Cahn',
     'Elasticity',

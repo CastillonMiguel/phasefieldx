@@ -5,6 +5,8 @@ Input: Elasticity
 """
 
 from phasefieldx.Materials.conversion import get_lambda_lame, get_mu_lame
+
+
 class Input:
     """
     Class for managing elasticity simulation parameters.
@@ -41,7 +43,7 @@ class Input:
         self.nu = nu
         self.lambda_ = get_lambda_lame(self.E, self.nu)
         self.mu = get_mu_lame(self.E, self.nu)
-        
+
         self.save_solution_xdmf = save_solution_xdmf
         self.save_solution_vtu = save_solution_vtu
         self.results_folder_name = results_folder_name
@@ -58,8 +60,7 @@ class Input:
         logger.info(f"  nu: {self.nu}")
         logger.info(f"  lambda: {self.lambda_}")
         logger.info(f"  mu: {self.mu}")
-        
-        
+
     def __str__(self):
         """
         Return a string representation of the simulation parameters.

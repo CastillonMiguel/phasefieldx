@@ -5,7 +5,7 @@ Fatigue Degradation Functions $f(\bar{\alpha})$
 This module provides functions to evaluate fatigue degradation.
 Fatigue degradation functions describe how the degradation evolves
 over time or under repeated loading conditions. The degradation is typically
-quantified using a parameter $\bar{\alpha}$, which represents the accumulated 
+quantified using a parameter $\bar{\alpha}$, which represents the accumulated
 variable.
 
 """
@@ -14,6 +14,8 @@ import numpy as np
 
 ##############################################################################
 ##############################################################################
+
+
 def asymptotic(alpha_bar, Data):
     """
     Calculate the asymptotic fatigue degradation function.
@@ -31,7 +33,7 @@ def asymptotic(alpha_bar, Data):
         An array containing the calculated degradation values based on the asymptotic function.
     """
     alpha_critica = np.ones(len(alpha_bar)) * Data.fatigue_val
-    aux = (2.0*alpha_critica / (alpha_bar + alpha_critica))**2
+    aux = (2.0 * alpha_critica / (alpha_bar + alpha_critica))**2
     f_val = np.where(alpha_bar >= alpha_critica, aux, 1.0)
     return f_val
 

@@ -21,19 +21,19 @@ from phasefieldx.Materials.elastic_isotropic import epsilon, sigma, psi
 from phasefieldx.Element.Elasticity.reactions_forces_functions import calculate_reaction_forces
 
 
-def solve(Data, 
-          msh, 
-          final_time, 
+def solve(Data,
+          msh,
+          final_time,
           V_u,
           bc_list_u=[],
-          update_boundary_conditions=None, 
-          f_list_u=None, 
-          T_list_u=None, 
-          update_loading=None, 
+          update_boundary_conditions=None,
+          f_list_u=None,
+          T_list_u=None,
+          update_loading=None,
           ds_bound=None,
           dt=1.0,
-          path = None,
-          quadrature_degree = 2):
+          path=None,
+          quadrature_degree=2):
     """
     Solver for elasticity problems.
 
@@ -85,10 +85,10 @@ def solve(Data,
 
     # This will simulate the elasticity problem in time, saving results in the specified directory.
     """
-    
-    if path==None:
+
+    if path is None:
         path = os.getcwd()
-        
+
     # Common #############################################################
     ######################################################################
     result_folder_name = Data.results_folder_name
@@ -98,47 +98,45 @@ def solve(Data,
     log_library_versions(logger)  # log Library versions
     Data.save_log_info(logger)  # log Simulation input data
     log_model_information(msh, logger)
-    
+
     # Dolfinx cpp logger
-    dolfinx.log.set_log_level(dolfinx.log.LogLevel.INFO) 
-    dolfinx.cpp.log.set_output_file(os.path.join(result_folder_name, "dolfinx.log"))
-    
-    
+    dolfinx.log.set_log_level(dolfinx.log.LogLevel.INFO)
+    dolfinx.cpp.log.set_output_file(
+        os.path.join(result_folder_name, "dolfinx.log"))
+
     # Formulation ##########################################################
     ########################################################################
-    
+
     # Displacement ------------------------
     u = dolfinx.fem.Function(V_u, name="u")
     δu = ufl.TestFunction(V_u)
-    
+
     metadata = {"quadrature_degree": quadrature_degree}
-    #ds = ufl.Measure('ds', domain=msh, subdomain_data=facet_tag, metadata=metadata)
+    # ds = ufl.Measure('ds', domain=msh, subdomain_data=facet_tag, metadata=metadata)
     dx = ufl.Measure("dx", domain=msh, metadata=metadata)
 
     # Displacement -----------------------------------------------------------
-    F_u = ufl.inner(sigma(u,Data.lambda_, Data.mu), epsilon(δu)) * ufl.dx
+    F_u = ufl.inner(sigma(u, Data.lambda_, Data.mu), epsilon(δu)) * ufl.dx
 
     # External forces --------------------------------------------------------
     if T_list_u is not None:
-        L =  ufl.inner(T_list_u[0][0], δu) * T_list_u[0][1]
+        L = ufl.inner(T_list_u[0][0], δu) * T_list_u[0][1]
         for i in range(1, len(T_list_u)):
-            L +=  ufl.inner(T_list_u[i][0], δu) * T_list_u[i][1]
-            
+            L += ufl.inner(T_list_u[i][0], δu) * T_list_u[i][1]
+
         F_u -= L
-    
+
     J_u = ufl.derivative(F_u, u)
     problem = dolfinx.fem.petsc.NonlinearProblem(F_u, u, bcs=bc_list_u, J=J_u)
 
     solver_u = NewtonSolver(problem)
     solver_u.save_log_info(logger)
 
-
     # Solve ################################################################
     ########################################################################
     start = time.perf_counter()
-    
+
     logger.info(f" start time: {start}")
-    
 
     # Paraview ------------------------
     if Data.save_solution_xdmf:
@@ -153,7 +151,6 @@ def solve(Data,
             result_folder_name, "paraview-solutions_vtu")
         vtk_sol = dolfinx.io.VTKFile(msh.comm, os.path.join(
             paraview_solution_folder_name_vtu, "phasefieldx.pvd"), "w")
-
 
     logger.info(f" S t a r t i n g    A n a l y s i s ")
     logger.info(f" ---------------------------------- ")
@@ -170,40 +167,43 @@ def solve(Data,
         if bc_list_u is not None:
             bc_ux, bc_uy, bc_uz = update_boundary_conditions(bc_list_u, t)
         else:
-            bc_ux, bc_uy, bc_uz = 0 ,0 ,0 
-            
+            bc_ux, bc_uy, bc_uz = 0, 0, 0
+
         if T_list_u is not None:
             T_ux, T_uy, T_uz = update_loading(T_list_u, t)
-         
+
         # Displacement --------------------------------------------
         logger.info(f">>> Solving phase for dofs: u ")
         u_iterations, _ = solver_u.solver.solve(u)
         # residuals = solver_u.ksp.getConvergenceHistory()
-        logger.info(f" Newton iterations: {u_iterations}")        
+        logger.info(f" Newton iterations: {u_iterations}")
         resisual_u = solver_u.ksp.getResidualNorm()
         logger.info(f" Residual norm u: {resisual_u}")
 
-           
         # Save results
         ######################################################################
         logger.info(f"\n\n Saving results: ")
-        
+
         # conv ---------------------------------------------------------------
-        append_results_to_file(os.path.join(result_folder_name, "phasefieldx.conv"), '#step\titerations', step, u_iterations)
+        append_results_to_file(os.path.join(
+            result_folder_name, "phasefieldx.conv"), '#step\titerations', step, u_iterations)
 
         # Degree of freedom --------------------------------------------------
-        append_results_to_file(os.path.join(result_folder_name, "top.dof"), '#step\tUx\tUy\tUz', step, bc_ux, bc_uy, bc_uz)
-        
+        append_results_to_file(os.path.join(
+            result_folder_name, "top.dof"), '#step\tUx\tUy\tUz', step, bc_ux, bc_uy, bc_uz)
+
         # Reaction -----------------------------------------------------------
         for i in range(0, ds_bound.shape[0]):
-            R = calculate_reaction_forces(u, Data, ds_bound[i][0], msh.topology.dim)
+            R = calculate_reaction_forces(
+                u, Data, ds_bound[i][0], msh.topology.dim)
             append_results_to_file(os.path.join(
-                result_folder_name, ds_bound[i][1]+".reaction"), '#step\tRx\tRy\tRz', step, R[0], R[1], R[2])
+                result_folder_name, ds_bound[i][1] + ".reaction"), '#step\tRx\tRy\tRz', step, R[0], R[1], R[2])
 
         # Energy -------------------------------------------------------------
-        E = dolfinx.fem.assemble_scalar(dolfinx.fem.form( psi(u, Data.lambda_, Data.mu) * ufl.dx))
-        append_results_to_file(os.path.join(result_folder_name, "total.energy"), '#step\tE', step, E)
-
+        E = dolfinx.fem.assemble_scalar(dolfinx.fem.form(
+            psi(u, Data.lambda_, Data.mu) * ufl.dx))
+        append_results_to_file(os.path.join(
+            result_folder_name, "total.energy"), '#step\tE', step, E)
 
         # Paraview -----------------------------------------------------------
         if Data.save_solution_xdmf:
@@ -222,5 +222,4 @@ def solve(Data,
         vtk_sol.close()
 
     end = time.perf_counter()
-    log_end_analysis(logger, end-start)
-    
+    log_end_analysis(logger, end - start)

@@ -12,6 +12,7 @@ import numpy as np
 
 from phasefieldx.Materials.elastic_isotropic import sigma
 
+
 def calculate_reaction_forces(u, Data, ds_bound, dimension):
     """
     Calculate reaction forces based on the provided displacement field and data.
@@ -35,5 +36,6 @@ def calculate_reaction_forces(u, Data, ds_bound, dimension):
     reaction_forces = np.array([0.0, 0.0, 0.0])
     for i in range(0, dimension):
         for j in range(0, dimension):
-            reaction_forces[i] += dolfinx.fem.assemble_scalar(dolfinx.fem.form((sigma(u, Data.lambda_, Data.mu)[i, j])*ds_bound))
+            reaction_forces[i] += dolfinx.fem.assemble_scalar(
+                dolfinx.fem.form((sigma(u, Data.lambda_, Data.mu)[i, j]) * ds_bound))
     return reaction_forces

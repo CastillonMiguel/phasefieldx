@@ -6,6 +6,7 @@ This module provides functions to convert between different material properties 
 
 """
 
+
 def get_lambda_lame(E, nu):
     """
     Calculate the Lame's first parameter (lambda) using Young's modulus (E) and Poisson's ratio (nu).
@@ -24,7 +25,8 @@ def get_lambda_lame(E, nu):
         ValueError: If the value of Poisson's ratio (nu) is outside the valid range (-1 < nu < 0.5).
     """
     if nu <= -1 or nu >= 0.5:
-        raise ValueError("Poisson's ratio (nu) must be within the range -1 < nu < 0.5")
+        raise ValueError(
+            "Poisson's ratio (nu) must be within the range -1 < nu < 0.5")
     return E * nu / ((1.0 - 2.0 * nu) * (1.0 + nu))
 
 
@@ -46,7 +48,8 @@ def get_mu_lame(E, nu):
         ValueError: If the value of Poisson's ratio (nu) is outside the valid range (-1 < nu < 0.5).
     """
     if nu <= -1 or nu >= 0.5:
-        raise ValueError("Poisson's ratio (nu) must be within the range -1 < nu < 0.5")
+        raise ValueError(
+            "Poisson's ratio (nu) must be within the range -1 < nu < 0.5")
     return E / (2.0 * (1.0 + nu))
 
 
@@ -68,9 +71,9 @@ def get_bulk_modulus(E, nu):
         ValueError: If the value of Poisson's ratio (nu) is outside the valid range (-1 < nu < 0.5).
     """
     if nu <= -1 or nu >= 0.5:
-        raise ValueError("Poisson's ratio (nu) must be within the range -1 < nu < 0.5")
+        raise ValueError(
+            "Poisson's ratio (nu) must be within the range -1 < nu < 0.5")
     return E / (3.0 * (1.0 - 2.0 * nu))
-
 
 
 def get_youngs_modulus(lambda_, mu):
@@ -113,9 +116,9 @@ def get_poissons_ratio(lambda_, mu):
         ValueError: If the combination of Lame's parameters results in an invalid value for Poisson's ratio.
     """
     if lambda_ + 2 * mu == 0:
-        raise ValueError("Invalid combination of Lame's parameters (lambda and mu)")
+        raise ValueError(
+            "Invalid combination of Lame's parameters (lambda and mu)")
     return lambda_ / (2 * (lambda_ + mu))
-
 
 
 def get_bulk_modulus_lame(lambda_, mu):
@@ -136,5 +139,6 @@ def get_bulk_modulus_lame(lambda_, mu):
         ValueError: If the combination of Lame's parameters results in an invalid value for bulk modulus.
     """
     if lambda_ + 2 * mu == 0:
-        raise ValueError("Invalid combination of Lame's parameters (lambda and mu)")
-    return lambda_ + (2/3) * mu
+        raise ValueError(
+            "Invalid combination of Lame's parameters (lambda and mu)")
+    return lambda_ + (2 / 3) * mu

@@ -4,7 +4,7 @@ Projection
 
 File from dolfiny:
 # https://github.com/michalhabera/dolfiny/blob/master/src/dolfiny/projection.py
-dolfiny is free software: you can redistribute it and/or modify it under the terms of the 
+dolfiny is free software: you can redistribute it and/or modify it under the terms of the
 GNU Lesser General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
@@ -14,6 +14,7 @@ import ufl
 import dolfinx
 from petsc4py import PETSc
 from dolfinx.fem.petsc import apply_lifting, assemble_matrix, assemble_vector, set_bc
+
 
 def project(e, target_func, bcs=[]):
     """Project UFL expression.
@@ -46,7 +47,7 @@ def project(e, target_func, bcs=[]):
     solver = PETSc.KSP().create(A.getComm())
     solver.setType("bcgs")
     solver.getPC().setType("bjacobi")
-    #solver.rtol = 1.0e-05
+    # solver.rtol = 1.0e-05
     solver.setOperators(A)
     solver.solve(b, target_func.vector)
     assert solver.reason > 0

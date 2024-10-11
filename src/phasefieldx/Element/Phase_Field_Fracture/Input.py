@@ -6,6 +6,7 @@ Input: Phase-Field Fracture
 
 from phasefieldx.Materials.conversion import get_lambda_lame, get_mu_lame
 
+
 class Input:
     """
     Class for managing phase-field fracture simulation parameters.
@@ -68,8 +69,8 @@ class Input:
         self.nu = nu
         self.Gc = Gc
         self.l = l
-        self.lambda_ = get_lambda_lame(self.E, self.nu) 
-        self.mu = get_mu_lame(self.E, self.nu) 
+        self.lambda_ = get_lambda_lame(self.E, self.nu)
+        self.mu = get_mu_lame(self.E, self.nu)
         self.degradation = degradation
         self.split_energy = split_energy
         self.degradation_function = degradation_function
@@ -110,9 +111,9 @@ class Input:
             f"  fatigue degradation function: {self.fatigue_degradation_function}")
         logger.info(f"  fatigue_val: {self.fatigue_val}")
         logger.info("Stagger settings: ")
-        logger.info(f"  minimum stagger iterations: {self.min_stagger_iter }")
-        logger.info(f"  maximum stagger iterations: {self.max_stagger_iter }")
-        logger.info(f"  stagger error tolerance: {self.stagger_error_tol }")
+        logger.info(f"  minimum stagger iterations: {self.min_stagger_iter}")
+        logger.info(f"  maximum stagger iterations: {self.max_stagger_iter}")
+        logger.info(f"  stagger error tolerance: {self.stagger_error_tol}")
 
     def __str__(self):
         """
@@ -135,7 +136,8 @@ class Input:
             f"  split_energy: {self.split_energy}",
             f"  degradation_function: {self.degradation_function}",
             f"  irreversibility: {self.irreversibility}",
-            f"  fatigue degradation function: {self.fatigue_degradation_function}",
+            f"  fatigue degradation function: {
+                self.fatigue_degradation_function}",
             f"  fatigue_val: {self.fatigue_val}"
         ]
         return "\n".join(parameter_info)

@@ -2,15 +2,16 @@
 Invarians
 =========
 
-File from dolfiny: 
+File from dolfiny:
 https://github.com/michalhabera/dolfiny/blob/master/src/dolfiny/invariants.py
-dolfiny is free software: you can redistribute it and/or modify it under the terms of the 
+dolfiny is free software: you can redistribute it and/or modify it under the terms of the
 GNU Lesser General Public License as published by the Free Software Foundation,
 either version 3 of the License, or (at your option) any later version.
 
 """
 
 import ufl
+
 
 def invariants_principal(A):
     """Principal invariants of (real-valued) tensor A.
@@ -42,7 +43,8 @@ def eigenstate3_legacy(A):
     Note: Tensor A must not have complex eigenvalues!
     """
     if ufl.shape(A) != (3, 3):
-        raise RuntimeError(f"Tensor A of shape {ufl.shape(A)} != (3, 3) is not supported!")
+        raise RuntimeError(f"Tensor A of shape {
+                           ufl.shape(A)} != (3, 3) is not supported!")
     #
     eps = 1.0e-10
     #
@@ -54,7 +56,8 @@ def eigenstate3_legacy(A):
     q = ufl.tr(A) / 3
     B = A - q * ufl.Identity(3)
     # observe: det(λI - A) = 0  with shift  λ = q + ω --> det(ωI - B) = 0 = ω**3 - j * ω - b
-    j = ufl.tr(B * B) / 2  # == -I2(B) for trace-free B, j < 0 indicates A has complex eigenvalues
+    # == -I2(B) for trace-free B, j < 0 indicates A has complex eigenvalues
+    j = ufl.tr(B * B) / 2
     b = ufl.tr(B * B * B) / 3  # == I3(B) for trace-free B
     # solve: 0 = ω**3 - j * ω - b  by substitution  ω = p * cos(phi)
     #        0 = p**3 * cos**3(phi) - j * p * cos(phi) - b  | * 4 / p**3
@@ -88,9 +91,11 @@ def eigenstate3(A):
     Note: Tensor A must not have complex eigenvalues!
     """
     if ufl.shape(A) != (3, 3):
-        raise RuntimeError(f"Tensor A of shape {ufl.shape(A)} != (3, 3) is not supported!")
+        raise RuntimeError(f"Tensor A of shape {
+                           ufl.shape(A)} != (3, 3) is not supported!")
     #
-    eps = 3.0e-16  # slightly above 2**-(53 - 1), see https://en.wikipedia.org/wiki/IEEE_754
+    # slightly above 2**-(53 - 1), see https://en.wikipedia.org/wiki/IEEE_754
+    eps = 3.0e-16
     #
     A = ufl.variable(A)
     #
@@ -101,9 +106,12 @@ def eigenstate3(A):
     #
     Δx = [
         A[0, 1] * A[1, 2] * A[2, 0] - A[0, 2] * A[1, 0] * A[2, 1],
-        A[0, 1]**2 * A[1, 2] - A[0, 1] * A[0, 2] * A[1, 1] + A[0, 1] * A[0, 2] * A[2, 2] - A[0, 2]**2 * A[2, 1],
-        A[0, 0] * A[0, 1] * A[2, 1] - A[0, 1]**2 * A[2, 0] - A[0, 1] * A[2, 1] * A[2, 2] + A[0, 2] * A[2, 1]**2,
-        A[0, 0] * A[0, 2] * A[1, 2] + A[0, 1] * A[1, 2]**2 - A[0, 2]**2 * A[1, 0] - A[0, 2] * A[1, 1] * A[1, 2],
+        A[0, 1]**2 * A[1, 2] - A[0, 1] * A[0, 2] * A[1, 1] +
+            A[0, 1] * A[0, 2] * A[2, 2] - A[0, 2]**2 * A[2, 1],
+        A[0, 0] * A[0, 1] * A[2, 1] - A[0, 1]**2 * A[2, 0] -
+            A[0, 1] * A[2, 1] * A[2, 2] + A[0, 2] * A[2, 1]**2,
+        A[0, 0] * A[0, 2] * A[1, 2] + A[0, 1] * A[1, 2]**2 -
+            A[0, 2]**2 * A[1, 0] - A[0, 2] * A[1, 1] * A[1, 2],
         A[0, 0] * A[0, 1] * A[1, 2] - A[0, 1] * A[0, 2] * A[1, 0] - A[0, 1] * A[1, 2] * A[2, 2] + A[0, 2] * A[1, 2] * A[2, 1],  # noqa: E501
         A[0, 0] * A[0, 2] * A[2, 1] - A[0, 1] * A[0, 2] * A[2, 0] + A[0, 1] * A[1, 2] * A[2, 1] - A[0, 2] * A[1, 1] * A[2, 1],  # noqa: E501
         A[0, 1] * A[1, 0] * A[1, 2] - A[0, 2] * A[1, 0] * A[1, 1] + A[0, 2] * A[1, 0] * A[2, 2] - A[0, 2] * A[1, 2] * A[2, 0],  # noqa: E501
@@ -116,9 +124,12 @@ def eigenstate3(A):
         A[0, 0]**2 * A[1, 1] - A[0, 0]**2 * A[2, 2] - A[0, 0] * A[0, 1] * A[1, 0] + A[0, 0] * A[0, 2] * A[2, 0] - A[0, 0] * A[1, 1]**2 + A[0, 0] * A[2, 2]**2 + A[0, 1] * A[1, 0] * A[1, 1] - A[0, 2] * A[2, 0] * A[2, 2] + A[1, 1]**2 * A[2, 2] - A[1, 1] * A[1, 2] * A[2, 1] - A[1, 1] * A[2, 2]**2 + A[1, 2] * A[2, 1] * A[2, 2]]  # noqa: E501
     Δy = [
         A[0, 2] * A[1, 0] * A[2, 1] - A[0, 1] * A[1, 2] * A[2, 0],
-        A[1, 0]**2 * A[2, 1] - A[1, 0] * A[1, 1] * A[2, 0] + A[1, 0] * A[2, 0] * A[2, 2] - A[1, 2] * A[2, 0]**2,
-        A[0, 0] * A[1, 0] * A[1, 2] - A[0, 2] * A[1, 0]**2 - A[1, 0] * A[1, 2] * A[2, 2] + A[1, 2]**2 * A[2, 0],
-        A[0, 0] * A[2, 0] * A[2, 1] - A[0, 1] * A[2, 0]**2 + A[1, 0] * A[2, 1]**2 - A[1, 1] * A[2, 0] * A[2, 1],
+        A[1, 0]**2 * A[2, 1] - A[1, 0] * A[1, 1] * A[2, 0] +
+            A[1, 0] * A[2, 0] * A[2, 2] - A[1, 2] * A[2, 0]**2,
+        A[0, 0] * A[1, 0] * A[1, 2] - A[0, 2] * A[1, 0]**2 -
+            A[1, 0] * A[1, 2] * A[2, 2] + A[1, 2]**2 * A[2, 0],
+        A[0, 0] * A[2, 0] * A[2, 1] - A[0, 1] * A[2, 0]**2 +
+            A[1, 0] * A[2, 1]**2 - A[1, 1] * A[2, 0] * A[2, 1],
         A[0, 0] * A[1, 0] * A[2, 1] - A[0, 1] * A[1, 0] * A[2, 0] - A[1, 0] * A[2, 1] * A[2, 2] + A[1, 2] * A[2, 0] * A[2, 1],  # noqa: E501
         A[0, 0] * A[1, 2] * A[2, 0] - A[0, 2] * A[1, 0] * A[2, 0] + A[1, 0] * A[1, 2] * A[2, 1] - A[1, 1] * A[1, 2] * A[2, 0],  # noqa: E501
         A[0, 1] * A[1, 0] * A[2, 1] - A[0, 1] * A[1, 1] * A[2, 0] + A[0, 1] * A[2, 0] * A[2, 2] - A[0, 2] * A[2, 0] * A[2, 1],  # noqa: E501
@@ -134,8 +145,10 @@ def eigenstate3(A):
     for i in range(len(Δd)):
         Δ += Δx[i] * Δd[i] * Δy[i]
 
-    Δxp = [A[1, 0], A[2, 0], A[2, 1], -A[0, 0] + A[1, 1], -A[0, 0] + A[2, 2], -A[1, 1] + A[2, 2]]
-    Δyp = [A[0, 1], A[0, 2], A[1, 2], -A[0, 0] + A[1, 1], -A[0, 0] + A[2, 2], -A[1, 1] + A[2, 2]]
+    Δxp = [A[1, 0], A[2, 0], A[2, 1], -A[0, 0] +
+           A[1, 1], -A[0, 0] + A[2, 2], -A[1, 1] + A[2, 2]]
+    Δyp = [A[0, 1], A[0, 2], A[1, 2], -A[0, 0] +
+           A[1, 1], -A[0, 0] + A[2, 2], -A[1, 1] + A[2, 2]]
     Δdp = [6, 6, 6, 1, 1, 1]
 
     dp = 0
@@ -150,7 +163,8 @@ def eigenstate3(A):
     phi3 = ufl.atan2(ufl.sqrt(27) * ufl.sqrt(Δ), dq)
 
     # sorted eigenvalues: λ0 <= λ1 <= λ2
-    λ = [(I1 + 2 * ufl.sqrt(dp) * ufl.cos((phi3 + 2 * ufl.pi * k) / 3)) / 3 for k in range(1, 4)]
+    λ = [(I1 + 2 * ufl.sqrt(dp) * ufl.cos((phi3 + 2 * ufl.pi * k) / 3)) /
+         3 for k in range(1, 4)]
     #
     # --- determine eigenprojectors E0, E1, E2
     #
@@ -167,9 +181,11 @@ def eigenstate2(A):
     Note: Tensor A must not have complex eigenvalues!
     """
     if ufl.shape(A) != (2, 2):
-        raise RuntimeError(f"Tensor A of shape {ufl.shape(A)} != (2, 2) is not supported!")
+        raise RuntimeError(f"Tensor A of shape {
+                           ufl.shape(A)} != (2, 2) is not supported!")
     #
-    eps = 3.0e-16  # slightly above 2**-(53 - 1), see https://en.wikipedia.org/wiki/IEEE_754
+    # slightly above 2**-(53 - 1), see https://en.wikipedia.org/wiki/IEEE_754
+    eps = 3.0e-16
     #
     A = ufl.variable(A)
     #
@@ -203,7 +219,8 @@ def eigenstate(A):
     elif ufl.shape(A) == (2, 2):
         return eigenstate2(A)
     else:
-        raise RuntimeError(f"Tensor A of shape {ufl.shape(A)} is not supported!")
+        raise RuntimeError(f"Tensor A of shape {
+                           ufl.shape(A)} is not supported!")
 
 
 def matrix_function(A, fn=lambda A: A):

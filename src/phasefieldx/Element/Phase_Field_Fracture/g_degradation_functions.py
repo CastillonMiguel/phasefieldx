@@ -46,7 +46,8 @@ def borden_degradation_function(phi):
         float: The degradation function value.
     """
     s = 1.0
-    return (3.0 - s) * (1.0 - phi) * (1.0 - phi) - (2.0 - s) * (1.0 - phi) * (1.0 - phi) * (1.0 - phi)
+    return (3.0 - s) * (1.0 - phi) * (1.0 - phi) - \
+        (2.0 - s) * (1.0 - phi) * (1.0 - phi) * (1.0 - phi)
 
 
 def borden_degradation_derivative(phi):
@@ -89,7 +90,8 @@ def alessi_degradation_derivative(phi):
         float: The derivative value.
     """
     k = 100.0
-    return (2.0 * k * (phi - 1.0) * (k * (phi - 1.0) * phi - 1.0)) / ((k * phi - 1.0) ** 2.0)
+    return (2.0 * k * (phi - 1.0) * (k * (phi - 1.0) * phi - 1.0)) / \
+        ((k * phi - 1.0) ** 2.0)
 
 
 def sargado_degradation_function(phi):
@@ -118,7 +120,8 @@ def sargado_degradation_derivative(phi):
         float: The derivative value.
     """
     k = 100.0
-    return -2.0 * k * (phi - 1.0) * k * (k * (phi - 2.0) * phi - 1.0) / ((k * phi - 1.0) ** 2.0 * exp(k * k))
+    return -2.0 * k * (phi - 1.0) * k * (k * (phi - 2.0) *
+                                         phi - 1.0) / ((k * phi - 1.0) ** 2.0 * exp(k * k))
 
 
 def g(phi, degradation_type):
@@ -141,9 +144,12 @@ def g(phi, degradation_type):
     elif degradation_type == "sargado":
         return sargado_degradation_function(phi)
     else:
-        raise ValueError("Invalid degradation_type. Please choose from 'quadratic', 'borden', 'alessi', or 'sargado'.")
+        raise ValueError(
+            "Invalid degradation_type. Please choose from 'quadratic', 'borden', 'alessi', or 'sargado'.")
 
 # General degradation function derivative selector
+
+
 def dg(phi, degradation_type):
     """
     Evaluate the derivative of the degradation function for a given phi and degradation type.
@@ -164,4 +170,5 @@ def dg(phi, degradation_type):
     elif degradation_type == "sargado":
         return sargado_degradation_derivative(phi)
     else:
-        raise ValueError("Invalid degradation_derivative_type. Please choose from 'quadratic', 'borden', 'alessi', or 'sargado'.")
+        raise ValueError(
+            "Invalid degradation_derivative_type. Please choose from 'quadratic', 'borden', 'alessi', or 'sargado'.")

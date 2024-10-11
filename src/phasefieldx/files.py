@@ -310,7 +310,8 @@ def delete_folders_with_contents(folder_path, folder_names):
     try:
         for folder_name in folder_names:
             target_folder_path = os.path.join(folder_path, folder_name)
-            if os.path.exists(target_folder_path) and os.path.isdir(target_folder_path):
+            if os.path.exists(target_folder_path) and os.path.isdir(
+                    target_folder_path):
                 shutil.rmtree(target_folder_path)
                 print(f"Deleted folder and its contents: {target_folder_path}")
         print("All specified folders and their contents deleted successfully.")

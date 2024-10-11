@@ -8,9 +8,10 @@ analysis or visualization.
 
 """
 
-import os 
+import os
 import numpy as np
 import pyvista as pv
+
 
 class ParaviewResult:
     """
@@ -22,7 +23,7 @@ class ParaviewResult:
         Path to the folder containing the Paraview solution files.
     steps : list of int
         List of time steps to load the corresponding solution files.
-    
+
     Attributes
     ----------
     folder_path : str
@@ -39,7 +40,8 @@ class ParaviewResult:
 
     def __init__(self, folder_path, steps):
         self.folder_path = folder_path
-        self.paraview_folder = os.path.join(self.folder_path, 'paraview-solutions_vtu')
+        self.paraview_folder = os.path.join(
+            self.folder_path, 'paraview-solutions_vtu')
         self.steps = steps
         self.data = np.array([])
         self.file = np.array([])
@@ -51,9 +53,10 @@ class ParaviewResult:
                 aux = '000'
             elif 100 <= self.steps[k] < 1000:
                 aux = '00'
-            tN = os.path.join('fenicsx_p0_', str(aux), str(self.steps[k]), '.vtu')
+            tN = os.path.join('fenicsx_p0_', str(
+                aux), str(self.steps[k]), '.vtu')
             pN = pv.read(tN)
-            #pN = pv.read(os.path.join(self.paraview_folder, tN))
+            # pN = pv.read(os.path.join(self.paraview_folder, tN))
 
             self.file = np.append(self.file, [tN])
             self.data = np.append(self.data, [pN])

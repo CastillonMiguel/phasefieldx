@@ -4,6 +4,7 @@ Input: Allen-Cahn
 
 """
 
+
 class Input:
     """
     Class for managing phase-field simulation parameters.
@@ -32,7 +33,7 @@ class Input:
         """
         Initialize the SimulationPhaseFieldFracture class with default parameters.
         """
-        self.l= l
+        self.l = l
 
         self.save_solution_xdmf = save_solution_xdmf
         self.save_solution_vtu = save_solution_vtu
