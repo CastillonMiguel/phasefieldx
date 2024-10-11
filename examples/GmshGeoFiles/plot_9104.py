@@ -15,8 +15,8 @@
 ###############################################################################
 # Mesh Visualization
 # ------------------
-# The purpose of this code is to visualize the mesh. The mesh is generated from 
-# the .geo file and saved as output_mesh_for_view.vtu. It is then loaded and 
+# The purpose of this code is to visualize the mesh. The mesh is generated from
+# the .geo file and saved as output_mesh_for_view.vtu. It is then loaded and
 # visualized using PyVista.
 
 import os

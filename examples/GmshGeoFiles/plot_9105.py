@@ -8,16 +8,16 @@ This script generates a structured mesh for a rectangular geometry using the Gms
 
 .. code-block::
 
-   #            
-   #            *-----------------*  /\. 
-   #            |                 |  |   
-   #            |        *(0,0)   |  Ly      
-   #            |                 |  |         
-   #            *-----------------*  \/.
+   #
+   #            *-----------------*  /\\.
+   #            |                 |  |
+   #            |        *(0,0)   |  Ly
+   #            |                 |  |
+   #            *-----------------*  \\/.
    #     |Y     <--------Lx------>
-   #     |                
-   #     *---X       
-   
+   #     |
+   #     *---X
+
 """
 
 ###############################################################################
@@ -66,10 +66,10 @@ def rectangle_mesh(Lx, Ly, ndiv_x, ndiv_y, output_filename):
     gridsize_y = Ly / int(ndiv_y)
 
     # Geometry
-    p1 = gmsh.model.geo.addPoint(-Lx/2, -Ly/2, 0, min(gridsize_x, gridsize_y))
-    p2 = gmsh.model.geo.addPoint( Lx/2, -Ly/2, 0, min(gridsize_x, gridsize_y))
-    p3 = gmsh.model.geo.addPoint( Lx/2,  Ly/2, 0, min(gridsize_x, gridsize_y))
-    p4 = gmsh.model.geo.addPoint(-Lx/2,  Ly/2, 0, min(gridsize_x, gridsize_y))
+    p1 = gmsh.model.geo.addPoint(-Lx / 2, -Ly / 2, 0, min(gridsize_x, gridsize_y))
+    p2 = gmsh.model.geo.addPoint(Lx / 2, -Ly / 2, 0, min(gridsize_x, gridsize_y))
+    p3 = gmsh.model.geo.addPoint(Lx / 2, Ly / 2, 0, min(gridsize_x, gridsize_y))
+    p4 = gmsh.model.geo.addPoint(-Lx / 2, Ly / 2, 0, min(gridsize_x, gridsize_y))
 
     l1 = gmsh.model.geo.addLine(p1, p2)  # bottom line
     l2 = gmsh.model.geo.addLine(p2, p3)  # right line
@@ -107,7 +107,7 @@ Lx = 10.0
 Ly = 5.0
 ndiv_x = 10
 ndiv_y = 5
-rectangle_mesh(Lx, Ly, ndiv_x, ndiv_y,  vtk_file)
+rectangle_mesh(Lx, Ly, ndiv_x, ndiv_y, vtk_file)
 
 print(f"Mesh successfully written to {vtk_file}")
 

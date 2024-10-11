@@ -12,21 +12,21 @@ A cyclic tensile test is conducted. A symmetric cyclic load is applied with a di
 
 .. code-block::
 
-   #           u/\/\/\/\/\/\       
-   #            ||||||||||||  
-   #            *----------*  
-   #            |          | 
+   #           u/\/\/\/\/\/\
+   #            ||||||||||||
+   #            *----------*
+   #            |          |
    #            | a=0.5    |
    #            |---       |
    #            |          |
-   #            |          | 
+   #            |          |
    #            *----------*
-   #            /_\/_\/_\/_\       
+   #            /_\/_\/_\/_\
    #     |Y    /////////////
-   #     |                
-   #      ---X           
-   #  Z /  
-   
+   #     |
+   #      ---X
+   #  Z /
+
 
 
 +----------+---------+--------+
@@ -57,7 +57,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pyvista as pv
 import dolfinx
-import mpi4py 
+import mpi4py
 import petsc4py
 import os
 
@@ -75,8 +75,8 @@ from phasefieldx.PostProcessing.ReferenceResult import AllResults
 # Parameters Definition
 # ---------------------
 # Here, we define the class containing the input parameters. The material parameters are:
-# Young's modulus $E = 210$, $\text{kN/mm}^2$, Poisson's ratio $\nu = 0.3$, 
-# critical energy release rate $G_c = 0.0005$, $\text{kN/mm}^2$, and length scale parameter $l = 0.004$, $\text{mm}$. Relative to fatigue parameters, an asymptotic fatigue degradation function is considered, with $\alpha_n=0.05625 kN/mm$ 
+# Young's modulus $E = 210$, $\text{kN/mm}^2$, Poisson's ratio $\nu = 0.3$,
+# critical energy release rate $G_c = 0.0005$, $\text{kN/mm}^2$, and length scale parameter $l = 0.004$, $\text{mm}$. Relative to fatigue parameters, an asymptotic fatigue degradation function is considered, with $\alpha_n=0.05625 kN/mm$
 # We consider isotropic degradation and irreversibility as proposed by Miehe.
 Data = Input(E=210.0,    # young modulus
              nu=0.3,     # poisson
@@ -111,9 +111,9 @@ msh, cell_markers, facet_markers = dolfinx.io.gmshio.read_from_msh(msh_file, mes
 fdim = msh.topology.dim - 1
 
 bottom_facet_marker = facet_markers.find(9)
-top_facet_marker    = facet_markers.find(10)
-right_facet_marker  = facet_markers.find(11)
-left_facet_marker   = facet_markers.find(12)
+top_facet_marker = facet_markers.find(10)
+right_facet_marker = facet_markers.find(11)
+left_facet_marker = facet_markers.find(12)
 
 ds_bottom = get_ds_bound_from_marker(bottom_facet_marker, msh, fdim)
 ds_top = get_ds_bound_from_marker(top_facet_marker, msh, fdim)
@@ -122,7 +122,7 @@ ds_left = get_ds_bound_from_marker(left_facet_marker, msh, fdim)
 
 ds_list = np.array([
                    [ds_bottom, "bottom"],
-                   [ds_top,    "top"]
+                   [ds_top, "top"]
                    ])
 
 
@@ -139,25 +139,27 @@ V_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1))
 # -------------------
 # Apply boundary conditions: bottom nodes fixed in both directions, top nodes can slide vertically.
 bc_bottom = bc_xy(bottom_facet_marker, V_u, fdim)
-bc_top    = bc_y(top_facet_marker, V_u, fdim)
+bc_top = bc_y(top_facet_marker, V_u, fdim)
 bcs_list_u = [bc_top, bc_bottom]
 
 amplitude = 0.002
-f = 1/8
-w= 2*np.pi*f
+f = 1 / 8
+w = 2 * np.pi * f
+
 
 def update_boundary_conditions(bcs, time):
-    val =2/np.pi * amplitude  * np.arcsin(np.sin(w * time))
+    val = 2 / np.pi * amplitude * np.arcsin(np.sin(w * time))
     bcs[0].g.value[...] = petsc4py.PETSc.ScalarType(val)
     return 0, val, 0
 
-T_list_u = None 
+
+T_list_u = None
 update_loading = None
 
 
 ###############################################################################
 # Boundary Conditions four phase field
-bcs_list_phi=[]
+bcs_list_phi = []
 
 
 ###############################################################################
@@ -167,20 +169,20 @@ bcs_list_phi=[]
 # and the given parameters to compute the solution.
 
 dt = 1.0
-final_time = 8*200+1
+final_time = 8 * 200 + 1
 
 # Uncomment the following lines to run the solver with the specified parameters
 # solve(Data,
-#       msh, 
+#       msh,
 #       final_time,
 #       V_u,
 #       V_phi,
 #       bcs_list_u,
 #       bcs_list_phi,
 #       update_boundary_conditions,
-#       f, 
+#       f,
 #       T_list_u,
-#       update_loading, 
+#       update_loading,
 #       ds_list,
 #       dt,
 #       path=None)
@@ -198,14 +200,14 @@ S = AllResults(Data.results_folder_name)
 S.set_label('Simulation')
 S.set_color('b')
 
-cycles = S.dof_files["top.dof"]["#step"]*f
+cycles = S.dof_files["top.dof"]["#step"] * f
 displacement = S.dof_files["top.dof"]["Uy"]
 
 
 ###############################################################################
 # Plot: phase-field $\phi$
 # ------------------------
-# The phase-field result saved in the .vtu file is shown. 
+# The phase-field result saved in the .vtu file is shown.
 # For this, the file is loaded using PyVista.
 file_vtu = pv.read(os.path.join(Data.results_folder_name, "paraview-solutions_vtu", "phasefieldx_p0_001600.vtu"))
 pv.start_xvfb()
@@ -215,7 +217,7 @@ file_vtu.plot(scalars='phi', cpos='xy', show_scalar_bar=True, show_edges=False)
 ###############################################################################
 # Plot: displacement $\boldsymbol u$
 # ----------------------------------
-# The displacements results saved in the .vtu file are shown. 
+# The displacements results saved in the .vtu file are shown.
 # For this, the file is loaded using PyVista.
 file_vtu = pv.read(os.path.join(Data.results_folder_name, "paraview-solutions_vtu", "phasefieldx_p0_001600.vtu"))
 file_vtu.plot(scalars='u', cpos='xy', show_scalar_bar=True, show_edges=False)
@@ -224,40 +226,40 @@ file_vtu.plot(scalars='u', cpos='xy', show_scalar_bar=True, show_edges=False)
 ###############################################################################
 # Plot: Cycles vs Displacement
 # ----------------------------
-fig, ax = plt.subplots() 
-ax.plot(cycles[0:2*8+1], S.dof_files["top.dof"]["Uy"][0:2*8+1], '-')
+fig, ax = plt.subplots()
+ax.plot(cycles[0:2 * 8 + 1], S.dof_files["top.dof"]["Uy"][0:2 * 8 + 1], '-')
 ax.grid(color='k', linestyle='-', linewidth=0.3)
-ax.set_xlabel('cycles' )   
-ax.set_ylabel('displacement')    
-ax.set_title('Steps')   
-ax.legend() 
+ax.set_xlabel('cycles')
+ax.set_ylabel('displacement')
+ax.set_title('Steps')
+ax.legend()
 
 
 ###############################################################################
 # Plot: Cycles vs normalized $bar{\alpha}$ (for 3 cycles)
 # -------------------------------------------------------
-fig, ax_alpha = plt.subplots() 
+fig, ax_alpha = plt.subplots()
 
-aux2 = max(S.energy_files["total.energy"]["alpha_acum"][:3*8]) 
-ax_alpha.plot(cycles[:3*8], S.energy_files["total.energy"]["alpha_acum"][:3*8]/aux2, 'r-', linewidth=2.0, label=r'$\bar{\alpha}$')
+aux2 = max(S.energy_files["total.energy"]["alpha_acum"][:3 * 8])
+ax_alpha.plot(cycles[:3 * 8], S.energy_files["total.energy"]["alpha_acum"][:3 * 8] / aux2, 'r-', linewidth=2.0, label=r'$\bar{\alpha}$')
 ax_alpha.grid(color='k', linestyle='-', linewidth=0.3)
-ax_alpha.set_xlabel('cycles')  
-ax_alpha.set_ylabel(r'$\bar{\alpha}$')    
-ax_alpha.set_title(r'alpha bar vs number of cycles')   
+ax_alpha.set_xlabel('cycles')
+ax_alpha.set_ylabel(r'$\bar{\alpha}$')
+ax_alpha.set_title(r'alpha bar vs number of cycles')
 ax_alpha.legend()
 
 
 ###############################################################################
 # Plot: Cycles vs normalized crack length
 # ---------------------------------------
-fig, ax_r = plt.subplots() 
+fig, ax_r = plt.subplots()
 
-ax_r.plot(cycles, S.energy_files["total.energy"]["gamma"]/max(S.energy_files["total.energy"]["gamma"])*0.5, 'r-', linewidth=2.0, label='gamma')
+ax_r.plot(cycles, S.energy_files["total.energy"]["gamma"] / max(S.energy_files["total.energy"]["gamma"]) * 0.5, 'r-', linewidth=2.0, label='gamma')
 
 ax_r.grid(color='k', linestyle='-', linewidth=0.3)
-ax_r.set_xlabel('cycles' )  
-ax_r.set_ylabel('crack')    
-ax_r.set_title('crack')   
+ax_r.set_xlabel('cycles')
+ax_r.set_ylabel('crack')
+ax_r.set_title('crack')
 ax_r.legend()
 
 plt.show()

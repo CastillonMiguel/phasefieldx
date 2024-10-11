@@ -11,20 +11,20 @@ The model consists of a square plate with a notch located halfway up, extending 
 .. code-block::
 
    #            u
-   #            =>=>=>=>=>=>       
-   #            *----------*  
-   #            |          | 
+   #            =>=>=>=>=>=>
+   #            *----------*
+   #            |          |
    #            | a=0.5    |
    #            |---       |
    #            |          |
-   #            |          | 
+   #            |          |
    #            *----------*
    #            /_\/_\/_\/_\       
    #     |Y    /////////////
-   #     |                
-   #      ---X           
-   #  Z /  
-   
+   #     |
+   #      ---X
+   #  Z /
+
 
 +----+---------+--------+
 |    | VALUE   | UNITS  |
@@ -49,7 +49,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pyvista as pv
 import dolfinx
-import mpi4py 
+import mpi4py
 import petsc4py
 import os
 
@@ -67,8 +67,8 @@ from phasefieldx.PostProcessing.ReferenceResult import AllResults
 # Parameters Definition
 # ---------------------
 # Here, we define the class containing the input parameters. The material parameters are:
-# Young's modulus $E = 210$, $\text{kN/mm}^2$, Poisson's ratio $\nu = 0.3$, 
-# critical energy release rate $G_c = 0.0027$, $\text{kN/mm}^2$, and length scale parameter $l = 0.015$, $\text{mm}$. 
+# Young's modulus $E = 210$, $\text{kN/mm}^2$, Poisson's ratio $\nu = 0.3$,
+# critical energy release rate $G_c = 0.0027$, $\text{kN/mm}^2$, and length scale parameter $l = 0.015$, $\text{mm}$.
 # We consider anisotropic degradation (spectral) and irreversibility as proposed by Miehe.
 Data = Input(E=210.0,    # young modulus
              nu=0.3,     # poisson
@@ -102,9 +102,9 @@ msh, cell_markers, facet_markers = dolfinx.io.gmshio.read_from_msh(msh_file, mes
 fdim = msh.topology.dim - 1
 
 bottom_facet_marker = facet_markers.find(9)
-top_facet_marker    = facet_markers.find(10)
-right_facet_marker  = facet_markers.find(11)
-left_facet_marker   = facet_markers.find(12)
+top_facet_marker = facet_markers.find(10)
+right_facet_marker = facet_markers.find(11)
+left_facet_marker = facet_markers.find(12)
 
 ds_bottom = get_ds_bound_from_marker(bottom_facet_marker, msh, fdim)
 ds_top = get_ds_bound_from_marker(top_facet_marker, msh, fdim)
@@ -113,14 +113,14 @@ ds_left = get_ds_bound_from_marker(left_facet_marker, msh, fdim)
 
 ds_list = np.array([
                    [ds_bottom, "bottom"],
-                   [ds_top,    "top"],
-                   [ds_right,   "right"],
-                   [ds_left,    "left"]
+                   [ds_top, "top"],
+                   [ds_right, "right"],
+                   [ds_left, "left"]
                    ])
 
 
 ###############################################################################
-# Function Space definition 
+# Function Space definition
 V_u = dolfinx.fem.functionspace(msh, ("Lagrange", 1, (msh.geometry.dim, )))
 V_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1))
 
@@ -130,19 +130,21 @@ V_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1))
 # -------------------
 # Boundary conditions applied: Bottom nodes fixed in both directions, while top nodes are allowed to slide horizontally.
 bc_bottom = bc_xy(bottom_facet_marker, V_u, fdim)
-bc_top    = bc_xy(top_facet_marker, V_u, fdim)
-bc_left   = bc_y(left_facet_marker, V_u, fdim)
-bc_right  = bc_y(right_facet_marker, V_u, fdim)
+bc_top = bc_xy(top_facet_marker, V_u, fdim)
+bc_left = bc_y(left_facet_marker, V_u, fdim)
+bc_right = bc_y(right_facet_marker, V_u, fdim)
 
 bcs_list_u = [bc_top, bc_bottom, bc_left, bc_right]
 
+
 def update_boundary_conditions(bcs, time):
     dt0 = 10**-4
-    val = time*dt0 
+    val = time * dt0
     bcs_list_u[0].g.value[0] = petsc4py.PETSc.ScalarType(val)
     return val, 0, 0
 
-T_list_u = None 
+
+T_list_u = None
 update_loading = None
 f = None
 T = dolfinx.fem.Constant(msh, petsc4py.PETSc.ScalarType((0.0, 0.0)))
@@ -150,7 +152,7 @@ f = dolfinx.fem.Constant(msh, petsc4py.PETSc.ScalarType((0.0, 0.0)))
 
 ###############################################################################
 # Boundary Conditions four phase field
-bcs_list_phi=[]
+bcs_list_phi = []
 
 
 ###############################################################################
@@ -164,20 +166,20 @@ final_time = 150.0
 
 # Uncomment the following lines to run the solver with the specified parameters
 # solve(Data,
-#       msh, 
+#       msh,
 #       final_time,
 #       V_u,
 #       V_phi,
 #       bcs_list_u,
 #       bcs_list_phi,
 #       update_boundary_conditions,
-#       f, 
+#       f,
 #       T_list_u,
-#       update_loading, 
+#       update_loading,
 #       ds_list,
 #       dt,
 #       path=None)
-    
+
 
 ###############################################################################
 # Load results

@@ -5,35 +5,35 @@ Crack surface density functional
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In the following example, we consider the boundary value problem of the phase-field model, which represents the crack surface density functional, thus providing a continuous approximation of the discontinuous crack  (:ref:`theory_phase_field`). Due to the symmetry of the problem, only the left half of the bar is considered. Therefore, a boundary condition is applied at the left end of this half bar, as illustrated in the following diagrams.
-For a one-dimensional simulation, the boundary condition $\phi=1$ is set at the point located on the left end.
+For a one-dimensional simulation, the boundary condition $\\phi=1$ is set at the point located on the left end.
 
 .. code-block::
-                  
-   #                             
-   #        
-   #         x=0 
+
+   #
+   #
+   #         x=0
    #  phi= 1 *------------------------*
    #
    #         |<---------- lx --------->|
-   #     |Y 
-   #     |             
+   #     |Y
+   #     |
    #     *---X
-   
 
-If two or three dimensions are considered, the boundary condition $\phi=1$ is applied to the left surface.
+
+If two or three dimensions are considered, the boundary condition $\\phi=1$ is applied to the left surface.
 
 .. code-block::
-                  
-   #         x=0                     
+
+   #         x=0
    #         *------------------------*
    #  phi= 1 |                        |
    #         *------------------------*
    #
    #         |<---------- a --------->|
-   #     |Y 
-   #     |             
+   #     |Y
+   #     |
    #     *---X
-  
+
 Three dimensions:
 
 .. code-block::
@@ -45,8 +45,8 @@ Three dimensions:
    #         *------------------------*
    #
    #         |<---------- a --------->|
-   #     |Y 
-   #     |             
+   #     |Y
+   #     |
    #     *---X
    #   Z/
 
@@ -59,7 +59,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pyvista as pv
 import dolfinx
-import mpi4py 
+import mpi4py
 import os
 
 
@@ -75,7 +75,7 @@ from phasefieldx.PostProcessing.ReferenceResult import AllResults
 ###############################################################################
 # Parameters definition
 # ---------------------
-# A length scale parameter of  $l = 4$  is defined. The phase field is saved in a VTU file. 
+# A length scale parameter of  $l = 4$  is defined. The phase field is saved in a VTU file.
 # All the results are stored in a folder named results_folder_name = name.
 Data = Input(l=4.0,
              save_solution_xdmf=False,
@@ -91,28 +91,28 @@ lx, ly, lz = 5.0, 1.0, 1.0
 
 
 ###############################################################################
-# A two-dimensional simulation is considered 
-# (it is also possible to select ‘1D’ and ‘3D’ simulations) 
+# A two-dimensional simulation is considered
+# (it is also possible to select ‘1D’ and ‘3D’ simulations)
 dimension = "2d"
 
-if dimension=="1d":
+if dimension == "1d":
     msh = dolfinx.mesh.create_interval(mpi4py.MPI.COMM_WORLD,
                                        divx,
-                                       np.array([0.0,  lx]))
-  
-elif dimension=="2d":
+                                       np.array([0.0, lx]))
+
+elif dimension == "2d":
     msh = dolfinx.mesh.create_rectangle(mpi4py.MPI.COMM_WORLD,
                                         [np.array([0.0, 0.0]),
-                                        np.array([lx, ly])],
+                                         np.array([lx, ly])],
                                         [divx, divy],
                                         cell_type=dolfinx.mesh.CellType.quadrilateral)
-      
-elif dimension=="3d":
-    msh = dolfinx.mesh.create_box(mpi4py.MPI.COMM_WORLD, 
-                            [np.array([0.0, 0.0, 0.0]),
-                            np.array([lx, ly, lz])],
-                            [divx, divy, divz], 
-                            cell_type=dolfinx.mesh.CellType.hexahedron)
+
+elif dimension == "3d":
+    msh = dolfinx.mesh.create_box(mpi4py.MPI.COMM_WORLD,
+                                  [np.array([0.0, 0.0, 0.0]),
+                                   np.array([lx, ly, lz])],
+                                  [divx, divy, divz],
+                                  cell_type=dolfinx.mesh.CellType.hexahedron)
 
 
 ###############################################################################
@@ -120,10 +120,11 @@ elif dimension=="3d":
 def left(x):
     return np.equal(x[0], 0)
 
+
 fdim = msh.topology.dim - 1
 
-left_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, left) 
-ds_left = get_ds_bound_from_marker(left_facet_marker, msh , fdim)
+left_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, left)
+ds_left = get_ds_bound_from_marker(left_facet_marker, msh, fdim)
 ds_list = np.array([
                    [ds_left, "left"],
                    ])
@@ -132,7 +133,7 @@ ds_list = np.array([
 ###############################################################################
 # Function Space Definition
 # -------------------------
-# Define function spaces for the phase-field using Lagrange elements of 
+# Define function spaces for the phase-field using Lagrange elements of
 # degree 1.
 V_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1))
 
@@ -156,17 +157,17 @@ update_loading = None
 final_time = 1.0
 dt = 1.0
 
-solve(Data, 
-      msh, 
-      final_time, 
-      V_phi, 
+solve(Data,
+      msh,
+      final_time,
+      V_phi,
       bcs_list_phi,
-      update_boundary_conditions,  
+      update_boundary_conditions,
       update_loading,
       ds_list,
       dt,
-      path = None,
-      quadrature_degree = 2)
+      path=None,
+      quadrature_degree=2)
 
 
 ###############################################################################
@@ -185,7 +186,7 @@ S.set_color('b')
 ###############################################################################
 # Plot: phase-field $\phi$
 # ------------------------
-# The phase-field result saved in the .vtu file is shown. 
+# The phase-field result saved in the .vtu file is shown.
 # For this, the file is loaded using PyVista.
 pv.start_xvfb()
 file_vtu = pv.read(os.path.join(Data.results_folder_name, "paraview-solutions_vtu", "phasefieldx_p0_000000.vtu"))
@@ -195,20 +196,20 @@ file_vtu.plot(scalars='phi', cpos='xy', show_scalar_bar=True, show_edges=False)
 ###############################################################################
 # Plot: Phase-field along the x-axis
 # ----------------------------------
-# The phase-field value along the x-axis is plotted and compared with the 
+# The phase-field value along the x-axis is plotted and compared with the
 # analytic solution. The analytic solution is given by:
 # $\phi(x) = e^{-|x|/l} + \frac{1}{e^{\frac{2a}{l}}+1} 2 \sinh \left( \frac{|x|}{l} \right)$
-# Note: in this case a = lx 
+# Note: in this case a = lx
 xt = np.linspace(-lx, lx, 1000)
-phi_theory = np.exp(-abs(xt)/Data.l) + 1/(np.exp(2*lx/Data.l)+1) * 2* np.sinh(np.abs(xt)/Data.l)
+phi_theory = np.exp(-abs(xt) / Data.l) + 1 / (np.exp(2 * lx / Data.l) + 1) * 2 * np.sinh(np.abs(xt) / Data.l)
 
-fig, ax_phi = plt.subplots() 
+fig, ax_phi = plt.subplots()
 
 ax_phi.plot(xt, phi_theory, 'k-', label='Theory')
-ax_phi.plot(file_vtu.points[:,0],  file_vtu['phi'],'r.', label=S.label)
+ax_phi.plot(file_vtu.points[:, 0], file_vtu['phi'], 'r.', label=S.label)
 
-ax_phi.grid(color='k', linestyle='-', linewidth=0.3)  
-ax_phi.set_ylabel('$\phi(x)$')
+ax_phi.grid(color='k', linestyle='-', linewidth=0.3)
+ax_phi.set_ylabel('$\\phi(x)$')
 ax_phi.set_xlabel('x')
 ax_phi.legend()
 
@@ -218,31 +219,31 @@ ax_phi.legend()
 # -------------------
 # The energy values are compared with the analytic ones.
 l_array = np.linspace(0.1, lx, 100)
-a_div_l = lx/l_array
+a_div_l = lx / l_array
 tanh_a_div_l = np.tanh(a_div_l)
-W_phi= 0.5*tanh_a_div_l + 0.5*a_div_l*(1.0-tanh_a_div_l**2)
-W_gradphi = 0.5*tanh_a_div_l - 0.5*a_div_l*(1.0-tanh_a_div_l**2)
+W_phi = 0.5 * tanh_a_div_l + 0.5 * a_div_l * (1.0 - tanh_a_div_l**2)
+W_gradphi = 0.5 * tanh_a_div_l - 0.5 * a_div_l * (1.0 - tanh_a_div_l**2)
 W = np.tanh(a_div_l)
 
 
 ###############################################################################
-# The next graph shows the theoretical energy versus the length scale parameter, 
-# as well as those corresponding to the length scale parameter used in the 
+# The next graph shows the theoretical energy versus the length scale parameter,
+# as well as those corresponding to the length scale parameter used in the
 # simulation. It is noted that the solution coincides with the theoretical one.
-fig, energy = plt.subplots() 
+fig, energy = plt.subplots()
 
-plt.rc('text', usetex=True) # Enable LaTeX rendering
-energy.plot(l_array, W_phi, 'r-', label = r'$W_{\phi}$')
-energy.plot(l_array, W_gradphi , 'b-', label = r'$W_{\nabla \phi}$')
-energy.plot(l_array, W,'k-', label = r'$W$')
+plt.rc('text', usetex=True)  # Enable LaTeX rendering
+energy.plot(l_array, W_phi, 'r-', label=r'$W_{\phi}$')
+energy.plot(l_array, W_gradphi, 'b-', label=r'$W_{\nabla \phi}$')
+energy.plot(l_array, W, 'k-', label=r'$W$')
 
-energy.plot(Data.l, 2*S.energy_files['total.energy']["gamma_phi"][0], 'k*', label=S.label)
-energy.plot(Data.l, 2*S.energy_files['total.energy']["gamma_gradphi"][0], 'k*')
-energy.plot(Data.l, 2*S.energy_files['total.energy']["gamma"][0], 'k*')
+energy.plot(Data.l, 2 * S.energy_files['total.energy']["gamma_phi"][0], 'k*', label=S.label)
+energy.plot(Data.l, 2 * S.energy_files['total.energy']["gamma_gradphi"][0], 'k*')
+energy.plot(Data.l, 2 * S.energy_files['total.energy']["gamma"][0], 'k*')
 
-energy.set_xlabel('l' )  
-energy.set_ylabel('energy') 
-energy.grid(color='k', linestyle='-', linewidth=0.3)  
-energy.legend() 
+energy.set_xlabel('l')
+energy.set_ylabel('energy')
+energy.grid(color='k', linestyle='-', linewidth=0.3)
+energy.legend()
 
 plt.show()

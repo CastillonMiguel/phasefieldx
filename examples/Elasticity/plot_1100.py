@@ -13,13 +13,13 @@ Displacement control
    #            |          |
    #            |          |
    #            |          |
-   #            |          | 
+   #            |          |
    #            *----------*
    #            /_\/_\/_\/_\       
    #     |Y    /////////////
-   #     |                
-   #      ---X           
-   #  Z /  
+   #     |
+   #      ---X
+   #  Z /
 
 +----+---------+--------+
 |    | VALUE   | UNITS  |
@@ -38,7 +38,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pyvista as pv
 import dolfinx
-import mpi4py 
+import mpi4py
 import petsc4py
 import os
 
@@ -72,30 +72,33 @@ msh = dolfinx.mesh.create_rectangle(mpi4py.MPI.COMM_WORLD,
                                     [10, 10],
                                     cell_type=dolfinx.mesh.CellType.quadrilateral)
 
+
 def bottom(x):
     return np.isclose(x[1], 0)
+
 
 def top(x):
     return np.isclose(x[1], 1)
 
+
 fdim = msh.topology.dim - 1
 
-bottom_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, bottom) 
-top_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, top)         
+bottom_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, bottom)
+top_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, top)
 
-ds_bottom = get_ds_bound_from_marker(top_facet_marker, msh , fdim)
-ds_top = get_ds_bound_from_marker(top_facet_marker, msh , fdim)
+ds_bottom = get_ds_bound_from_marker(top_facet_marker, msh, fdim)
+ds_top = get_ds_bound_from_marker(top_facet_marker, msh, fdim)
 
 ds_list = np.array([
                    [ds_bottom, "bottom"],
-                   [ds_top,    "top"]
+                   [ds_top, "top"]
                    ])
 
 
 ###############################################################################
 # Function Space Definition
 # -------------------------
-# Define function spaces for the displacement field using Lagrange elements of 
+# Define function spaces for the displacement field using Lagrange elements of
 # degree 1.
 V_u = dolfinx.fem.functionspace(msh, ("Lagrange", 1, (msh.geometry.dim, )))
 
@@ -105,14 +108,15 @@ V_u = dolfinx.fem.functionspace(msh, ("Lagrange", 1, (msh.geometry.dim, )))
 # -------------------
 # Apply boundary conditions: bottom nodes fixed in both directions, top nodes can slide vertically.
 bc_bottom = bc_xy(bottom_facet_marker, V_u, fdim)
-bc_top    = bc_xy(top_facet_marker,    V_u, fdim)
+bc_top = bc_xy(top_facet_marker, V_u, fdim)
 bcs_list_u = [bc_top, bc_bottom]
 
 
 def update_boundary_conditions(bcs, time):
-    val = 0.0003*time 
+    val = 0.0003 * time
     bcs[0].g.value[1] = petsc4py.PETSc.ScalarType(val)
     return 0, val, 0
+
 
 T_list_u = None
 update_loading = None
@@ -128,15 +132,15 @@ f = None
 final_time = 10.0
 dt = 1.0
 
-solve(Data, 
-      msh, 
-      final_time, 
+solve(Data,
+      msh,
+      final_time,
       V_u,
       bcs_list_u,
-      update_boundary_conditions, 
-      f, 
-      T_list_u, 
-      update_loading, 
+      update_boundary_conditions,
+      f,
+      T_list_u,
+      update_loading,
       ds_list,
       dt)
 
@@ -157,7 +161,7 @@ S.set_color('b')
 ###############################################################################
 # Plot: displacement $\boldsymbol u$
 # ----------------------------------
-# The displacement result saved in the .vtu file is shown. 
+# The displacement result saved in the .vtu file is shown.
 # For this, the file is loaded using PyVista.
 pv.start_xvfb()
 file_vtu = pv.read(os.path.join(Data.results_folder_name, "paraview-solutions_vtu", "phasefieldx_p0_000009.vtu"))
@@ -175,13 +179,13 @@ displacement = S.dof_files["top.dof"]["Uy"]
 # Vertical displacement vs. Reaction Force
 # ----------------------------------------
 # Plot the vertical displacement versus the reaction force.
-fig, ax = plt.subplots() 
+fig, ax = plt.subplots()
 
-ax.plot(displacement, S.reaction_files['top.reaction']["Ry"], S.color+'.', linewidth=2.0, label=S.label)
+ax.plot(displacement, S.reaction_files['top.reaction']["Ry"], S.color + '.', linewidth=2.0, label=S.label)
 
 ax.grid(color='k', linestyle='-', linewidth=0.3)
-ax.set_xlabel('displacement - u $[mm]$' )  
-ax.set_ylabel('reaction force - F $[kN]$')    
-ax.legend() 
+ax.set_xlabel('displacement - u $[mm]$')
+ax.set_ylabel('reaction force - F $[kN]$')
+ax.legend()
 
 plt.show()

@@ -4,20 +4,20 @@
 Representation of a Cracked Plate
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In the following example, we consider the boundary value problem of the phase-field model (:ref:`theory_phase_field`). A cracked plate will be represented using the phase field variable, following [Miehe]_, with the boundary condition \phi=1 and different length scale values. Due to the symmetry of the problem, only one half of the plate will be considered. The results will be shown for all the models by applying the reflection of the solution.”
+In the following example, we consider the boundary value problem of the phase-field model (:ref:`theory_phase_field`). A cracked plate will be represented using the phase field variable, following [Miehe]_, with the boundary condition \\phi=1 and different length scale values. Due to the symmetry of the problem, only one half of the plate will be considered. The results will be shown for all the models by applying the reflection of the solution.”
 
 .. code-block::
-   
+
    #
    #        *---------------*  -
    #        |               |  |
    #        |               | 0.5
    #        | phi=1         |  |
    #        *........-------*  -
-   #        |<-0.5->|   
-   #     |Y          
-   #     |                
-   #     *---X          
+   #        |<-0.5->|
+   #     |Y
+   #     |
+   #     *---X
 
 .. [Miehe] A phase field model for rate-independent crack propagation: Robust algorithmic implementation based on operator splits, https://doi.org/10.1016/j.cma.2010.04.011.
 
@@ -30,7 +30,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pyvista as pv
 import dolfinx
-import mpi4py 
+import mpi4py
 import os
 
 
@@ -46,8 +46,8 @@ from phasefieldx.PostProcessing.ReferenceResult import AllResults
 ###############################################################################
 # Parameters definition
 # ---------------------
-# Length scale parameters of $l_{10} = 10$, $l_{05} = 0.5$, and $l_{01} = 0.1$ 
-# are defined. The phase field is saved in a VTU file. All the results are 
+# Length scale parameters of $l_{10} = 10$, $l_{05} = 0.5$, and $l_{01} = 0.1$
+# are defined. The phase field is saved in a VTU file. All the results are
 # stored in a folder named results_folder_name = name.
 Data1 = Input(l=1.0,
               save_solution_xdmf=False,
@@ -58,7 +58,7 @@ Data025 = Input(l=0.25,
                 save_solution_xdmf=False,
                 save_solution_vtu=True,
                 results_folder_name="2001_regularized_crack_surface_l025")
- 
+
 Data005 = Input(l=0.05,
                 save_solution_xdmf=False,
                 save_solution_vtu=True,
@@ -68,28 +68,29 @@ Data005 = Input(l=0.05,
 ###############################################################################
 # Mesh definition
 # ---------------
-divx,divy = 100, 50
+divx, divy = 100, 50
 lx, ly = 1.0, 0.5
 
 
 ###############################################################################
-# A two-dimensional simulation is considered 
+# A two-dimensional simulation is considered
 msh = dolfinx.mesh.create_rectangle(mpi4py.MPI.COMM_WORLD,
                                     [np.array([0, 0]),
                                      np.array([lx, ly])],
                                     [divx, divy],
-                                    cell_type=dolfinx.mesh.CellType.quadrilateral)  
+                                    cell_type=dolfinx.mesh.CellType.quadrilateral)
 
 
 ###############################################################################
 # The bottom part is denoted and shown to impose the boundary conditions
 def bottom(x):
-    return np.logical_and(np.isclose(x[1], 0),  np.less(x[0], 0.5))
+    return np.logical_and(np.isclose(x[1], 0), np.less(x[0], 0.5))
+
 
 fdim = msh.topology.dim - 1
 
-bottom_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, bottom) 
-ds_bottom = get_ds_bound_from_marker(bottom_facet_marker, msh , fdim)
+bottom_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, bottom)
+ds_bottom = get_ds_bound_from_marker(bottom_facet_marker, msh, fdim)
 ds_list = np.array([
                    [ds_bottom, "bottom"],
                    ])
@@ -98,15 +99,15 @@ ds_list = np.array([
 ###############################################################################
 # Function Space Definition
 # -------------------------
-# Define function spaces for the phase-field using Lagrange elements of 
+# Define function spaces for the phase-field using Lagrange elements of
 # degree 1.
 V_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1))
 
-    
+
 ###############################################################################
 # Boundary Condition
 # ------------------
-# The boundary condition of $\phi=1$ is set on the bottom left part 
+# The boundary condition of $\phi=1$ is set on the bottom left part
 # of the mesh.
 bc_bottom = bc_phi(bottom_facet_marker, V_phi, fdim, value=1.0)
 bcs_list_phi = [bc_bottom]
@@ -126,24 +127,24 @@ dt = 1.0
 
 ###############################################################################
 # Simulation for $l=1$
-solve(Data1, 
-      msh, 
-      final_time, 
-      V_phi, 
+solve(Data1,
+      msh,
+      final_time,
+      V_phi,
       bcs_list_phi,
-      update_boundary_conditions,  
+      update_boundary_conditions,
       update_loading,
       ds_list,
       dt,
-      path = None,
-      quadrature_degree = 2)
+      path=None,
+      quadrature_degree=2)
 
 S1 = AllResults(Data1.results_folder_name)
 S1.set_label('$l_1$')
-   
+
 ###############################################################################
 # Plot phase-field $\phi$ for $l=1$
-file_vtu = pv.read(os.path.join(Data1.results_folder_name,"paraview-solutions_vtu","phasefieldx_p0_000000.vtu"))
+file_vtu = pv.read(os.path.join(Data1.results_folder_name, "paraview-solutions_vtu", "phasefieldx_p0_000000.vtu"))
 file_vtu_reflected = file_vtu.reflect((0, 1, 0), point=(0, 0, 0))
 pv.start_xvfb()
 p = pv.Plotter()
@@ -154,17 +155,17 @@ p.show()
 
 ###############################################################################
 # Simulation for $l=0.25$
-solve(Data025, 
-      msh, 
-      final_time, 
-      V_phi, 
+solve(Data025,
+      msh,
+      final_time,
+      V_phi,
       bcs_list_phi,
-      update_boundary_conditions,  
+      update_boundary_conditions,
       update_loading,
       ds_list,
       dt,
-      path = None,
-      quadrature_degree = 2)
+      path=None,
+      quadrature_degree=2)
 
 S025 = AllResults(Data025.results_folder_name)
 S025.set_label('$l_025$')
@@ -172,7 +173,7 @@ S025.set_label('$l_025$')
 
 ###############################################################################
 # Plot phase-field $\phi$ for $l=0.25$
-file_vtu = pv.read(os.path.join(Data025.results_folder_name,"paraview-solutions_vtu","phasefieldx_p0_000000.vtu"))
+file_vtu = pv.read(os.path.join(Data025.results_folder_name, "paraview-solutions_vtu", "phasefieldx_p0_000000.vtu"))
 file_vtu_reflected = file_vtu.reflect((0, 1, 0), point=(0, 0, 0))
 
 p = pv.Plotter()
@@ -184,24 +185,24 @@ p.show()
 
 ###############################################################################
 # Simulation for $l=0.05$
-solve(Data005, 
-      msh, 
-      final_time, 
-      V_phi, 
+solve(Data005,
+      msh,
+      final_time,
+      V_phi,
       bcs_list_phi,
-      update_boundary_conditions,  
+      update_boundary_conditions,
       update_loading,
       ds_list,
       dt,
-      path = None,
-      quadrature_degree = 2)
+      path=None,
+      quadrature_degree=2)
 S005 = AllResults(Data005.results_folder_name)
 S005.set_label('$l_005$')
 
 
 ###############################################################################
 # Plot phase-field $\phi$ for $l=0.05$
-file_vtu = pv.read(os.path.join(Data005.results_folder_name,"paraview-solutions_vtu","phasefieldx_p0_000000.vtu"))
+file_vtu = pv.read(os.path.join(Data005.results_folder_name, "paraview-solutions_vtu", "phasefieldx_p0_000000.vtu"))
 file_vtu_reflected = file_vtu.reflect((0, 1, 0), point=(0, 0, 0))
 
 p = pv.Plotter()

@@ -8,23 +8,23 @@ In this example, we study the free energy potential of the Allen-Cahn equation. 
 
 .. code-block::
 
-   #                       
-   #                                      
-   #         *------------------------* 
-   #  phi=-1 |           * (0,0)      | phi=1
-   #         *------------------------* 
    #
-   #         |<----a----->|<-----a---->|    
-   #     |Y   
-   #     |                
-   #     *---X  
+   #
+   #         *------------------------*
+   #  phi=-1 |           * (0,0)      | phi=1
+   #         *------------------------*
+   #
+   #         |<----a----->|<-----a---->|
+   #     |Y
+   #     |
+   #     *---X
 
 The potential is the following:
 
 .. math::
-    W[\phi] = \int_\Omega \left( \frac{1}{l}f_{chem}(\phi) + \frac{l}{2} |\nabla \phi|^2 \right) dV 
+    W[\phi] = \int_\Omega \left( \frac{1}{l}f_{chem}(\phi) + \frac{l}{2} |\nabla \phi|^2 \right) dV
 
-with 
+with
 
 .. math::
     f_{chem}(\phi) = \frac{1}{4}(1-\phi^2)^2
@@ -57,7 +57,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pyvista as pv
 import dolfinx
-import mpi4py 
+import mpi4py
 import os
 
 
@@ -72,7 +72,7 @@ from phasefieldx.PostProcessing.ReferenceResult import AllResults
 ###############################################################################
 # Parameters definition
 # ---------------------
-# A length scale parameter of $l = 10.0$ is defined. The phase field is saved in a VTU file. 
+# A length scale parameter of $l = 10.0$ is defined. The phase field is saved in a VTU file.
 # All the results are stored in a folder named results_folder_name = name.
 Data = Input(l=10.0,
              save_solution_xdmf=False,
@@ -90,9 +90,9 @@ lx, ly, lz = 100.0, 1.0, 1.0
 
 msh = dolfinx.mesh.create_rectangle(mpi4py.MPI.COMM_WORLD,
                                     [np.array([-a, -0.5]),
-                                     np.array([ a,  0.5])],
+                                     np.array([a, 0.5])],
                                     [divx, divy],
-                                     cell_type=dolfinx.mesh.CellType.quadrilateral)
+                                    cell_type=dolfinx.mesh.CellType.quadrilateral)
 
 
 ###############################################################################
@@ -101,15 +101,17 @@ msh = dolfinx.mesh.create_rectangle(mpi4py.MPI.COMM_WORLD,
 def left(x):
     return np.isclose(x[0], -a)
 
+
 def right(x):
     return np.isclose(x[0], a)
 
+
 fdim = msh.topology.dim - 1
 
-left_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, left) 
-right_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, right)         
-ds_left = get_ds_bound_from_marker(left_facet_marker, msh , fdim)
-ds_right = get_ds_bound_from_marker(right_facet_marker, msh , fdim)
+left_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, left)
+right_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, right)
+ds_left = get_ds_bound_from_marker(left_facet_marker, msh, fdim)
+ds_right = get_ds_bound_from_marker(right_facet_marker, msh, fdim)
 ds_list = np.array([
                    [ds_left, "left"],
                    [ds_right, "right"]
@@ -119,7 +121,7 @@ ds_list = np.array([
 ###############################################################################
 # Function Space Definition
 # -------------------------
-# Define function spaces for the phase-field using Lagrange elements of 
+# Define function spaces for the phase-field using Lagrange elements of
 # degree 1.
 V_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1))
 
@@ -128,8 +130,8 @@ V_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1))
 # Boundary Conditions
 # -------------------
 # Apply boundary conditions:.
-bc_left = bc_phi(left_facet_marker,  V_phi, fdim, value = -1.0)
-bc_right = bc_phi(right_facet_marker, V_phi, fdim, value =  1.0)
+bc_left = bc_phi(left_facet_marker, V_phi, fdim, value=-1.0)
+bc_right = bc_phi(right_facet_marker, V_phi, fdim, value=1.0)
 bcs_list_phi = [bc_left, bc_right]
 update_boundary_conditions = None
 update_loading = None
@@ -143,17 +145,17 @@ update_loading = None
 final_time = 1.0
 dt = 1.0
 
-solve(Data, 
-      msh, 
-      final_time, 
-      V_phi, 
+solve(Data,
+      msh,
+      final_time,
+      V_phi,
       bcs_list_phi,
-      update_boundary_conditions,  
+      update_boundary_conditions,
       update_loading,
       ds_list,
       dt,
-      path = None,
-      quadrature_degree = 2)
+      path=None,
+      quadrature_degree=2)
 
 
 ###############################################################################
@@ -172,7 +174,7 @@ S.set_color('b')
 ###############################################################################
 # Plot: phase-field $\phi$
 # ------------------------
-# The phase-field result saved in the .vtu file is shown. 
+# The phase-field result saved in the .vtu file is shown.
 # For this, the file is loaded using PyVista.
 pv.start_xvfb()
 file_vtu = pv.read(os.path.join(Data.results_folder_name, "paraview-solutions_vtu", "phasefieldx_p0_000000.vtu"))
@@ -187,14 +189,14 @@ file_vtu.plot(scalars='phi', cpos='xy', show_scalar_bar=True, show_edges=False)
 # $\phi(x) = \tanh\left(\frac{x}{\sqrt{2}l}\right)$
 # Note: In this case, a = lx
 xt = np.linspace(-a, a, 200)
-phi_theory = np.tanh(xt/(Data.l*np.sqrt(2)))
+phi_theory = np.tanh(xt / (Data.l * np.sqrt(2)))
 
-fig, ax_phi = plt.subplots() 
+fig, ax_phi = plt.subplots()
 
-ax_phi.plot(xt, phi_theory, 'k-',label='Theory')
-ax_phi.plot(file_vtu.points[:,0], file_vtu['phi'],'r.', label=S.label)
+ax_phi.plot(xt, phi_theory, 'k-', label='Theory')
+ax_phi.plot(file_vtu.points[:, 0], file_vtu['phi'], 'r.', label=S.label)
 
-ax_phi.grid(color='k', linestyle='-', linewidth=0.3)  
+ax_phi.grid(color='k', linestyle='-', linewidth=0.3)
 ax_phi.set_ylabel('phi(x)')
 ax_phi.set_xlabel('x')
 ax_phi.legend()
