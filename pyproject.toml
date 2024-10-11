@@ -5,10 +5,9 @@ build-backend = "hatchling.build"
 [project]
 name = "phasefieldx"
 version = "0.0.3"
-authors = [
-  { name="Miguel Castillon", email="phasefieldx@gmail.com" },
-]
 description = "PhaseFieldX: An Open-Source Framework for Advanced Phase-Field Simulations"
+authors = [{ name="Miguel Castillon", email="phasefieldx@gmail.com" }]
+license = { file = "LICENSE" }
 readme = "README.rst"
 requires-python = ">=3.8"
 classifiers = [
