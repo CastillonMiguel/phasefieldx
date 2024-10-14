@@ -88,18 +88,20 @@ def find_files_with_extension(folder_path: str, extension: str) -> List[str]:
     --------
     >>> folder_path = 'path/to/your/folder'
     >>> extension = '.txt'
-    >>> files_with_extension = find_files_with_extension(folder_path,extension)
+    >>> files_with_extension = find_files_with_extension(folder_path, extension)
     >>> for file_path in files_with_extension:
     ...     print(file_path)
     """
     matching_files = []
-    matching_path_files = []
-    for files in os.walk(folder_path):
+
+    # Use os.walk to iterate through the folder structure
+    for root, _, files in os.walk(folder_path):
         for file in files:
             if file.endswith(extension):
-                matching_files.append(os.path.join(file))
-                matching_path_files.append(os.path.join(folder_path, file))
-    return sorted(matching_path_files)
+                # Construct the full path of the file
+                matching_files.append(os.path.join(root, file))
+
+    return sorted(matching_files)
 
 
 def read_last_line(file_path):
