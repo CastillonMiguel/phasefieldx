@@ -31,6 +31,24 @@ Contribution Workflow
    - When your work is ready, submit a PR and reference the relevant issue, if applicable.
 
 
+Adding Tests
+------------
+
+To ensure the reliability of **PhaseFieldX**, we encourage you to add tests for any new features or bug fixes. Here’s how to do it:
+
+- Create your test files in the appropriate folder, specifically in the ``test/`` folder. If you're unsure about where to place your tests, please open an issue related to it.
+- Use **pytest** to write and run your tests.
+- Each test function should start with ``test_`` to be recognized by pytest.
+- Ensure that your tests cover the expected functionality and edge cases.
+- Run your tests locally using the command:
+
+  .. code-block:: bash
+
+      pytest test/
+
+- Verify that all tests pass before submitting your pull request.
+
+
 Coding Style
 ------------
 
