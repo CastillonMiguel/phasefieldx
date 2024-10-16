@@ -1,0 +1,45 @@
+name: Unit Testing
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04  
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Conda
+      uses: conda-incubator/setup-miniconda@v2  
+      with:
+        python-version: 3.8
+        auto-update-conda: true
+        auto-activate-base: false
+
+    - name: Create conda environment from environment.yml
+      run: |
+        conda env create --file environment.yml  # Create environment from environment.yml
+        conda init zsh
+        source ~/.zshrc
+        conda activate phasefieldx-env  # Replace 'test-env' with your actual environment name
+
+    - name: Install project dependencies (pyproject.toml)
+      run: |
+        conda init zsh
+        source ~/.zshrc
+        conda activate phasefieldx-env
+        pip install .
+
+    - name: Run tests with pytest
+      run: |
+        conda init zsh
+        source ~/.zshrc
+        conda activate phasefieldx-env
+        pytest test/ --disable-warnings
