@@ -17,11 +17,15 @@ Follow these steps to set up your environment:
    
       conda activate phasefieldx-env
 
-3. Install FEniCSx, `mpich`, and `pyvista` from the `conda-forge` channel:
+3. Install FEniCSx, `mpich`, `pyvista`, `pandas`, ... from the `conda-forge` channel:
    
    .. code-block:: sh
    
       conda install -c conda-forge fenics-dolfinx=0.8.0 mpich pyvista pandas
+
+   .. code-block:: sh
+   
+      conda install -c conda-forge matplotlib-base mpi4py petsc4py numpy time
 
 4. Install gmsh
    
