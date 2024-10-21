@@ -21,7 +21,7 @@ Follow these steps to set up your environment:
    
    .. code-block:: sh
    
-      conda install -c conda-forge fenics-dolfinx mpich pyvista pandas
+      conda install -c conda-forge fenics-dolfinx=0.8.0 mpich pyvista pandas
 
 4. Install gmsh
    
