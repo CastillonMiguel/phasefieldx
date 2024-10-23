@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "phasefieldx"
-dynamic = ["version"]
+version = "0.0.5"
 description = "PhaseFieldX: An Open-Source Framework for Advanced Phase-Field Simulations"
 authors = [{ name="Miguel Castillon", email="phasefieldx@gmail.com" }]
 license = { file = "LICENSE" }
@@ -16,9 +16,6 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 keywords = ["phase field", "phase-field", "fracture", "fatigue", "solidification", "allen cahn", "finite element"]
-
-[tool.hatch.version]
-path = "src/phasefieldx/__init__.py"
 
 [project.urls]
 Homepage = "https://github.com/CastillonMiguel/phasefieldx"
