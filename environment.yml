@@ -6,7 +6,6 @@ dependencies:
   - mpi4py
   - numpy
   - pandas
-  - pip
   - pyvista
   - python>=3.8
   - pytest
