@@ -90,7 +90,7 @@ msh = dolfinx.mesh.create_rectangle(mpi4py.MPI.COMM_WORLD,
                                     [divx, divy],
                                     cell_type=dolfinx.mesh.CellType.quadrilateral)
 
-
+###############################################################################
 # Bottom boundary Identification
 # ------------------------------
 # This function identifies points on the bottom side of the domain where the boundary 

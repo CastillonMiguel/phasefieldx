@@ -155,6 +155,7 @@ elif dimension == "3d":
     )
 
 
+###############################################################################
 # Left Boundary Identification
 # ----------------------------
 # This function identifies points on the left side of the domain where the boundary 
@@ -164,10 +165,11 @@ elif dimension == "3d":
 def left(x):
     return np.equal(x[0], 0)
 
-
+#
 # `fdim` represents the dimension of the boundary facets on the mesh, which is one 
 # less than the mesh's overall dimensionality (`msh.topology.dim`). For example, 
 # if the mesh is 2D, `fdim` will be 1, representing 1D boundary edges.
+#
 fdim = msh.topology.dim - 1
 
 # Using the `left` function, we locate the facets on the left side of the mesh 
@@ -245,8 +247,7 @@ update_loading = None
 # - `msh`: Mesh of the domain.
 # - `V_phi`: Function space for `phi`.
 # - `bcs_list_phi`: List of boundary conditions.
-# - `update_boundary_conditions`, `update_loading`: Set to `None` as they are 
-#   unused in this static problem.
+# - `update_boundary_conditions`, `update_loading`: Set to `None` as they are unused in this static problem.
 # - `ds_list`: Boundary measures for integration on specified boundaries.
 # - `dt` and `final_time` to define the static solution time window.
 
