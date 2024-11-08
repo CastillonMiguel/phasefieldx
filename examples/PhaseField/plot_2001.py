@@ -4,7 +4,9 @@
 Representation of a Cracked Plate
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In the following example, we consider the boundary value problem of the phase-field model (:ref:`theory_phase_field`). A cracked plate will be represented using the phase field variable, following [Miehe]_, with the boundary condition \\phi=1 and different length scale values. Due to the symmetry of the problem, only one half of the plate will be considered. The results will be shown for all the models by applying the reflection of the solution.”
+In this example, we solve a boundary value problem for a cracked plate using the phase-field model (:ref:`theory_phase_field`). The crack is represented by the phase field variable, following the approach presented by [Miehe]_. We apply a boundary condition of $\phi = 1$, representing the broken part of the material, and simulate the crack representation with different length scale values.
+
+To exploit symmetry, only half of the plate is simulated, and we reflect the results to show the full solution. This allows us to reduce computational cost while capturing the entire domain's behavior.
 
 .. code-block::
 
@@ -44,11 +46,16 @@ from phasefieldx.PostProcessing.ReferenceResult import AllResults
 
 
 ###############################################################################
-# Parameters definition
+# Parameter Definition
 # ---------------------
-# Length scale parameters of $l_{10} = 10$, $l_{05} = 0.5$, and $l_{01} = 0.1$
-# are defined. The phase field is saved in a VTU file. All the results are
-# stored in a folder named results_folder_name = name.
+# In this section, we define various length scale parameters, denoted as $l$, 
+# which will be used in the simulations. 
+# We will run three simulations with different values of $l$—specifically, $l=1.0$, $l=0.25$, and $l=0.05$—which will correspond to three distinct input classes. 
+# These length scale parameters control the smoothness of the crack surface:
+# smaller values of $l$ lead to sharper cracks, while larger values result in smoother cracks.
+# The phase-field results will be saved in VTU format for subsequent visualization.
+# For further details about the input class, please refer to :ref:`ref_2000`.
+
 Data1 = Input(l=1.0,
               save_solution_xdmf=False,
               save_solution_vtu=True,
@@ -68,12 +75,15 @@ Data005 = Input(l=0.05,
 ###############################################################################
 # Mesh definition
 # ---------------
+# We define the mesh for the simulations. The mesh covers a rectangular domain
+# with dimensions lx=1.0 and ly=0.5. The mesh is subdivided into `divx` and `divy`
+# divisions along the x and y axes, respectively. In this case, 100 divisions 
+# are made in the x-direction, and 50 in the y-direction, giving us sufficient 
+# resolution for the crack representation.
 divx, divy = 100, 50
 lx, ly = 1.0, 0.5
 
-
-###############################################################################
-# A two-dimensional simulation is considered
+# Create a 2D mesh using the defined parameters.
 msh = dolfinx.mesh.create_rectangle(mpi4py.MPI.COMM_WORLD,
                                     [np.array([0, 0]),
                                      np.array([lx, ly])],
@@ -81,16 +91,36 @@ msh = dolfinx.mesh.create_rectangle(mpi4py.MPI.COMM_WORLD,
                                     cell_type=dolfinx.mesh.CellType.quadrilateral)
 
 
-###############################################################################
-# The bottom part is denoted and shown to impose the boundary conditions
+# Bottom boundary Identification
+# ------------------------------
+# This function identifies points on the bottom side of the domain where the boundary 
+# condition will be applied. Specifically, it returns `True` for points where `y=0` 
+# and x<0.5; and `False` otherwise. This allows us to selectively apply boundary conditions 
+# only to this part of the mesh.
 def bottom(x):
     return np.logical_and(np.isclose(x[1], 0), np.less(x[0], 0.5))
 
-
+# `fdim` represents the dimension of the boundary facets on the mesh, which is one 
+# less than the mesh's overall dimensionality (`msh.topology.dim`). For example, 
+# if the mesh is 2D, `fdim` will be 1, representing 1D boundary edges.
 fdim = msh.topology.dim - 1
 
+# Using the `bottom` function, we locate the facets on the bottom boundary side of the mesh.
+# The `locate_entities_boundary` function returns an array of facet 
+# indices that represent the identified boundary entities.
 bottom_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, bottom)
+
+# `get_ds_bound_from_marker` is a function that generates a measure for integrating 
+# boundary conditions specifically on the facets identified by `bottom_facet_marker`. 
+# This measure is assigned to `ds_bottom` and will be used for applying boundary 
+# conditions on the left side.
 ds_bottom = get_ds_bound_from_marker(bottom_facet_marker, msh, fdim)
+
+# `ds_list` is an array that stores boundary condition measures and associated 
+# names for each boundary to facilitate result-saving processes. Each entry in 
+# `ds_list` is an array in the form `[ds_, "name"]`, where `ds_` is the boundary 
+# condition measure, and `"name"` is a label for saving purposes. Here, `ds_bottom` 
+# is labeled as `"bottom"` for clarity when saving results.
 ds_list = np.array([
                    [ds_bottom, "bottom"],
                    ])
@@ -105,10 +135,20 @@ V_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1))
 
 
 ###############################################################################
-# Boundary Condition
-# ------------------
-# The boundary condition of $\phi=1$ is set on the bottom left part
-# of the mesh.
+# Boundary Condition Setup for Scalar Field $\phi$
+# ------------------------------------------------
+# We define and apply a Dirichlet boundary condition for the scalar field $\phi$
+# on the bottom boundary side of the mesh, setting $\phi = 1$ on this boundary. This setup is 
+# for a simple, static linear problem, meaning the boundary conditions and loading 
+# are constant and do not change throughout the simulation.
+#
+# - `bc_phi` is a function that creates a Dirichlet boundary condition on a specified 
+#   facet of the mesh for the scalar field $\phi$.
+# - `bcs_list_phi` is a list that stores all the boundary conditions for $\phi$, 
+#   facilitating easy management and extension of conditions if needed.
+# - `update_boundary_conditions` and `update_loading` are set to `None` as they are 
+#   unused in this static case with constant boundary conditions and loading.
+
 bc_bottom = bc_phi(bottom_facet_marker, V_phi, fdim, value=1.0)
 bcs_list_phi = [bc_bottom]
 update_boundary_conditions = None
@@ -116,11 +156,33 @@ update_loading = None
 
 
 ###############################################################################
-# Call the solver
-# ---------------
-# We set a final time of t=1 and a time step of \Delta t=1.
-# Note that this is a linear boundary value problem.
-# And the three simulations for the different length scale parameters are run
+# Solver Call for a Static Linear Problem
+# ---------------------------------------
+# We define the parameters for a simple, static linear boundary value problem 
+# with a final time `t = 1.0` and a time step `Δt = 1.0`. Although this setup 
+# includes time parameters, they are primarily used for structural consistency 
+# with a generic solver function and do not affect the result, as the problem 
+# is linear and time-independent.
+#
+# Parameters:
+# - `final_time`: The end time for the simulation, set to 1.0.
+# - `dt`: The time step for the simulation, set to 1.0. In a static context, this
+#   only provides uniformity with dynamic cases but does not change the results.
+# - `path`: Optional path for saving results; set to `None` here to use the default.
+# - `quadrature_degree`: Defines the accuracy of numerical integration; set to 2 
+#   for this problem.
+#
+# Function Call:
+# The `solve` function is called with:
+# - `Data`: Simulation data and parameters.
+# - `msh`: Mesh of the domain.
+# - `V_phi`: Function space for `phi`.
+# - `bcs_list_phi`: List of boundary conditions.
+# - `update_boundary_conditions`, `update_loading`: Set to `None` as they are 
+#   unused in this static problem.
+# - `ds_list`: Boundary measures for integration on specified boundaries.
+# - `dt` and `final_time` to define the static solution time window.
+
 final_time = 1.0
 dt = 1.0
 
