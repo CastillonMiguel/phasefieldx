@@ -1,24 +1,33 @@
-# We choose ubuntu 22.04 as our base docker image (linux/amd64)
-FROM ghcr.io/fenics/dolfinx/dolfinx:v0.9.0@sha256:61f17eb5de64721e8bbfc06b0e715bd8d0c3b6f8ec37d30f6985016c6ac68472
-
-ENV PYVISTA_JUPYTER_BACKEND="html"
-
-# Requirements for pyvista
-RUN apt-get update && apt-get install -y libgl1 libglx-mesa0
-RUN apt-get update && apt-get install -y libxrender1 
-RUN apt-get update && apt-get install -y xvfb
-RUN apt-get update && apt-get install -y nodejs
+# We choose ubuntu 22.04 as our base docker image
+FROM ghcr.io/fenics/dolfinx/dolfinx:v0.9.0
 
 COPY . /repo
 WORKDIR /repo
 
-RUN python3 -m pip install vtk
+# (from fenics: dolfinx/docker/Dockerfile.end-user)
+RUN pip install --no-cache-dir jupyter jupyterlab
 
-RUN python3 -m pip install jupyter-book 
-RUN python3 -m pip install jupyter
-RUN python3 -m pip install pyvista[all]
-RUN python3 -m pip install trame-vuetify
-RUN python3 -m pip install ipywidgets
+# pyvista dependencies from apt
+RUN apt-get -qq update && \
+    apt-get -y install libgl1-mesa-dev xvfb && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Install pyvista from PyPI. pyvisa depends on (py)vtk), but vtk wheels are not
+# available on pypi for linux/arm64, so we use a custom build wheel.
+# matplotlib improves plotting quality with better color maps and
+# properly rendering colorbars.
+# trame is the preferred backend for pyvista.
+RUN dpkgArch="$(dpkg --print-architecture)"; \
+    pip install matplotlib; \
+    case "$dpkgArch" in amd64) \
+      pip install --no-cache-dir pyvista[trame]==${PYVISTA_VERSION} ;; \
+    esac; \
+    case "$dpkgArch" in arm64) \
+      pip install --no-cache-dir https://github.com/finsberg/vtk-aarch64/releases/download/vtk-9.3.0-cp312/vtk-9.3.0.dev0-cp312-cp312-linux_aarch64.whl && \
+      pip install --no-cache-dir pyvista[trame]==${PYVISTA_VERSION} ;; \
+    esac; \
+    pip cache purge
 
 RUN python3 -m pip install .
 
