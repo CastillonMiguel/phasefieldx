@@ -92,6 +92,12 @@ These steps will set up all the necessary dependencies for running the code in t
 
 For more detailed installation options and information, please visit the `FEniCSx Project download page <https://fenicsproject.org/download/>`_.
 
+We also provide a pre-built docker image with FEniCSx and phasefieldx installed. You pull this image using the command
+
+.. code-block::
+
+   docker pull ghcr.io/castillonmiguel/phasefieldx:main
+
 
 Examples
 --------
