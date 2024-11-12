@@ -29,12 +29,8 @@ RUN dpkgArch="$(dpkg --print-architecture)"; \
     esac; \
     pip cache purge
 
-RUN python3 -m pip install .
-
-
-# Jupyter Notebook kernel specification for complex build DOLFINx
-ADD dolfinx/docker/complex-kernel.json /usr/local/share/jupyter/kernels/python3-complex/kernel.json
-
 EXPOSE 8888/tcp
 ENV SHELL /bin/bash
 ENTRYPOINT ["jupyter", "lab", "--ip", "0.0.0.0", "--no-browser", "--allow-root"]
+
+RUN python3 -m pip install .
