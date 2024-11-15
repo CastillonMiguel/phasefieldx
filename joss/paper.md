@@ -51,7 +51,7 @@ Note that multiple types of fatigue degradation functions have been developed [@
 
 One of the key aspects of phase-field fracture simulations is that the crack surface density functional provides a continuous approximation of cracks, which converges to a discrete crack representation as the length scale parameter approaches zero. This corresponds to the second part of the phase-field fracture functional, as given in \autoref{eq:phase_field_fracture_functional}. Therefore, before studying phase-field fracture models, it is recommended to first focus on this part of the functional in isolation.
 
-The second part of the functional, which controls the regularization of the phase-field, is expressed as:
+The second part of the functional, which governs the regularization of the phase-field, is presented in \autoref{eq:crack_representation_functional}.
 \begin{equation}\label{eq:crack_representation_functional}
 W[\phi] = \int_\Omega \left( \frac{1}{2l} \phi^2 + \frac{l}{2} |\nabla \phi|^2 \right) \mathrm{d}\Omega
 \end{equation}
@@ -62,7 +62,7 @@ By considering this, an analytical solution can be derived for a one-dimensional
 \end{equation}
 where $l$ is the length scale parameter and $a$ is half the length of the bar. In the limiting case where $l \to 0$, it follows that $a/l \to \infty$, and the phase-field is represented solely by the $e^{-|x|/l}$ term. The total energy of the bar is given by $W=\tanh(a/l)$, and in the limit case as $l \to 0$, $W$ approaches $1$.
 
-Note that as the length scale parameter tends to zero, the continuous phase-field representation converges to a discrete crack representation. \autoref{fig:bar_one_dimension_solution} illustrates the crack approximation for two different length scale values.
+Note that as the length scale parameter tends to zero, the continuous phase-field representation converges to a discrete crack representation. \autoref{fig:bar_one_dimension_solution} illustrates the crack approximation for a bar of length $2a$ (with $a=1$), for two different length-scale values.
 
 ![Left: Cracked bar represented by the phase-field variable. Right: Phase-field representation of the cracked bar with $l=0.1$ and $l=0.5$.\label{fig:bar_one_dimension_solution}](./images/crack_surface_1d_solution.png){width="360pt"}
 
@@ -72,9 +72,13 @@ Although the main capabilities of **PhaseFieldX** focus on fracture, fatigue, cr
 
 # Statement of Need
 
-**PhaseFieldX** stands out in the landscape of phase-field modeling software as an open-source package, with no commercial solutions currently available that directly incorporate phase-field fracture simulations; the primary alternative is the use of *ABAQUS* subroutines, which necessitate custom coding by the user. Most other software options are in-house codes that can be difficult to share, replicate, or adapt. While some implementations are present in open-source software like *FEniCS* or *Comsol*, these are often limited to specific problems and specific implementations of the phase-field model. In contrast, **PhaseFieldX** integrates the latest advancements in phase-field research, including fatigue simulations, into a user-friendly, ready-to-use package for scientific research. This accessibility encourages broader adoption of phase-field methods, simplifying the process for researchers to engage in cutting-edge investigations without the complexities of bespoke modeling tools.
+**PhaseFieldX** distinguishes itself as a leading open-source package for phase-field modeling, particularly in the absence of commercial solutions that directly support phase-field fracture simulations. The primary alternatives include the use of *ABAQUS* subroutines, which require users to develop custom code, or open-source codes such as *RACCOON* [@RACCOON], a parallel finite-element framework specialized in phase-field fracture simulations. 
 
-**PhaseFieldX** simplifies the setup and control of diverse model configurations, enabling users to customize key parameters like degradation functions, energy-splitting schemes, and solver strategies for phase-field fracture simulations. This modular approach allows researchers to explore a wide range of settings, encouraging innovation and experimentation in phase-field studies. **PhaseFieldX** caters to users seeking reliable simulation tools as well as researchers eager to contribute to the package’s development, fostering a collaborative ecosystem that advances the understanding of complex material behaviors and drives innovation within the scientific community.
+Other platforms, such as the open-source *FEniCS* or *COMSOL*, offer some implementations of the phase-field model. However, to the best of the author's knowledge, these implementations are often tailored to specific problems and are limited in scope for general phase-field modeling. Beyond fracture or fatigue simulations, other noteworthy software packages include *SymPhas* [@SymPhas], a general-purpose platform for phase-field, phase-field crystal, and reaction-diffusion simulations; *OpenPhase* [@OpenPhase], which enables three-dimensional simulation of microstructural evolution using the multiphase field method; and *PRISMS-PF* [@PRISMS-PF], a general framework for phase-field modeling that employs a matrix-free finite-element method.
+
+**PhaseFieldX** integrates the latest advancements in phase-field research, offering fatigue simulation capabilities in a user-friendly, ready-to-use package. By simplifying access to cutting-edge methods, it lowers barriers to adoption and enables researchers to focus on scientific discovery without the challenges of bespoke modeling.
+
+The platform’s modular design empowers users to customize parameters such as degradation functions, energy-splitting schemes, and solver strategies, allowing a wide range of configurations for phase-field fracture and fatigue studies. This flexibility encourages innovation and experimentation, making **PhaseFieldX** an ideal tool for reliable simulations and collaborative development. Researchers can contribute to its evolution, creating a dynamic ecosystem that advances understanding of complex material behaviors and drives scientific progress.
 
 # Applications
 
@@ -84,7 +88,7 @@ The first example, a single-edge notched tension test, consists of a square plat
 
 ![Single-edge notched tension test: setup with boundary conditions and final phase-field distribution at the end of the simulation.\label{fig:example_sentt}](./images/single_edge_notched_tension_test.png){width="280pt"}
 
-The second example, known as the three-point bending test, involves a rectangular plate with a centrally located notch and is supported at both ends, as shown in \autoref{fig:example_three_point}. The lower left corner is fixed in all directions, while the lower right corner is constrained vertically.
+The second example, known as the three-point bending test, involves a rectangular plate with a centrally located notch and is supported at both ends, as shown in \autoref{fig:example_three_point}. Small surface in the lower left corner is fixed in all directions, while another small surface in the lower right corner is constrained in the vertical direction.A vertical, downward displacement is applied to a small surface at the center of the top edge until the crack propagates. The final phase-field values displayed in \autoref{fig:example_sentt}.
 
 ![Three point bending test: setup with boundary conditions and final phase-field distribution at the end of the simulation.\label{fig:example_three_point}](./images/three_point_bending_test.png){width="360pt"}
 
