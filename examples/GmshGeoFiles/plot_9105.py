@@ -4,7 +4,9 @@
 Rectangle: Structured Mesh with Gmsh API
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This script generates a structured mesh for a rectangular geometry using the Gmsh API. The mesh is created from the `rectangle_mesh` function, which saves the mesh as a `.vtk` file. The mesh is then loaded and visualized using PyVista.
+This script generates a structured mesh for a rectangular geometry using the Gmsh API, instead of relying on a `.geo` file input as shown in the :ref:`ref_9104` example.
+
+The mesh is created using the `rectangle_mesh` function, which can save the mesh in either `.vtk` or `.msh` format. Afterward, the mesh is loaded and visualized with PyVista.
 
 .. code-block::
 

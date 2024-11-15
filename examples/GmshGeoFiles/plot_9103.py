@@ -3,12 +3,30 @@
 
 .geo File: Three point bending test
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+This example demonstrates the procedure for generating a mesh for a Three point bending test.
+Note that Phasefieldx can import external meshes in the .msh format. This can be achieved by using Gmsh.
+
+Files with the .geo format define both the geometry and the mesh parameters, such as element types and sizes.
+Gmsh can then generate the mesh based on the input from these .geo files.
+
+Below is an example of the .geo file used for mesh generation.
 
 .geo file
 ---------
 
 .. include::  ../../../../examples/GmshGeoFiles/9103_ThreePointBendingTest/file.geo
    :literal:
+
+For more information about Gmsh and the `.geo` file format, please refer to the official `Gmsh website <https://gmsh.info>`_.
+
+To generate the mesh in the `.msh` format from the terminal, use the following Gmsh command:
+
+.. code-block::
+   gmsh file.geo -3 -o mesh.msh
+
+Here, `-3` specifies that the mesh is 3-dimensional, and `-o mesh.msh` tells Gmsh to save the mesh to a file named `mesh.msh` with the `.msh` extension.
+
+Alternatively, you can generate the mesh using the Gmsh Python API, which allows for programmatic mesh generation within Python scripts.
 
 """
 
