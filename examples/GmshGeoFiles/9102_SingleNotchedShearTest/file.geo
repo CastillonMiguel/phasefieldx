@@ -5,7 +5,7 @@
 // -----------------------------------------------------------------------------
 
 //Use the following line to generate the mesh (.inp (abaqus))
-//gmsh SingleEdgeShear.geo  -3 -o mesh.inp
+//gmsh SingleEdgeShear.geo  -3 -o mesh.msh
 
 h     =0.1;   //mesh size
 hcrack=0.005;  //mesh size near crack

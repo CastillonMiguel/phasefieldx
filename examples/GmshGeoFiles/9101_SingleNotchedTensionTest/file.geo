@@ -5,7 +5,7 @@
 // -----------------------------------------------------------------------------
 
 //Use the following line to generate the mesh (.inp (abaqus))
-//gmsh file.geo  -3 -o mesh.inp
+//gmsh file.geo  -3 -o mesh.msh
 
 h      = 0.05;  //mesh size
 hcrack = 0.002; //mesh size near crack

@@ -7,7 +7,7 @@
 // -----------------------------------------------------------------------------
 
 //Use the following line to generate the mesh (.inp (abaqus))
-//gmsh ThreePointBending.geo  -3 -o mesh.inp
+//gmsh ThreePointBending.geo  -3 -o mesh.msh
 
 h     =  1e-1;
 hcrack= 0.005;
