@@ -4,7 +4,7 @@ r"""
 Fatigue: Single edge notched tension test
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In this study, a phase-field fatigue simulation is analyzed. The theoretical foundation of this model is presented in (:ref:theory_phase_field_fracture). Specifically, a cyclic displacement is applied to a single-edge notched tension test, following the approach described by [Carrara]_. The simulation adopts an isotropic formulation.
+In this study, a phase-field fatigue simulation is analyzed. The theoretical foundation of this model is presented in (:ref:`theory_phase_field_fracture`). Specifically, a cyclic displacement is applied to a single-edge notched tension test, following the approach described by [Carrara]_. The simulation adopts an isotropic formulation.
 
 The model consists of a square plate with a notch located midway along the left edge, extending horizontally toward the center, as illustrated in the figure below. The bottom edge of the plate is fixed in all directions, while the top edge is free to slide vertically. A cyclic vertical displacement is applied to the top edge. The geometry and boundary conditions are clearly shown in the accompanying figure. The model is discretized using triangular finite elements, with refined mesh resolution (element size $h$) in regions where crack evolution is anticipated. The element size $h$ must be sufficiently small to minimize mesh dependency.
 
@@ -130,12 +130,14 @@ gdim = 2                                     # Geometric dimension of the mesh
 gmsh_model_rank = 0                          # Rank of the Gmsh model in a parallel setting
 mesh_comm = mpi4py.MPI.COMM_WORLD            # MPI communicator for parallel computation
 
+# %%
 # The mesh, cell markers, and facet markers are extracted from the 'mesh.msh' file
 # using the `read_from_msh` function.
 msh, cell_markers, facet_markers = dolfinx.io.gmshio.read_from_msh(msh_file, mesh_comm, gmsh_model_rank, gdim)
 
 fdim = msh.topology.dim - 1 # Dimension of the mesh facets
 
+# %%
 # Facets defined in the .geo file used to generate the 'mesh.msh' file are identified here.
 # Each marker variable corresponds to a specific region on the specimen:
 # - `bottom_facet_marker`: Refers to the bottom part of the specimen.
@@ -147,6 +149,7 @@ top_facet_marker = facet_markers.find(10)
 right_facet_marker = facet_markers.find(11)
 left_facet_marker = facet_markers.find(12)
 
+# %%
 # The `get_ds_bound_from_marker` function creates measures for applying boundary conditions
 # on specific facets. These measures are generated for:
 # - `bottom_facet_marker` → Stored in `ds_bottom`
@@ -158,6 +161,7 @@ ds_top = get_ds_bound_from_marker(top_facet_marker, msh, fdim)
 ds_right = get_ds_bound_from_marker(right_facet_marker, msh, fdim)
 ds_left = get_ds_bound_from_marker(left_facet_marker, msh, fdim)
 
+# %%
 # `ds_list` is an array that organizes boundary condition measures alongside descriptive names.
 # Each entry in `ds_list` consists of two elements:
 # - A measure (e.g., `ds_bottom`)
@@ -189,6 +193,7 @@ V_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1))
 # - `bc_top`: The vertical displacement on the top boundary is updated dynamically
 #   to impose the cyclic load.
 
+# %%
 # The `bcs_list_u` variable is a list containing all boundary conditions for the 
 # displacement field, $\boldsymbol{u}$. This structure simplifies the management
 # of multiple boundary conditions and allows for easy expansion if additional
@@ -307,7 +312,9 @@ bcs_list_phi = []
 dt = 1.0
 final_time = 8 * 200 + 1
 
+# %%
 # Uncomment the following lines to run the solver with the specified parameters.
+
 # solve(Data,
 #       msh,
 #       final_time,
