@@ -109,7 +109,7 @@ Data = Input(E=210.0,    # young modulus
              stagger_error_tol=1e-8,
              save_solution_xdmf=False,
              save_solution_vtu=True,
-             results_folder_name="1712_Single_Edge_Notched_Shear_Test2")
+             results_folder_name="1712_Single_Edge_Notched_Shear_Test")
 
 
 ###############################################################################
