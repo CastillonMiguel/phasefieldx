@@ -24,6 +24,9 @@ A rectangular plate with an initial notch is located halfway down, extending fro
    #    ---X
    # Z /
 
+The Young's modulus, Poisson's ratio, and the critical energy release rate are given in the table :ref:`Properties <table_properties_label>`. Young's modulus $E$ and Poisson's ratio $\nu$ can be represented with the Lamé parameters as: $\lambda=\frac{E\nu}{(1+\nu)(1-2\nu)}$; $\mu=\frac{E}{2(1+\nu)}$.
+
+.. _table_properties_label:
 
 +----+---------+--------+
 |    | VALUE   | UNITS  |
@@ -38,6 +41,7 @@ A rectangular plate with an initial notch is located halfway down, extending fro
 +----+---------+--------+
 
 .. [Miehe] A phase field model for rate-independent crack propagation: Robust algorithmic implementation based on operator splits, https://doi.org/10.1016/j.cma.2010.04.011.
+
 """
 
 ###############################################################################
@@ -64,10 +68,28 @@ from phasefieldx.PostProcessing.ReferenceResult import AllResults
 ###############################################################################
 # Parameters Definition
 # ---------------------
-# Here, we define the class containing the input parameters. The material parameters are:
-# Young's modulus $E = 20.8$, $\text{kN/mm}^2$, Poisson's ratio $\nu = 0.3$,
-# critical energy release rate $G_c = 0.0005$, $\text{kN/mm}^2$, and length scale parameter $l = 0.06$, $\text{mm}$.
-# We consider anisotropic degradation (spectral) and irreversibility as proposed by Miehe.
+# `Data` is an input object containing essential parameters for simulation setup
+# and result storage:
+# - `E`: Young's modulus, set to 20.8 $kN/mm^2$.
+# - `nu`: Poisson's ratio, set to 0.3.
+# - `Gc`: Critical energy release rate, set to 0.0005 $kN/mm$.
+# - `l`: Length scale parameter, set to 0.06 $mm$.
+# - `degradation`: Specifies the degradation type. Options are "isotropic" or "anisotropic".
+# - `split_energy`: Controls how the energy is split; options include "no" (default), "spectral," or "deviatoric."
+# In this case an anisotropic model with spectral decomposition is considered.
+# - `degradation_function`: Specifies the degradation function; here, it is "quadratic."
+# - `irreversibility`: Determines the irreversibility criterion; in this case, set to "miehe."
+# - `fatigue`: Enables fatigue simulation when set to `True`.
+# - `fatigue_degradation_function`: Defines the function for fatigue degradation, set to "asymptotic."
+# - `fatigue_val`: Fatigue parameter value (used only in fatigue simulations, not in this one).
+# - `k`: Stiffness penalty parameter, set to 0.0.
+# - `min_stagger_iter`: Minimum number of staggered iterations, set to 2.
+# - `max_stagger_iter`: Maximum number of staggered iterations, set to 500.
+# - `stagger_error_tol`: Error tolerance for staggered iterations, set to 1e-8.
+# - `save_solution_xdmf` and `save_solution_vtu`: Specify the file formats to save displacement results.
+#   In this case, results are saved as `.vtu` files.
+# - `results_folder_name`: Name of the folder for saving results. If it exists,
+#   it will be replaced with a new empty folder.
 Data = Input(E=20.8,     # young modulus
              nu=0.3,     # poisson
              Gc=0.0005,  # critical energy release rate
@@ -91,37 +113,68 @@ Data = Input(E=20.8,     # young modulus
 ###############################################################################
 # Mesh Definition
 # ---------------
-msh_file = os.path.join("mesh", "three_point_bending_test.msh")
-gdim = 2
-gmsh_model_rank = 0
-mesh_comm = mpi4py.MPI.COMM_WORLD
+# The mesh is generated using Gmsh and saved as a 'mesh.msh' file. For more details 
+# on how to create the mesh, refer to the :ref:`ref_examples_91` examples.
+# The following lines 
+msh_file = os.path.join("mesh", "three_point_bending_test.msh") # Path to the mesh file
+gdim = 2                                     # Geometric dimension of the mesh
+gmsh_model_rank = 0                          # Rank of the Gmsh model in a parallel setting
+mesh_comm = mpi4py.MPI.COMM_WORLD            # MPI communicator for parallel computation
 
+# %%
+# The mesh, cell markers, and facet markers are extracted from the 'mesh.msh' file
+# using the `read_from_msh` function.
 msh, cell_markers, facet_markers = dolfinx.io.gmshio.read_from_msh(msh_file, mesh_comm, gmsh_model_rank, gdim)
 
-fdim = msh.topology.dim - 1
+fdim = msh.topology.dim - 1 # Dimension of the mesh facets
 
 
+###############################################################################
+# Boundary Identification Functions
+# ---------------------------------
+# These functions identify points on the specific boundaries of the domain
+# where boundary conditions will be applied. The `bottom_left` function checks 
+# if a point lies on the bottom left boundary, returning `True` for points where 
+# `y=0` and `x` is less than `-3.9`, and `False` otherwise. Similarly, the `bottom_right` 
+# function identifies points on the bottom right boundary, returning `True` for points 
+# where `y=0` and `x` is greater than `3.9`, and `False` otherwise. 
+# The `top` function identifies points on the top boundary, returning `True` for points 
+# where `y=2`, and `x` is between `-0.25` and `0.25`, and `False` otherwise.
+#
+# This approach ensures that boundary conditions are applied to specific parts of 
+# the mesh, which helps in defining the simulation's physical constraints.
 def bottom_left(x):
     return np.logical_and(np.isclose(x[1], 0), np.less(x[0], -3.9))
 
-
 def bottom_right(x):
     return np.logical_and(np.isclose(x[1], 0), np.greater(x[0], 3.9))
-
 
 def top(x):
     return np.logical_and(np.logical_and(np.isclose(x[1], 2), np.greater(x[0], -0.25)), np.less(x[0], 0.25))
 
 
-fdim = msh.topology.dim - 1
+# %%
+# Using the `bottom` and `top` functions, we locate the facets on the bottom and top sides of the mesh,
+# where $y = 0$ and $y = 1$, respectively. The `locate_entities_boundary` function returns an array of facet
+# indices representing these identified boundary entities.
 bottom_left_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, bottom_left)
 bottom_right_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, bottom_right)
 top_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, top)
 
+# %%
+# The `get_ds_bound_from_marker` function generates a measure for applying boundary conditions 
+# specifically to the facets identified by `top_facet_marker` and `bottom_facet_marker`, respectively. 
+# This measure is then assigned to `ds_bottom` and `ds_top`.
 ds_bottom_left = get_ds_bound_from_marker(bottom_left_facet_marker, msh, fdim)
 ds_bottom_right = get_ds_bound_from_marker(bottom_right_facet_marker, msh, fdim)
 ds_top = get_ds_bound_from_marker(top_facet_marker, msh, fdim)
 
+# %%
+# `ds_list` is an array that stores boundary condition measures along with names 
+# for each boundary, simplifying result-saving processes. Each entry in `ds_list` 
+# is formatted as `[ds_, "name"]`, where `ds_` represents the boundary condition measure, 
+# and `"name"` is a label used for saving. Here, `ds_bottom` and `ds_top` are labeled 
+# as `"bottom"` and `"top"`, respectively, to ensure clarity when saving results.
 ds_list = np.array([
                    [ds_bottom_left, "bottom_left"],
                    [ds_bottom_right, "bottom_right"],
@@ -140,15 +193,52 @@ V_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1))
 ###############################################################################
 # Boundary Conditions
 # -------------------
-# Apply boundary conditions: Bottom-left nodes fixed in both directions, bottom-right nodes fixed in the vertical direction, while top nodes can slide vertically.
-fdim = msh.topology.dim - 1
+# Dirichlet boundary conditions are defined as follows:
+# - `bc_bottom_left`: Constrains both x and y displacements on the bottom left boundary, 
+# ensuring that the leftmost bottom edge remains fixed.
+# - `bc_bottom_right`: Constrains only the vertical displacement (y-displacement) on the 
+# bottom right boundary, while allowing horizontal movement.
+# - `bc_top`: Constrains the vertical displacement (y-displacement) on the top boundary, 
+# while allowing horizontal movement.
+#
+# These boundary conditions ensure that the relevant portions of the mesh are correctly 
+# fixed or allowed to move according to the simulation requirements.
+
 bc_bottom_left = bc_xy(bottom_left_facet_marker, V_u, fdim)
 bc_bottom_right = bc_y(bottom_right_facet_marker, V_u, fdim)
 bc_top = bc_y(top_facet_marker, V_u, fdim)
 
+# %%
+# The bcs_list_u variable is a list that stores all boundary conditions for the displacement
+# field $\boldsymbol u$. This list facilitates easy management of multiple boundary
+# conditions and can be expanded if additional conditions are needed.
 bcs_list_u = [bc_top, bc_bottom_left, bc_bottom_right]
 
+# Function: `update_boundary_conditions`
+# --------------------------------------
+# The `update_boundary_conditions` function dynamically updates the displacement boundary conditions at each time step.
+# This allows for quasi-static analysis by incrementally adjusting the displacements applied to specific degrees of freedom.
 
+# Parameters:
+# - `bcs`: A list of boundary conditions, where each element corresponds to a boundary condition applied to a specific facet of the mesh.
+# - `time`: A scalar representing the current time step in the analysis.
+
+# Function Details:
+# - The displacement value `val` is computed based on the current `time`:
+#   - For `time <= 36`, `val` increases linearly as `val = dt0 * time`, where `dt0` is a small time step factor (`10^-3`), simulating gradual displacement along the y-axis.
+#   - For `time > 36`, `val` increases more gradually as `val = 36 * dt0 + (dt0 / 10) * (time - 36)`, which represents a slower displacement rate after the initial phase.
+# 
+# - This calculated value is assigned to the y-component of the displacement field on the top boundary by modifying `bcs[0].g.value[1]`, where `bcs[0]` represents the top boundary condition.
+#   The displacement is negated to represent a displacement in the opposite direction.
+
+# Return Value:
+# - A tuple `(0, val, 0)` is returned, representing the incremental displacement vector:
+#   - The first element (0) corresponds to no update for the x-displacement.
+#   - The second element (`val`) is the calculated y-displacement.
+#   - The third element (0) corresponds to no update for the z-displacement, applicable in 2D simulations.
+
+# Purpose:
+# - This function facilitates quasi-static analysis by applying controlled, time-dependent boundary displacements. It is essential for simulations that involve gradual loading or unloading, with a slower displacement evolution after the initial phase.
 def update_boundary_conditions(bcs, time):
     dt0 = 10**-3
     if time <= 36:
@@ -171,15 +261,48 @@ bcs_list_phi = []
 
 
 ###############################################################################
-# Call the Solver
-# ---------------
-# The problem is solved for a final time of 200. The solver will handle the mesh, boundary conditions,
-# and the given parameters to compute the solution.
+# Solver Call for a Phase-Field Fracture Problem
+# ----------------------------------------------
+# This section sets up and calls the solver for a phase-field fracture problem.
+# 
+# **Key Points:**
+# - The simulation is run for a final time of 150, with a time step of 1.0.
+# - The solver will manage the mesh, boundary conditions, and update the solution
+#   over the specified time steps.
+#
+# **Parameters:**
+# - `dt`: The time step for the simulation, set to 1.0.
+# - `final_time`: The total simulation time, set to 200.0, which determines how 
+#   long the problem will be solved.
+# - `path`: Optional parameter for specifying the folder where results will be saved; 
+#   here it is set to `None`, meaning results will be saved to the default location.
+#
+# **Function Call:**
+# The `solve` function is invoked with the following arguments:
+# - `Data`: Contains the simulation parameters and configurations.
+# - `msh`: The mesh representing the domain for the problem.
+# - `final_time`: The total duration of the simulation (200.0).
+# - `V_u`: Function space for the displacement field, $\boldsymbol{u}$.
+# - `V_phi`: Function space for the phase field, $\phi$.
+# - `bcs_list_u`: List of Dirichlet boundary conditions for the displacement field.
+# - `bcs_list_phi`: List of boundary conditions for the phase field (empty in this case).
+# - `update_boundary_conditions`: Function to update boundary conditions for the displacement field.
+# - `f`: The body force applied to the domain (if any).
+# - `T_list_u`: Time-dependent loading parameters for the displacement field.
+# - `update_loading`: Function to update loading parameters for the quasi-static analysis.
+# - `ds_list`: Boundary measures for integration over the domain boundaries.
+# - `dt`: The time step for the simulation.
+# - `path`: Directory for saving results (if specified).
+#
+# This setup provides a framework for solving static problems with specified boundary 
+# conditions and loading parameters.
 
 final_time = 150
 dt = 1
 
-# Uncomment the following lines to run the solver with the specified parameters
+# %%
+# Uncomment the following lines to run the solver with the specified parameters.
+
 # solve(Data,
 #       msh,
 #       final_time,
