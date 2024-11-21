@@ -265,10 +265,10 @@ bcs_list_phi = []
 
 
 ###############################################################################
-# Solver Call for a Static Linear Problem
-# ----------------------------------------
-# This section defines the parameters and calls the solver for a static linear 
-# boundary value problem.
+# Solver Call for a Fatigue Problem
+# ---------------------------------
+# This section defines the parameters and calls the solver for a phase-field
+# fatigue problem.
 # 
 # **Key Points:**
 # - The cyclic load and time parameters are synchronized to ensure 8 time steps are 
