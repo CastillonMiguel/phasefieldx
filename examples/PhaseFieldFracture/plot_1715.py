@@ -120,7 +120,7 @@ lx, ly = 1.0, 3.0
 msh = dolfinx.mesh.create_rectangle(mpi4py.MPI.COMM_WORLD,
                                     [np.array([0.0, 0.0]),
                                      np.array([lx, ly])],
-                                    [nx, ny],
+                                    [divx, divy],
                                     cell_type=dolfinx.mesh.CellType.quadrilateral)
 
 # Boundary Identification
