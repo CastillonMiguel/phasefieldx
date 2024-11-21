@@ -113,7 +113,7 @@ def bottom(x):
 def top(x):
     return np.isclose(x[1], lx)
 
-fdim = msh.topology.dim - 1
+fdim = msh.topology.dim - 1 # Dimension of the mesh facets
 
 # %%
 # Using the `bottom` and `top` functions, we locate the facets on the bottom and top sides of the mesh,
