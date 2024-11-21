@@ -27,7 +27,11 @@ Welcome to **PhaseFieldX**. `documentation <https://phasefieldx.readthedocs.io/e
 .. image:: https://joss.theoj.org/papers/7111b621625200b3d2c4b199ea9568c0/status.svg
     :target: https://joss.theoj.org/papers/7111b621625200b3d2c4b199ea9568c0
     :alt: Joss
-    
+
+.. image:: https://github.com/CastillonMiguel/phasefieldx/actions/workflows/testing.yml/badge.svg
+    :target: https://github.com/CastillonMiguel/phasefieldx/actions/workflows/testing.yml   
+    :alt: Unit Testing
+ 
 
 Introduction
 ------------
@@ -52,7 +56,7 @@ Key Features
 
 Installation Instructions
 --------------------------
-To use this repository, you need to have the latest stable release of FEniCSx installed. The latest stable release of FEniCSx is version 0.8. The easiest way to start using FEniCSx on MacOS and other systems is to install it using `conda`.
+To use this repository, you need to have the latest stable release of FEniCSx installed. The latest stable release of FEniCSx is version 0.9. The easiest way to start using FEniCSx on MacOS and other systems is to install it using `conda`.
 
 Follow these steps to set up your environment:
 
