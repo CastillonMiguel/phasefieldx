@@ -75,9 +75,9 @@ from phasefieldx.PostProcessing.ReferenceResult import AllResults
 # - `E`: Young's modulus, set to 210 kN/mm².
 # - `nu`: Poisson's ratio, set to 0.3.
 # - `save_solution_xdmf` and `save_solution_vtu`: Set to `False` and `True`, respectively,
-#   specifying the file format to save displacement results (.vtu here).
+# specifying the file format to save displacement results (.vtu here).
 # - `results_folder_name`: Name of the folder for saving results. If it exists,
-#   it will be replaced with a new empty folder.
+# it will be replaced with a new empty folder.
 Data = Input(E=210.0,
              nu=0.3,
              save_solution_xdmf=False,
@@ -115,18 +115,21 @@ def top(x):
 
 fdim = msh.topology.dim - 1
 
+# %%
 # Using the `bottom` and `top` functions, we locate the facets on the bottom and top sides of the mesh,
 # where $y = 0$ and $y = ly$, respectively. The `locate_entities_boundary` function returns an array of facet
 # indices representing these identified boundary entities.
 bottom_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, bottom)
 top_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, top)
 
+# %%
 # The `get_ds_bound_from_marker` function generates a measure for applying boundary conditions 
 # specifically to the facets identified by `top_facet_marker` and `bottom_facet_marker`, respectively. 
 # This measure is then assigned to `ds_bottom` and `ds_top`.
 ds_bottom = get_ds_bound_from_marker(bottom_facet_marker, msh, fdim)
 ds_top = get_ds_bound_from_marker(top_facet_marker, msh, fdim)
 
+# %%
 # `ds_list` is an array that stores boundary condition measures along with names 
 # for each boundary, simplifying result-saving processes. Each entry in `ds_list` 
 # is formatted as `[ds_, "name"]`, where `ds_` represents the boundary condition measure, 
@@ -155,6 +158,7 @@ V_u = dolfinx.fem.functionspace(msh, ("Lagrange", 1, (msh.geometry.dim, )))
 bc_bottom = bc_xy(bottom_facet_marker, V_u, fdim, value_x=0.0, value_y=0.0)
 bc_top = bc_xy(top_facet_marker, V_u, fdim, value_x=0.0, value_y=0.0)
 
+# %%
 # The bcs_list_u variable is a list that stores all boundary conditions for the displacement
 # field $\boldsymbol u$. This list facilitates easy management of multiple boundary
 # conditions and can be expanded if additional conditions are needed.
@@ -169,21 +173,21 @@ bcs_list_u = [bc_top, bc_bottom]
 #
 # Parameters:
 # - `bcs`: List of boundary conditions, where each entry corresponds to a boundary condition applied
-#   to a specific facet of the mesh.
+# to a specific facet of the mesh.
 # - `time`: Scalar representing the current time step in the analysis.
 #
 # Inside the function:
 # - `val` is calculated as a linear function of `time`, specifically `val = 0.0003 * time`,
-#   to simulate gradual displacement along the y-axis. This can be modified as needed for different
-#   quasi-static loading schemes.
+# to simulate gradual displacement along the y-axis. This can be modified as needed for different
+# quasi-static loading schemes.
 # - The value `val` is assigned to the y-component of the displacement field on the boundary,
-#   achieved by updating `bcs[0].g.value[1]`, where `bcs[0]` represents the top boundary condition.
+# achieved by updating `bcs[0].g.value[1]`, where `bcs[0]` represents the top boundary condition.
 #
 # Returns:
 # - A tuple `(0, val, 0)` where:
-#   - The first element is zero (indicating no update for the x component in this example).
-#   - The second element is `val`, the calculated y-displacement.
-#   - The third element is zero (indicating no z-component displacement in this 2D example).
+# - The first element is zero (indicating no update for the x component in this example).
+# - The second element is `val`, the calculated y-displacement.
+# - The third element is zero (indicating no z-component displacement in this 2D example).
 #
 # This function supports the quasi-static analysis by gradually updating the displacement boundary
 # condition over time, allowing for controlled loading in the simulation.
@@ -209,7 +213,7 @@ f = None
 # Parameters:
 # - `final_time`: The end time for the simulation, set to 10.0.
 # - `dt`: The time step for the simulation, set to 1.0. In a static context, this
-#   only provides uniformity with dynamic cases but does not change the results.
+# only provides uniformity with dynamic cases but does not change the results.
 # - `path`: Optional path for saving results; set to `None` here to use the default.
 # - `quadrature_degree`: Defines the accuracy of numerical integration; set to 2
 #   for this problem.

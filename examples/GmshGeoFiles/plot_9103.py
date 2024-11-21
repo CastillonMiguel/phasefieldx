@@ -42,20 +42,26 @@ import gmsh
 import pyvista as pv
 
 folder = "9103_ThreePointBendingTest"
+
+# %%
 # Initialize Gmsh
 gmsh.initialize()
 
+# %%
 # Open the .geo file
 geo_file = os.path.join(folder, "file.geo")
 gmsh.open(geo_file)
 
+# %%
 # Generate the mesh (2D example, for 3D use generate(3))
 gmsh.model.mesh.generate(3)
 
+# %%
 # Write the mesh to a .vtu file
 vtu_file = os.path.join(folder, "output_mesh_for_view.vtk")
 gmsh.write(vtu_file)
 
+# %%
 # Finalize Gmsh
 gmsh.finalize()
 

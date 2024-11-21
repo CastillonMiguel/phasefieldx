@@ -111,11 +111,11 @@ Data = Input(
 # corresponding line, quadrilateral, or hexahedral elements.
 #
 # - `divx`, `divy`, and `divz` specify the number of divisions along the x, y, and z 
-#   axes, respectively. Here, `divx=100`, `divy=1`, and `divz=1` are set to divide 
-#   the x-axis primarily, as needed for a 2D or 1D mesh.
+# axes, respectively. Here, `divx=100`, `divy=1`, and `divz=1` are set to divide 
+# the x-axis primarily, as needed for a 2D or 1D mesh.
 #
 # - `lx`, `ly`, and `lz` define the physical dimensions of the domain in the x, y, and z 
-#   directions. In this example, we set `lx=5.0`, `ly=1.0`, and `lz=1.0`.
+# directions. In this example, we set `lx=5.0`, `ly=1.0`, and `lz=1.0`.
 #
 # Specify the simulation dimension with the `dimension` variable (`"1d"`, `"2d"`, or `"3d"`).
 # Here, we choose `"2d"`.
@@ -165,26 +165,26 @@ elif dimension == "3d":
 def left(x):
     return np.equal(x[0], 0)
 
-#
+# %%
 # `fdim` represents the dimension of the boundary facets on the mesh, which is one 
 # less than the mesh's overall dimensionality (`msh.topology.dim`). For example, 
 # if the mesh is 2D, `fdim` will be 1, representing 1D boundary edges.
-#
 fdim = msh.topology.dim - 1
 
+# %%
 # Using the `left` function, we locate the facets on the left side of the mesh 
 # where `x=0`. The `locate_entities_boundary` function returns an array of facet 
 # indices that represent the identified boundary entities.
 left_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, left)
 
-
+# %%
 # `get_ds_bound_from_marker` is a function that generates a measure for integrating 
 # boundary conditions specifically on the facets identified by `left_facet_marker`. 
 # This measure is assigned to `ds_left` and will be used for applying boundary 
 # conditions on the left side.
 ds_left = get_ds_bound_from_marker(left_facet_marker, msh, fdim)
 
-
+# %%
 # `ds_list` is an array that stores boundary condition measures and associated 
 # names for each boundary to facilitate result-saving processes. Each entry in 
 # `ds_list` is an array in the form `[ds_, "name"]`, where `ds_` is the boundary 
@@ -212,11 +212,11 @@ V_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1))
 # are constant and do not change throughout the simulation.
 #
 # - `bc_phi` is a function that creates a Dirichlet boundary condition on a specified 
-#   facet of the mesh for the scalar field $\phi$.
+# facet of the mesh for the scalar field $\phi$.
 # - `bcs_list_phi` is a list that stores all the boundary conditions for $\phi$, 
-#   facilitating easy management and extension of conditions if needed.
+# facilitating easy management and extension of conditions if needed.
 # - `update_boundary_conditions` and `update_loading` are set to `None` as they are 
-#   unused in this static case with constant boundary conditions and loading.
+# unused in this static case with constant boundary conditions and loading.
 
 bc_left = bc_phi(left_facet_marker, V_phi, fdim, value=1.0)
 bcs_list_phi = [bc_left]
@@ -236,10 +236,10 @@ update_loading = None
 # Parameters:
 # - `final_time`: The end time for the simulation, set to 1.0.
 # - `dt`: The time step for the simulation, set to 1.0. In a static context, this
-#   only provides uniformity with dynamic cases but does not change the results.
+# only provides uniformity with dynamic cases but does not change the results.
 # - `path`: Optional path for saving results; set to `None` here to use the default.
 # - `quadrature_degree`: Defines the accuracy of numerical integration; set to 2 
-#   for this problem.
+# for this problem.
 #
 # Function Call:
 # The `solve` function is called with:
@@ -320,11 +320,11 @@ ax_phi.legend()
 # The energy components are calculated for the scalar field `phi` and its gradient. 
 # We compare the following energy terms:
 # - `W_phi`: The energy associated with the scalar field `phi`.
-#            $W_{\phi} = \frac{1}{2l} \int_{-a}^{a}   \left[ e^{-|x|/l} + \frac{1}{e^{\frac{2a}{l}}+1} 2 \sinh \left( \frac{|x|}{l} \right) \right]^2 dx$
+# $W_{\phi} = \frac{1}{2l} \int_{-a}^{a}   \left[ e^{-|x|/l} + \frac{1}{e^{\frac{2a}{l}}+1} 2 \sinh \left( \frac{|x|}{l} \right) \right]^2 dx$
 # - `W_gradphi`: The energy associated with the gradient of the scalar field.
-#                $W_{\nabla \phi}(\phi) = \frac{l}{2} \int_{-a}^{a}   \left[ \frac{-\text{sign}(x)}{l} e^{-|x|/l} + \frac{1}{e^{\frac{2a}{l}} +1} \frac{\text{sign}(x)}{l} 2 \cosh\left(\frac{|x|}{l}\right) \right]^2 dx$
+# $W_{\nabla \phi}(\phi) = \frac{l}{2} \int_{-a}^{a}   \left[ \frac{-\text{sign}(x)}{l} e^{-|x|/l} + \frac{1}{e^{\frac{2a}{l}} +1} \frac{\text{sign}(x)}{l} 2 \cosh\left(\frac{|x|}{l}\right) \right]^2 dx$
 # - `W`: The total energy, which includes contributions from both the field and its gradient.
-#        $W = \tanh \left( \frac{a}{l} \right)$
+# $W = \tanh \left( \frac{a}{l} \right)$
 #
 # Theoretical expressions are computed for these energies as functions of the 
 # length scale parameter `l`. Additionally, energy values from the simulation 
@@ -334,14 +334,17 @@ l_array = np.linspace(0.1, lx, 100)  # Create an array of length scale values
 a_div_l = lx / l_array  # Compute the ratio of `lx` to the length scale
 tanh_a_div_l = np.tanh(a_div_l)  # Compute the hyperbolic tangent of the ratio
 
+# %%
 # Compute the theoretical energy for the scalar field `phi`
 # The expression represents the energy of `phi` based on the length scale parameter `l`.
 W_phi = 0.5 * tanh_a_div_l + 0.5 * a_div_l * (1.0 - tanh_a_div_l**2)
 
+# %%
 # Compute the theoretical energy for the gradient of `phi`
 # This energy is based on the gradient of `phi` and the length scale parameter `l`.
 W_gradphi = 0.5 * tanh_a_div_l - 0.5 * a_div_l * (1.0 - tanh_a_div_l**2)
 
+# %%
 # Compute the total theoretical energy
 # This energy is related to the hyperbolic tangent of the ratio `a/l`.
 W = np.tanh(a_div_l)
@@ -357,20 +360,24 @@ W = np.tanh(a_div_l)
 
 fig, energy = plt.subplots()  # Create a figure for plotting energy
 
+# %%
 # Enable LaTeX rendering for plot labels
 plt.rc('text', usetex=True)
 
+# %%
 # Plot the theoretical energy values
 energy.plot(l_array, W_phi, 'r-', label=r'$W_{\phi}$')  # Energy for `phi`
 energy.plot(l_array, W_gradphi, 'b-', label=r'$W_{\nabla \phi}$')  # Energy for gradient of `phi`
 energy.plot(l_array, W, 'k-', label=r'$W$')  # Total energy
 
+# %%
 # Plot the energy values obtained from the simulation
 # The values are scaled by 2 and correspond to the total energy components.
 energy.plot(Data.l, 2 * S.energy_files['total.energy']["gamma_phi"][0], 'k*', label=S.label)
 energy.plot(Data.l, 2 * S.energy_files['total.energy']["gamma_gradphi"][0], 'k*')
 energy.plot(Data.l, 2 * S.energy_files['total.energy']["gamma"][0], 'k*')
 
+# %%
 # Set plot labels and grid
 energy.set_xlabel('Length Scale Parameter $l$')  # X-axis label
 energy.set_ylabel('Energy')  # Y-axis label

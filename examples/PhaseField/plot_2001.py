@@ -83,6 +83,7 @@ Data005 = Input(l=0.05,
 divx, divy = 100, 50
 lx, ly = 1.0, 0.5
 
+# %%
 # Create a 2D mesh using the defined parameters.
 msh = dolfinx.mesh.create_rectangle(mpi4py.MPI.COMM_WORLD,
                                     [np.array([0, 0]),
@@ -100,22 +101,26 @@ msh = dolfinx.mesh.create_rectangle(mpi4py.MPI.COMM_WORLD,
 def bottom(x):
     return np.logical_and(np.isclose(x[1], 0), np.less(x[0], 0.5))
 
+# %%
 # `fdim` represents the dimension of the boundary facets on the mesh, which is one 
 # less than the mesh's overall dimensionality (`msh.topology.dim`). For example, 
 # if the mesh is 2D, `fdim` will be 1, representing 1D boundary edges.
 fdim = msh.topology.dim - 1
 
+# %%
 # Using the `bottom` function, we locate the facets on the bottom boundary side of the mesh.
 # The `locate_entities_boundary` function returns an array of facet 
 # indices that represent the identified boundary entities.
 bottom_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, bottom)
 
+# %%
 # `get_ds_bound_from_marker` is a function that generates a measure for integrating 
 # boundary conditions specifically on the facets identified by `bottom_facet_marker`. 
 # This measure is assigned to `ds_bottom` and will be used for applying boundary 
 # conditions on the left side.
 ds_bottom = get_ds_bound_from_marker(bottom_facet_marker, msh, fdim)
 
+# %%
 # `ds_list` is an array that stores boundary condition measures and associated 
 # names for each boundary to facilitate result-saving processes. Each entry in 
 # `ds_list` is an array in the form `[ds_, "name"]`, where `ds_` is the boundary 
@@ -143,11 +148,11 @@ V_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1))
 # are constant and do not change throughout the simulation.
 #
 # - `bc_phi` is a function that creates a Dirichlet boundary condition on a specified 
-#   facet of the mesh for the scalar field $\phi$.
+# facet of the mesh for the scalar field $\phi$.
 # - `bcs_list_phi` is a list that stores all the boundary conditions for $\phi$, 
-#   facilitating easy management and extension of conditions if needed.
+# facilitating easy management and extension of conditions if needed.
 # - `update_boundary_conditions` and `update_loading` are set to `None` as they are 
-#   unused in this static case with constant boundary conditions and loading.
+# unused in this static case with constant boundary conditions and loading.
 
 bc_bottom = bc_phi(bottom_facet_marker, V_phi, fdim, value=1.0)
 bcs_list_phi = [bc_bottom]
@@ -167,10 +172,10 @@ update_loading = None
 # Parameters:
 # - `final_time`: The end time for the simulation, set to 1.0.
 # - `dt`: The time step for the simulation, set to 1.0. In a static context, this
-#   only provides uniformity with dynamic cases but does not change the results.
+# only provides uniformity with dynamic cases but does not change the results.
 # - `path`: Optional path for saving results; set to `None` here to use the default.
 # - `quadrature_degree`: Defines the accuracy of numerical integration; set to 2 
-#   for this problem.
+# for this problem.
 #
 # Function Call:
 # The `solve` function is called with:
@@ -179,7 +184,7 @@ update_loading = None
 # - `V_phi`: Function space for `phi`.
 # - `bcs_list_phi`: List of boundary conditions.
 # - `update_boundary_conditions`, `update_loading`: Set to `None` as they are 
-#   unused in this static problem.
+# unused in this static problem.
 # - `ds_list`: Boundary measures for integration on specified boundaries.
 # - `dt` and `final_time` to define the static solution time window.
 

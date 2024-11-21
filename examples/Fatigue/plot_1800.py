@@ -189,9 +189,9 @@ V_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1))
 # -------------------
 # Dirichlet boundary conditions are defined as follows:
 # - `bc_bottom`: Constrains both x and y displacements to 0 on the bottom boundary,
-#   ensuring that the bottom edge is fixed.
+# ensuring that the bottom edge is fixed.
 # - `bc_top`: The vertical displacement on the top boundary is updated dynamically
-#   to impose the cyclic load.
+# to impose the cyclic load.
 
 # %%
 # The `bcs_list_u` variable is a list containing all boundary conditions for the 
@@ -206,15 +206,11 @@ bcs_list_u = [bc_top, bc_bottom]
 # Definition of the Cyclic Load
 # -----------------------------
 # The cyclic load is applied by updating the boundary condition at the top of the specimen. 
-# The cyclic load follows the form:
-# 
-# $$ \frac{2}{\pi} A \arcsin[\sin(\omega t)] $$
-# 
+# The cyclic load follows the form $ \frac{2}{\pi} A \arcsin[\sin(\omega t)] $.
 # where:
-# - \( A = 0.002 \, \text{mm} \): Amplitude of the load.
-# - \( f = \frac{1}{8} \): Frequency of the load in Hz.
-# - \( \omega = 2 \pi f \): Angular frequency.
-#
+# - $A = 0.002 \, \text{mm}$: Amplitude of the load.
+# - $f = \frac{1}{8}$: Frequency of the load in Hz.
+# - $\omega = 2 \pi f $: Angular frequency.
 # This periodic loading is imposed on the top boundary to simulate the desired cyclic behavior.
 
 amplitude = 0.002
@@ -232,23 +228,23 @@ w = 2 * np.pi * f
 #
 # Parameters:
 # - `bcs`: A list of boundary conditions, where each entry corresponds to a specific facet of the mesh.
-#          For this implementation, `bcs[0]` refers to the top boundary condition.
+# For this implementation, `bcs[0]` refers to the top boundary condition.
 # - `time`: A scalar representing the current time step in the simulation.
 #
 # Inside the function:
 # - `val` is computed based on the cyclic load formula:
-#   $$ \text{val} = \frac{2}{\pi} \cdot \text{amplitude} \cdot \arcsin(\sin(\omega \cdot \text{time})) $$
-#   where:
-#   - `amplitude` defines the maximum displacement of the cyclic load.
-#   - `w` (omega) is the angular frequency, given by \( \omega = 2 \pi f \), where \( f \) is the frequency.
+# $$ \text{val} = \frac{2}{\pi} \cdot \text{amplitude} \cdot \arcsin(\sin(\omega \cdot \text{time})) $$
+# where:
+# - `amplitude` defines the maximum displacement of the cyclic load.
+# - `w` (omega) is the angular frequency, given by \( \omega = 2 \pi f \), where \( f \) is the frequency.
 # - The computed `val` represents the y-displacement applied to the boundary at the current time step.
 # - This value is dynamically updated in `bcs[0].g.value[...]` to apply the displacement to the top boundary.
 #
 # Returns:
 # - A tuple `(0, val, 0)`, where:
-#   - The first element is `0` (indicating no x-displacement).
-#   - The second element is `val`, the calculated y-displacement.
-#   - The third element is `0` (indicating no z-displacement, as this is a 2D simulation).
+# - The first element is `0` (indicating no x-displacement).
+# - The second element is `val`, the calculated y-displacement.
+# - The third element is `0` (indicating no z-displacement, as this is a 2D simulation).
 #
 # The function enables controlled cyclic loading during the simulation, facilitating the study
 # of fatigue and quasi-static response under varying boundary conditions.
@@ -283,11 +279,11 @@ bcs_list_phi = []
 # **Parameters:**
 # - `dt`: The time step for the simulation, set to 1.0.
 # - `final_time`: The total simulation time, computed as \( 8 \cdot 200 + 1 \), ensuring
-#   sufficient steps for the cyclic loading behavior.
+# sufficient steps for the cyclic loading behavior.
 # - `path`: Optional parameter for specifying the results folder; set to `None` here 
-#   to use the default location.
+# to use the default location.
 # - `quadrature_degree`: (Defined elsewhere) Specifies the accuracy of numerical integration 
-#   during the computation. For this problem, it is set to 2.
+# during the computation. For this problem, it is set to 2.
 #
 # **Function Call:**
 # The `solve` function is invoked with the following arguments:

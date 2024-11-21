@@ -126,18 +126,21 @@ def right(x):
 
 fdim = msh.topology.dim - 1
 
+# %%
 # Using the `bottom` and `top` functions, we locate the facets on the left and right sides of the mesh,
 # where $x = -a$ and $x = a$, respectively. The `locate_entities_boundary` function returns an array of facet
 # indices representing these identified boundary entities.
 left_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, left)
 right_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, right)
 
+# %%
 # The `get_ds_bound_from_marker` function generates a measure for applying boundary conditions 
 # specifically to the facets identified by `left_facet_marker` and `right_facet_marker`, respectively. 
 # This measure is then assigned to `ds_left` and `ds_right`.
 ds_left = get_ds_bound_from_marker(left_facet_marker, msh, fdim)
 ds_right = get_ds_bound_from_marker(right_facet_marker, msh, fdim)
 
+# %%
 # `ds_list` is an array that stores boundary condition measures along with names 
 # for each boundary, simplifying result-saving processes. Each entry in `ds_list` 
 # is formatted as `[ds_, "name"]`, where `ds_` represents the boundary condition measure, 
@@ -166,11 +169,11 @@ V_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1))
 # are constant and do not change throughout the simulation.
 #
 # - `bc_phi` is a function that creates a Dirichlet boundary condition on a specified 
-#   facet of the mesh for the scalar field $\phi$.
+# facet of the mesh for the scalar field $\phi$.
 # - `bcs_list_phi` is a list that stores all the boundary conditions for $\phi$, 
-#   facilitating easy management and extension of conditions if needed.
+# facilitating easy management and extension of conditions if needed.
 # - `update_boundary_conditions` and `update_loading` are set to `None` as they are 
-#   unused in this static case with constant boundary conditions and loading.
+# unused in this static case with constant boundary conditions and loading.
 bc_left = bc_phi(left_facet_marker, V_phi, fdim, value=-1.0)
 bc_right = bc_phi(right_facet_marker, V_phi, fdim, value=1.0)
 bcs_list_phi = [bc_left, bc_right]
@@ -190,7 +193,7 @@ update_loading = None
 # Parameters:
 # - `final_time`: The end time for the simulation, set to 1.0.
 # - `dt`: The time step for the simulation, set to 1.0. In a static context, this
-#   only provides uniformity with dynamic cases but does not change the results.
+# only provides uniformity with dynamic cases but does not change the results.
 # - `path`: Optional path for saving results; set to `None` here to use the default.
 # - `quadrature_degree`: Defines the accuracy of numerical integration; set to 2 
 #   for this problem.
