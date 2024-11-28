@@ -250,7 +250,7 @@ f = None
 T = dolfinx.fem.Constant(msh, petsc4py.PETSc.ScalarType((0.0, 0.0)))
 
 ###############################################################################
-# Boundary Conditions four phase field
+# Boundary Conditions for phase field
 bcs_list_phi = []
 
 

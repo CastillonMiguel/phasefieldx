@@ -6,7 +6,7 @@ Three point bending test
 
 A well-known benchmark simulation in fracture mechanics is performed, relying on the simulation conducted by [Miehe]_. This simulation considers an anisotropic formulation with spectral energy decomposition.
 
-A rectangular plate with an initial notch is located halfway down, extending from the left to the center, as shown in the figure below. This beam is supported at its ends, as shown in the figure. The bottom left part is fixed in all directions, while the bottom right part is fixed in the vertical direction. A vertical displacement is applied at the top. The geometry and boundary conditions are depicted in the figure. We discretize the model with triangular elements, refining the areas (element size h) where crack evolution is expected. The element size h must be sufficiently small to avoid mesh dependencies.
+A rectangular plate with an initial notch positioned at the bottom center is shown in the figure below.. This beam is supported at its ends, as shown in the figure. The bottom left part is fixed in all directions, while the bottom right part is fixed in the vertical direction. A vertical displacement is applied at the top. The geometry and boundary conditions are depicted in the figure. We discretize the model with triangular elements, refining the areas (element size h) where crack evolution is expected. The element size h must be sufficiently small to avoid mesh dependencies.
 
 .. code-block::
       
@@ -214,6 +214,7 @@ bc_top = bc_y(top_facet_marker, V_u, fdim)
 # conditions and can be expanded if additional conditions are needed.
 bcs_list_u = [bc_top, bc_bottom_left, bc_bottom_right]
 
+###############################################################################
 # Function: `update_boundary_conditions`
 # --------------------------------------
 # The `update_boundary_conditions` function dynamically updates the displacement boundary conditions at each time step.
@@ -256,7 +257,7 @@ T = dolfinx.fem.Constant(msh, petsc4py.PETSc.ScalarType((0.0, 0.0)))
 
 
 ###############################################################################
-# Boundary Conditions four phase field
+# Boundary Conditions for phase field
 bcs_list_phi = []
 
 
