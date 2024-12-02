@@ -373,35 +373,35 @@ S.set_color('b')
 # For this, the file is loaded using PyVista.
 file_vtu = pv.read(os.path.join(Data.results_folder_name, "paraview-solutions_vtu", "phasefieldx_p0_000037.vtu"))
 pv.start_xvfb()
+file_vtu.plot(scalars='phi', cpos='xy', show_scalar_bar=True, show_edges=False)
+# # %%
+# # Create a plotter instance
+# p = pv.Plotter()
 
-# %%
-# Create a plotter instance
-p = pv.Plotter()
+# # %%
+# # Plot all data with opacity set to 0.45
+# p.add_mesh(file_vtu, scalars='phi', show_scalar_bar=True, show_edges=False, opacity=0.45)
 
-# %%
-# Plot all data with opacity set to 0.45
-p.add_mesh(file_vtu, scalars='phi', show_scalar_bar=True, show_edges=False, opacity=0.45)
+# # %%
+# # Extract and plot values where phi > 0.95 with full opacity
+# phi_threshold = file_vtu.threshold(value=0.95, scalars='phi')
+# p.add_mesh(phi_threshold, scalars='phi', show_scalar_bar=False, show_edges=False, opacity=1.0)
 
-# %%
-# Extract and plot values where phi > 0.95 with full opacity
-phi_threshold = file_vtu.threshold(value=0.95, scalars='phi')
-p.add_mesh(phi_threshold, scalars='phi', show_scalar_bar=False, show_edges=False, opacity=1.0)
+# # %%
+# # Set camera position for a top-down view (xy-plane)
+# p.view_xy()
 
-# %%
-# Set camera position for a top-down view (xy-plane)
-p.view_xy()
-
-# %%
-# Display the plot
-p.show()
+# # %%
+# # Display the plot
+#p.show()
 
 ###############################################################################
 # Plot: displacement $\boldsymbol u$
 # ----------------------------------
 # The displacements results saved in the .vtu file are shown.
 # For this, the file is loaded using PyVista.
-# file_vtu = pv.read(os.path.join(Data.results_folder_name, "paraview-solutions_vtu", "phasefieldx_p0_000037.vtu"))
-# file_vtu.plot(scalars='u', cpos='xy', show_scalar_bar=True, show_edges=False)
+file_vtu = pv.read(os.path.join(Data.results_folder_name, "paraview-solutions_vtu", "phasefieldx_p0_000037.vtu"))
+file_vtu.plot(scalars='u', cpos='xy', show_scalar_bar=True, show_edges=False)
 
 
 ###############################################################################
