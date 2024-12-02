@@ -400,8 +400,8 @@ p.show()
 # ----------------------------------
 # The displacements results saved in the .vtu file are shown.
 # For this, the file is loaded using PyVista.
-file_vtu = pv.read(os.path.join(Data.results_folder_name, "paraview-solutions_vtu", "phasefieldx_p0_000037.vtu"))
-file_vtu.plot(scalars='u', cpos='xy', show_scalar_bar=True, show_edges=False)
+# file_vtu = pv.read(os.path.join(Data.results_folder_name, "paraview-solutions_vtu", "phasefieldx_p0_000037.vtu"))
+# file_vtu.plot(scalars='u', cpos='xy', show_scalar_bar=True, show_edges=False)
 
 
 ###############################################################################
