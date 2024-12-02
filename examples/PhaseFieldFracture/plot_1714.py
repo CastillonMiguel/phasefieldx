@@ -6,7 +6,7 @@ Three point bending test
 
 A well-known benchmark simulation in fracture mechanics is performed, relying on the simulation conducted by [Miehe]_. This simulation considers an anisotropic formulation with spectral energy decomposition.
 
-A rectangular plate with an initial notch positioned at the bottom center is shown in the figure below.. This beam is supported at its ends, as shown in the figure. The bottom left part is fixed in all directions, while the bottom right part is fixed in the vertical direction. A vertical displacement is applied at the top. The geometry and boundary conditions are depicted in the figure. We discretize the model with triangular elements, refining the areas (element size h) where crack evolution is expected. The element size h must be sufficiently small to avoid mesh dependencies.
+A rectangular plate with an initial notch positioned at the bottom center is shown in the figure below. This beam is supported at its ends, as shown in the figure. The bottom left part is fixed in all directions, while the bottom right part is fixed in the vertical direction. A vertical displacement is applied at the top. The geometry and boundary conditions are depicted in the figure. We discretize the model with triangular elements, refining the areas (element size h) where crack evolution is expected. The element size h must be sufficiently small to avoid mesh dependencies.
 
 .. code-block::
       
