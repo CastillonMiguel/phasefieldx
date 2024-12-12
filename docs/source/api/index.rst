@@ -10,8 +10,10 @@ Welcome to the API Reference chapter of our documentation! This section provides
    Errors/main
    Norms/main
    Boundary/main
+   Element/main
    Loading/main
+   Logger/main
    Materials/main
    Math/main
+   PostProcessing/main
    Solvers/main
-   Element/main
