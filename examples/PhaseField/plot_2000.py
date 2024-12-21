@@ -360,25 +360,17 @@ W = np.tanh(a_div_l)
 
 fig, energy = plt.subplots()  # Create a figure for plotting energy
 
-# %%
-# Plot the theoretical energy values
 energy.plot(l_array, W_phi, 'r-', label='$W_{\phi}$')  # Energy for `phi`
 energy.plot(l_array, W_gradphi, 'b-', label='$W_{V \phi}$')  # Energy for gradient of `phi`
 energy.plot(l_array, W, 'k-', label='$W$')  # Total energy
 
-# %%
-# Plot the energy values obtained from the simulation
-# The values are scaled by 2 and correspond to the total energy components.
 energy.plot(Data.l, 2 * S.energy_files['total.energy']["gamma_phi"][0], 'k*', label=S.label)
 energy.plot(Data.l, 2 * S.energy_files['total.energy']["gamma_gradphi"][0], 'k*')
 energy.plot(Data.l, 2 * S.energy_files['total.energy']["gamma"][0], 'k*')
 
-# %%
-# Set plot labels and grid
-energy.set_xlabel('Length Scale Parameter $l$')  # X-axis label
-energy.set_ylabel('Energy')  # Y-axis label
-energy.grid(color='k', linestyle='-', linewidth=0.3)  # Grid settings
-energy.legend()  # Display the legend
-
+energy.set_xlabel('Length Scale Parameter $l$')  
+energy.set_ylabel('Energy')  
+energy.grid(color='k', linestyle='-', linewidth=0.3)
+energy.legend()
 
 plt.show()
