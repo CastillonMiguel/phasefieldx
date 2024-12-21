@@ -1,4 +1,4 @@
-"""
+r"""
 .. _ref_2000:
 
 Crack surface density functional
