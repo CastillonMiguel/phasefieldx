@@ -363,7 +363,7 @@ fig, energy = plt.subplots()  # Create a figure for plotting energy
 # %%
 # Plot the theoretical energy values
 energy.plot(l_array, W_phi, 'r-', label='$W_{\phi}$')  # Energy for `phi`
-energy.plot(l_array, W_gradphi, 'b-', label='$W_{\nabla \phi}$')  # Energy for gradient of `phi`
+energy.plot(l_array, W_gradphi, 'b-', label='$W_{V \phi}$')  # Energy for gradient of `phi`
 energy.plot(l_array, W, 'k-', label='$W$')  # Total energy
 
 # %%
