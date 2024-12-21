@@ -361,10 +361,6 @@ W = np.tanh(a_div_l)
 fig, energy = plt.subplots()  # Create a figure for plotting energy
 
 # %%
-# Enable LaTeX rendering for plot labels
-plt.rc('text', usetex=True)
-
-# %%
 # Plot the theoretical energy values
 energy.plot(l_array, W_phi, 'r-', label=r'$W_{\phi}$')  # Energy for `phi`
 energy.plot(l_array, W_gradphi, 'b-', label=r'$W_{\nabla \phi}$')  # Energy for gradient of `phi`
