@@ -285,7 +285,7 @@ S.set_color('b')
 # ------------------------
 # The phase-field result saved in the .vtu file is shown.
 # For this, the file is loaded using PyVista.
-pv.start_xvfb()
+#pv.start_xvfb()
 file_vtu = pv.read(os.path.join(Data.results_folder_name, "paraview-solutions_vtu", "phasefieldx_p0_000000.vtu"))
 file_vtu.plot(scalars='phi', cpos='xy', show_scalar_bar=True, show_edges=False)
 
@@ -362,9 +362,9 @@ fig, energy = plt.subplots()  # Create a figure for plotting energy
 
 # %%
 # Plot the theoretical energy values
-energy.plot(l_array, W_phi, 'r-', label=r'$W_{\phi}$')  # Energy for `phi`
-energy.plot(l_array, W_gradphi, 'b-', label=r'$W_{\nabla \phi}$')  # Energy for gradient of `phi`
-energy.plot(l_array, W, 'k-', label=r'$W$')  # Total energy
+energy.plot(l_array, W_phi, 'r-', label='$W_{\phi}$')  # Energy for `phi`
+energy.plot(l_array, W_gradphi, 'b-', label='$W_{\nabla \phi}$')  # Energy for gradient of `phi`
+energy.plot(l_array, W, 'k-', label='$W$')  # Total energy
 
 # %%
 # Plot the energy values obtained from the simulation
