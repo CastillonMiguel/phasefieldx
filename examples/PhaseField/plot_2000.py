@@ -212,11 +212,11 @@ V_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1))
 # are constant and do not change throughout the simulation.
 #
 # - `bc_phi` is a function that creates a Dirichlet boundary condition on a specified 
-# facet of the mesh for the scalar field $\phi$.
+#   facet of the mesh for the scalar field $\phi$.
 # - `bcs_list_phi` is a list that stores all the boundary conditions for $\phi$, 
-# facilitating easy management and extension of conditions if needed.
+#   facilitating easy management and extension of conditions if needed.
 # - `update_boundary_conditions` and `update_loading` are set to `None` as they are 
-# unused in this static case with constant boundary conditions and loading.
+#   unused in this static case with constant boundary conditions and loading.
 
 bc_left = bc_phi(left_facet_marker, V_phi, fdim, value=1.0)
 bcs_list_phi = [bc_left]
@@ -234,15 +234,17 @@ update_loading = None
 # is linear and time-independent.
 #
 # Parameters:
+#
 # - `final_time`: The end time for the simulation, set to 1.0.
 # - `dt`: The time step for the simulation, set to 1.0. In a static context, this
-# only provides uniformity with dynamic cases but does not change the results.
+#   only provides uniformity with dynamic cases but does not change the results.
 # - `path`: Optional path for saving results; set to `None` here to use the default.
 # - `quadrature_degree`: Defines the accuracy of numerical integration; set to 2 
-# for this problem.
+#   for this problem.
 #
 # Function Call:
 # The `solve` function is called with:
+#
 # - `Data`: Simulation data and parameters.
 # - `msh`: Mesh of the domain.
 # - `V_phi`: Function space for `phi`.
@@ -295,7 +297,7 @@ file_vtu.plot(scalars='phi', cpos='xy', show_scalar_bar=True, show_edges=False)
 # ----------------------------------
 # The phase-field value along the x-axis is plotted and compared with the
 # analytic solution. The analytic solution is given by:
-# $\phi(x) = e^{-|x|/l} + \frac{1}{e^{\frac{2a}{l}}+1} 2 \sinh \left( \frac{|x|}{l} \right)$
+# $\phi(x) = e^{-|x|/l} + \frac{1}{e^{\frac{2a}{l}}+1} 2 \sinh \left(\frac{|x|}{l} \right)$
 # Note: in this case a = lx
 xt = np.linspace(-lx, lx, 1000)
 phi_theory = np.exp(-abs(xt) / Data.l) + 1 / (np.exp(2 * lx / Data.l) + 1) * 2 * np.sinh(np.abs(xt) / Data.l)
@@ -319,12 +321,13 @@ ax_phi.legend()
 #
 # The energy components are calculated for the scalar field `phi` and its gradient. 
 # We compare the following energy terms:
+#
 # - `W_phi`: The energy associated with the scalar field `phi`.
-# $W_{\phi} = \frac{1}{2l} \int_{-a}^{a}   \left[ e^{-|x|/l} + \frac{1}{e^{\frac{2a}{l}}+1} 2 \sinh \left( \frac{|x|}{l} \right) \right]^2 dx$
+#   $W_{\phi} = \frac{1}{2l} \int_{-a}^{a}   \left[ e^{-|x|/l} + \frac{1}{e^{\frac{2a}{l}}+1} 2 \sinh \left( \frac{|x|}{l} \right) \right]^2 dx$
 # - `W_gradphi`: The energy associated with the gradient of the scalar field.
-# $W_{\nabla \phi}(\phi) = \frac{l}{2} \int_{-a}^{a}   \left[ \frac{-\text{sign}(x)}{l} e^{-|x|/l} + \frac{1}{e^{\frac{2a}{l}} +1} \frac{\text{sign}(x)}{l} 2 \cosh\left(\frac{|x|}{l}\right) \right]^2 dx$
+#   $W_{\nabla \phi}(\phi) = \frac{l}{2} \int_{-a}^{a}   \left[ \frac{-\text{sign}(x)}{l} e^{-|x|/l} + \frac{1}{e^{\frac{2a}{l}} +1} \frac{\text{sign}(x)}{l} 2 \cosh\left(\frac{|x|}{l}\right) \right]^2 dx$
 # - `W`: The total energy, which includes contributions from both the field and its gradient.
-# $W = \tanh \left( \frac{a}{l} \right)$
+#   $W = \tanh \left( \frac{a}{l} \right)$
 #
 # Theoretical expressions are computed for these energies as functions of the 
 # length scale parameter `l`. Additionally, energy values from the simulation 

@@ -1,4 +1,4 @@
-"""
+r"""
 .. _ref_1702:
 
 One Element tension anisotropic (spectral)
@@ -41,7 +41,7 @@ The Young's modulus, Poisson's ratio, and the critical energy release rate are g
    | l  | 0.1     | mm     |
    +----+---------+--------+
 
-In this case, due to the discretization, it is possible to obtain an analytical solution for the isotropic model by solving $\phi$ from the given equations. The term $|\nabla \phi|^2$ vanishes due to the discretization as explained by Molnar \cite{MOLNAR201727} and Miehe \cite{Miehe1} in the appendix.
+In this case, due to the discretization, it is possible to obtain an analytical solution for the isotropic model by solving $\phi$ from the given equations. The term $|\nabla \phi|^2$ vanishes due to the discretization as explained by Molnar [MOLNAR201727]_ and Miehe [Miehe1]_ in the appendix.
 
 .. math::
    \phi = \frac{2 \psi_a}{\frac{G_c}{l}+2\psi_a}=\frac{2 H}{\frac{G_c}{l}+2H}
@@ -79,6 +79,7 @@ from phasefieldx.PostProcessing.ReferenceResult import AllResults
 # ---------------------
 # `Data` is an input object containing essential parameters for simulation setup
 # and result storage:
+#
 # - `E`: Young's modulus, set to 210 $kN/mm^2$.
 # - `nu`: Poisson's ratio, set to 0.3.
 # - `Gc`: Critical energy release rate, set to 0.005 $kN/mm$.
@@ -170,8 +171,8 @@ ds_top = get_ds_bound_from_marker(top_facet_marker, msh, fdim)
 # and `"name"` is a label used for saving. Here, `ds_bottom` and `ds_top` are labeled 
 # as `"bottom"` and `"top"`, respectively, to ensure clarity when saving results.
 ds_list = np.array([
+                   [ds_top, "top"],
                    [ds_bottom, "bottom"],
-                   [ds_top, "top"]
                    ])
 
 
@@ -188,6 +189,7 @@ V_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1))
 # Boundary Conditions
 # -------------------
 # Dirichlet boundary conditions are defined as follows:
+#
 # - `bc_bottom`: Constrains both x and y displacements to 0 on the bottom boundary, 
 # ensuring that the bottom edge remains fixed.
 # - `bc_top`: Constrains the x displacement, while the vertical displacement on the 
@@ -211,29 +213,33 @@ bcs_list_u = [bc_top, bc_bottom]
 # by incrementally adjusting the displacements applied to specific degrees of freedom.
 #
 # Parameters:
+#
 # - `bcs`: A list of boundary conditions, where each element corresponds to a 
 #   boundary condition applied to a specific facet of the mesh.
 # - `time`: A scalar representing the current time step in the analysis.
 #
 # Function Details:
+#
 # - The displacement value `val` is computed based on the current `time`:
-#   - For `time <= 50`, `val` increases linearly as `val = 0.0003 * time`, simulating 
-#     gradual displacement along the y-axis.
-#   - For `50 < time <= 150`, `val` decreases linearly as `val = -0.0003 * (time - 50) + 0.015`.
-#   - For `time > 150`, `val` resumes a positive linear increase with a slight offset, 
-#     calculated as `val = 0.0003 * (time - 150) - 0.015`.
+# - For `time <= 50`, `val` increases linearly as `val = 0.0003 * time`, simulating 
+#   gradual displacement along the y-axis.
+# - For `50 < time <= 150`, `val` decreases linearly as `val = -0.0003 * (time - 50) + 0.015`.
+# - For `time > 150`, `val` resumes a positive linear increase with a slight offset, 
+#   calculated as `val = 0.0003 * (time - 150) - 0.015`.
 #
 # - This calculated value is assigned to the y-component of the displacement field 
 #   on the top boundary by modifying `bcs[0].g.value[1]`, where `bcs[0]` represents the 
 #   top boundary condition.
 #
 # Return Value:
+#
 # - A tuple `(0, val, 0)` is returned, representing the incremental displacement vector:
-#   - The first element (0) corresponds to no update for the x-displacement.
-#   - The second element (`val`) is the calculated y-displacement.
-#   - The third element (0) corresponds to no update for the z-displacement, applicable in 2D simulations.
+# - The first element (0) corresponds to no update for the x-displacement.
+# - The second element (`val`) is the calculated y-displacement.
+# - The third element (0) corresponds to no update for the z-displacement, applicable in 2D simulations.
 #
 # Purpose:
+#
 # - This function facilitates quasi-static analysis by applying controlled, time-dependent 
 #   boundary displacements. It is essential for simulations that involve gradual loading or unloading, 
 #   with periodic displacement adjustments.
@@ -260,11 +266,13 @@ f = None
 # This section sets up and calls the solver for a phase-field fracture problem.
 # 
 # **Key Points:**
+#
 # - The simulation is run for a final time of 200, with a time step of 1.0.
 # - The solver will manage the mesh, boundary conditions, and update the solution
 #   over the specified time steps.
 #
 # **Parameters:**
+#
 # - `dt`: The time step for the simulation, set to 1.0.
 # - `final_time`: The total simulation time, set to 200.0, which determines how 
 #   long the problem will be solved.
@@ -273,6 +281,7 @@ f = None
 #
 # **Function Call:**
 # The `solve` function is invoked with the following arguments:
+#
 # - `Data`: Contains the simulation parameters and configurations.
 # - `msh`: The mesh representing the domain for the problem.
 # - `final_time`: The total duration of the simulation (200.0).
@@ -339,7 +348,6 @@ file_vtu.plot(scalars='phi', cpos='xy', show_scalar_bar=True, show_edges=False)
 # The displacements results saved in the .vtu file are shown.
 # For this, the file is loaded using PyVista.
 file_vtu = pv.read(os.path.join(Data.results_folder_name, "paraview-solutions_vtu", "phasefieldx_p0_000080.vtu"))
-pv.start_xvfb()
 file_vtu.plot(scalars='u', cpos='xy', show_scalar_bar=True, show_edges=False)
 
 

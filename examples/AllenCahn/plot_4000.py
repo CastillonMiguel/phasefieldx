@@ -98,7 +98,8 @@ Data = Input(l=10.0,
 # ---------------
 # A 2a mm x 1 mm rectangular mesh with quadrilateral elements is created using Dolfinx.
 # The mesh is a structured grid with quadrilateral elements:
-# - `divx`, `divy`: Number of elements along the x and y axes .
+#
+# - `divx`, `divy`: Number of elements along the x and y axes.
 # - `lx`, `ly`: Physical domain dimensions in x and y.
 a = 50.0
 divx, divy = 100, 1
@@ -115,9 +116,10 @@ msh = dolfinx.mesh.create_rectangle(mpi4py.MPI.COMM_WORLD,
 # Boundary Identification
 # -----------------------
 # Boundary conditions and forces are applied to specific regions of the domain:
+#
 # - `left`: Identifies the $y=-a$ boundary.
 # - `right`: Identifies the $y=a$ boundary.
-# `fdim` is the dimension of boundary facets (1D for a 2D mesh).
+# - `fdim` is the dimension of boundary facets (1D for a 2D mesh).
 def left(x):
     return np.isclose(x[0], -a)
 
@@ -169,11 +171,11 @@ V_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1))
 # are constant and do not change throughout the simulation.
 #
 # - `bc_phi` is a function that creates a Dirichlet boundary condition on a specified 
-# facet of the mesh for the scalar field $\phi$.
+#   facet of the mesh for the scalar field $\phi$.
 # - `bcs_list_phi` is a list that stores all the boundary conditions for $\phi$, 
-# facilitating easy management and extension of conditions if needed.
+#   facilitating easy management and extension of conditions if needed.
 # - `update_boundary_conditions` and `update_loading` are set to `None` as they are 
-# unused in this static case with constant boundary conditions and loading.
+#   unused in this static case with constant boundary conditions and loading.
 bc_left = bc_phi(left_facet_marker, V_phi, fdim, value=-1.0)
 bc_right = bc_phi(right_facet_marker, V_phi, fdim, value=1.0)
 bcs_list_phi = [bc_left, bc_right]
@@ -191,15 +193,17 @@ update_loading = None
 # is linear and time-independent.
 #
 # Parameters:
+#
 # - `final_time`: The end time for the simulation, set to 1.0.
 # - `dt`: The time step for the simulation, set to 1.0. In a static context, this
-# only provides uniformity with dynamic cases but does not change the results.
+#   only provides uniformity with dynamic cases but does not change the results.
 # - `path`: Optional path for saving results; set to `None` here to use the default.
 # - `quadrature_degree`: Defines the accuracy of numerical integration; set to 2 
 #   for this problem.
 #
 # Function Call:
 # The `solve` function is called with:
+#
 # - `Data`: Simulation data and parameters.
 # - `msh`: Mesh of the domain.
 # - `V_phi`: Function space for `phi`.

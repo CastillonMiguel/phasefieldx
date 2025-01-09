@@ -1,4 +1,4 @@
-"""
+r"""
 .. _ref_1714:
 
 Three point bending test
@@ -70,13 +70,14 @@ from phasefieldx.PostProcessing.ReferenceResult import AllResults
 # ---------------------
 # `Data` is an input object containing essential parameters for simulation setup
 # and result storage:
+#
 # - `E`: Young's modulus, set to 20.8 $kN/mm^2$.
 # - `nu`: Poisson's ratio, set to 0.3.
 # - `Gc`: Critical energy release rate, set to 0.0005 $kN/mm$.
 # - `l`: Length scale parameter, set to 0.06 $mm$.
 # - `degradation`: Specifies the degradation type. Options are "isotropic" or "anisotropic".
 # - `split_energy`: Controls how the energy is split; options include "no" (default), "spectral," or "deviatoric."
-# In this case an anisotropic model with spectral decomposition is considered.
+#   In this case an anisotropic model with spectral decomposition is considered.
 # - `degradation_function`: Specifies the degradation function; here, it is "quadratic."
 # - `irreversibility`: Determines the irreversibility criterion; in this case, set to "miehe."
 # - `fatigue`: Enables fatigue simulation when set to `True`.
@@ -103,8 +104,8 @@ Data = Input(E=20.8,     # young modulus
              fatigue_val=0.05625,
              k=0.0,
              min_stagger_iter=2,
-             max_stagger_iter=500,
-             stagger_error_tol=1e-8,
+             max_stagger_iter=1000,
+             stagger_error_tol=1e-6,
              save_solution_xdmf=False,
              save_solution_vtu=True,
              results_folder_name="1714_Three_point_bending")
@@ -176,9 +177,9 @@ ds_top = get_ds_bound_from_marker(top_facet_marker, msh, fdim)
 # and `"name"` is a label used for saving. Here, `ds_bottom` and `ds_top` are labeled 
 # as `"bottom"` and `"top"`, respectively, to ensure clarity when saving results.
 ds_list = np.array([
+                   [ds_top, "top"],
                    [ds_bottom_left, "bottom_left"],
                    [ds_bottom_right, "bottom_right"],
-                   [ds_top, "top"]
                    ])
 
 
@@ -194,12 +195,13 @@ V_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1))
 # Boundary Conditions
 # -------------------
 # Dirichlet boundary conditions are defined as follows:
+#
 # - `bc_bottom_left`: Constrains both x and y displacements on the bottom left boundary, 
-# ensuring that the leftmost bottom edge remains fixed.
+#   ensuring that the leftmost bottom edge remains fixed.
 # - `bc_bottom_right`: Constrains only the vertical displacement (y-displacement) on the 
-# bottom right boundary, while allowing horizontal movement.
+#   bottom right boundary, while allowing horizontal movement.
 # - `bc_top`: Constrains the vertical displacement (y-displacement) on the top boundary, 
-# while allowing horizontal movement.
+#   while allowing horizontal movement.
 #
 # These boundary conditions ensure that the relevant portions of the mesh are correctly 
 # fixed or allowed to move according to the simulation requirements.
@@ -219,26 +221,29 @@ bcs_list_u = [bc_top, bc_bottom_left, bc_bottom_right]
 # --------------------------------------
 # The `update_boundary_conditions` function dynamically updates the displacement boundary conditions at each time step.
 # This allows for quasi-static analysis by incrementally adjusting the displacements applied to specific degrees of freedom.
-
+#
 # Parameters:
+#
 # - `bcs`: A list of boundary conditions, where each element corresponds to a boundary condition applied to a specific facet of the mesh.
 # - `time`: A scalar representing the current time step in the analysis.
-
+#
 # Function Details:
+#
 # - The displacement value `val` is computed based on the current `time`:
-#   - For `time <= 36`, `val` increases linearly as `val = dt0 * time`, where `dt0` is a small time step factor (`10^-3`), simulating gradual displacement along the y-axis.
-#   - For `time > 36`, `val` increases more gradually as `val = 36 * dt0 + (dt0 / 10) * (time - 36)`, which represents a slower displacement rate after the initial phase.
-# 
+# - For `time <= 36`, `val` increases linearly as `val = dt0 * time`, where `dt0` is a small time step factor (`10^-3`), simulating gradual displacement along the y-axis.
+# - For `time > 36`, `val` increases more gradually as `val = 36 * dt0 + (dt0 / 10) * (time - 36)`, which represents a slower displacement rate after the initial phase.
 # - This calculated value is assigned to the y-component of the displacement field on the top boundary by modifying `bcs[0].g.value[1]`, where `bcs[0]` represents the top boundary condition.
 #   The displacement is negated to represent a displacement in the opposite direction.
-
+#
 # Return Value:
+#
 # - A tuple `(0, val, 0)` is returned, representing the incremental displacement vector:
-#   - The first element (0) corresponds to no update for the x-displacement.
-#   - The second element (`val`) is the calculated y-displacement.
-#   - The third element (0) corresponds to no update for the z-displacement, applicable in 2D simulations.
-
+# - The first element (0) corresponds to no update for the x-displacement.
+# - The second element (`val`) is the calculated y-displacement.
+# - The third element (0) corresponds to no update for the z-displacement, applicable in 2D simulations.
+#
 # Purpose:
+#
 # - This function facilitates quasi-static analysis by applying controlled, time-dependent boundary displacements. It is essential for simulations that involve gradual loading or unloading, with a slower displacement evolution after the initial phase.
 def update_boundary_conditions(bcs, time):
     dt0 = 10**-3
@@ -265,13 +270,15 @@ bcs_list_phi = []
 # Solver Call for a Phase-Field Fracture Problem
 # ----------------------------------------------
 # This section sets up and calls the solver for a phase-field fracture problem.
-# 
+#
 # **Key Points:**
+#
 # - The simulation is run for a final time of 150, with a time step of 1.0.
 # - The solver will manage the mesh, boundary conditions, and update the solution
 #   over the specified time steps.
 #
 # **Parameters:**
+#
 # - `dt`: The time step for the simulation, set to 1.0.
 # - `final_time`: The total simulation time, set to 200.0, which determines how 
 #   long the problem will be solved.
@@ -279,7 +286,9 @@ bcs_list_phi = []
 #   here it is set to `None`, meaning results will be saved to the default location.
 #
 # **Function Call:**
+#
 # The `solve` function is invoked with the following arguments:
+#
 # - `Data`: Contains the simulation parameters and configurations.
 # - `msh`: The mesh representing the domain for the problem.
 # - `final_time`: The total duration of the simulation (200.0).
@@ -349,7 +358,56 @@ file_vtu.plot(scalars='phi', cpos='xy', show_scalar_bar=True, show_edges=False)
 # The displacements results saved in the .vtu file are shown.
 # For this, the file is loaded using PyVista.
 file_vtu = pv.read(os.path.join(Data.results_folder_name, "paraview-solutions_vtu", "phasefieldx_p0_000065.vtu"))
-pv.start_xvfb()
 file_vtu.plot(scalars='u', cpos='xy', show_scalar_bar=True, show_edges=False)
+
+plt.show()
+
+
+###############################################################################
+# Plot: Displacement vs Fracture Energy
+# -------------------------------------
+# The vertical displacement is saved in S.dof_files["top.dof"]["Uy"].
+displacement = S.dof_files["top.dof"]["Uy"]
+
+fig, energyW = plt.subplots()
+
+energyW.plot(displacement, S.energy_files['total.energy']["W"], 'b-', linewidth=2.0, label=r'$W$')
+energyW.plot(displacement, S.energy_files['total.energy']["W_phi"], 'y-', linewidth=2.0, label=r'$W_{\phi}$')
+energyW.plot(displacement, S.energy_files['total.energy']["W_gradphi"], 'g-', linewidth=2.0, label=r'$W_{\nabla \phi}$')
+
+energyW.grid(color='k', linestyle='-', linewidth=0.3)
+energyW.set_xlabel('displacement - u $[mm]$')
+energyW.set_ylabel('Energy')
+energyW.legend()
+
+
+###############################################################################
+# Plot: Force vs Vertical Displacement
+# ------------------------------------
+Miehe = np.loadtxt(os.path.join("reference_solutions", "miehe_three_point.csv"))
+
+fig, ax_reaction = plt.subplots()
+
+ax_reaction.plot(Miehe[:, 0], Miehe[:, 1], 'g-', linewidth=2.0, label='Miehe')
+ax_reaction.plot(displacement, -S.reaction_files['top.reaction']["Ry"], 'k.', linewidth=2.0, label=S.label)
+ax_reaction.grid(color='k', linestyle='-', linewidth=0.3)
+ax_reaction.set_xlabel('displacement - u $[mm]$')
+ax_reaction.set_ylabel('reaction force - F $[kN]$')
+ax_reaction.set_title('Reaction Force vs Vertical Displacement')
+ax_reaction.legend()
+
+
+###############################################################################
+# Plot: Staggered Iterations vs Vertical Displacement
+# ---------------------------------------------------
+fig, ax_convergence = plt.subplots()
+
+ax_convergence.plot(displacement, S.convergence_files["phasefieldx.conv"]["stagger"], 'k.', linewidth=2.0, label='Stagger iterations')
+
+ax_convergence.grid(color='k', linestyle='-', linewidth=0.3)
+ax_convergence.set_xlabel('displacement - u $[mm]$')
+ax_convergence.set_ylabel('stagger iterations - []')
+ax_convergence.set_title('Stagger iterations vs vertical displacement')
+ax_convergence.legend()
 
 plt.show()

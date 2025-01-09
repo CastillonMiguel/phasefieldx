@@ -41,7 +41,7 @@ The Young's modulus, Poisson's ratio, and the critical energy release rate are g
    | l  | 0.1     | mm     |
    +----+---------+--------+
 
-In this case, due to the discretization, it is possible to obtain an analytical solution for the isotropic model by solving $\phi$ from the given equations. The term $|\nabla \phi|^2$ vanishes due to the discretization as explained by Molnar \cite{MOLNAR201727} and Miehe \cite{Miehe1} in the appendix.
+In this case, due to the discretization, it is possible to obtain an analytical solution for the isotropic model by solving $\phi$ from the given equations. The term $|\nabla \phi|^2$ vanishes due to the discretization as explained by Molnar [MOLNAR201727]_ and Miehe [Miehe1]_ in the appendix.
 
 .. math::
    \phi = \frac{2 \psi_a}{\frac{G_c}{l}+2\psi_a}=\frac{2 H}{\frac{G_c}{l}+2H}
@@ -81,6 +81,7 @@ from phasefieldx.PostProcessing.ReferenceResult import AllResults
 # ---------------------
 # `Data` is an input object containing essential parameters for simulation setup
 # and result storage:
+#
 # - `E`: Young's modulus, set to 210 $kN/mm^2$.
 # - `nu`: Poisson's ratio, set to 0.3.
 # - `Gc`: Critical energy release rate, set to 0.005 $kN/mm$.
@@ -172,8 +173,8 @@ ds_top = get_ds_bound_from_marker(top_facet_marker, msh, fdim)
 # and `"name"` is a label used for saving. Here, `ds_bottom` and `ds_top` are labeled 
 # as `"bottom"` and `"top"`, respectively, to ensure clarity when saving results.
 ds_list = np.array([
+                   [ds_top, "top"],
                    [ds_bottom, "bottom"],
-                   [ds_top, "top"]
                    ])
 
 
@@ -189,6 +190,7 @@ V_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1))
 # Boundary Conditions
 # -------------------
 # Dirichlet boundary conditions are defined as follows:
+#
 # - `bc_bottom`: Constrains both x and y displacements to 0 on the bottom boundary, 
 # ensuring that the bottom edge remains fixed.
 # - `bc_top`: Constrains the x displacement, while the vertical displacement on the 
@@ -211,11 +213,13 @@ bcs_list_u = [bc_top, bc_bottom]
 # by incrementally adjusting the displacements applied to specific degrees of freedom.
 #
 # Parameters:
+#
 # - `bcs`: A list of boundary conditions, where each element corresponds to a 
 # boundary condition applied to a specific facet of the mesh.
 # - `time`: A scalar representing the current time step in the analysis.
 #
 # Function Details:
+#
 # - The displacement value `val` is computed based on the current `time`:
 # - For `time <= 50`, `val` increases linearly as `val = 0.0003 * time`, simulating 
 # gradual displacement along the y-axis.
@@ -227,12 +231,14 @@ bcs_list_u = [bc_top, bc_bottom]
 # top boundary condition.
 #
 # Return Value:
+#
 # - A tuple `(0, val, 0)` is returned, representing the incremental displacement vector:
 # - The first element (0) corresponds to no x-displacement update.
 # - The second element (`val`) is the calculated y-displacement.
 # - The third element (0) corresponds to no z-displacement update, applicable in 2D simulations.
 #
 # Purpose:
+#
 # - This function facilitates quasi-static analysis by applying controlled, time-dependent 
 # boundary displacements. It is essential for simulations involving gradual loading or unloading.
 def update_boundary_conditions(bcs, time):
@@ -258,11 +264,13 @@ f = None
 # This section sets up and calls the solver for a phase-field fracture problem.
 # 
 # **Key Points:**
+#
 # - The simulation is run for a final time of 200, with a time step of 1.0.
 # - The solver will manage the mesh, boundary conditions, and update the solution
 #   over the specified time steps.
 #
 # **Parameters:**
+#
 # - `dt`: The time step for the simulation, set to 1.0.
 # - `final_time`: The total simulation time, set to 200.0, which determines how 
 #   long the problem will be solved.
@@ -271,6 +279,7 @@ f = None
 #
 # **Function Call:**
 # The `solve` function is invoked with the following arguments:
+#
 # - `Data`: Contains the simulation parameters and configurations.
 # - `msh`: The mesh representing the domain for the problem.
 # - `final_time`: The total duration of the simulation (200.0).
@@ -370,7 +379,6 @@ ax.legend()
 fig, ax = plt.subplots()
 
 ax.plot(displacement, S.reaction_files['top.reaction']["Ry"], S.color + '.', linewidth=2.0, label=S.label)
-
 ax.grid(color='k', linestyle='-', linewidth=0.3)
 ax.set_xlabel('displacement - u $[mm]$')
 ax.set_ylabel('reaction force - F $[kN]$')

@@ -1,4 +1,4 @@
-"""
+r"""
 .. _ref_1718:
 
 Damage Mechanics Challenge
@@ -90,13 +90,14 @@ from phasefieldx.PostProcessing.ReferenceResult import AllResults
 # ---------------------
 # `Data` is an input object containing essential parameters for simulation setup
 # and result storage:
+#
 # - `E`: Young's modulus, set to 0.6 $kN/mm^2$.
 # - `nu`: Poisson's ratio, set to 0.2.
 # - `Gc`: Critical energy release rate, set to 0.00013 $kN/mm$.
 # - `l`: Length scale parameter, set to 1.5 $mm$.
 # - `degradation`: Specifies the degradation type. Options are "isotropic" or "anisotropic".
 # - `split_energy`: Controls how the energy is split; options include "no" (default), "spectral," or "deviatoric."
-# In this case an anisotropic model with spectral decomposition is considered.
+#   In this case an anisotropic model with spectral decomposition is considered.
 # - `degradation_function`: Specifies the degradation function; here, it is "quadratic."
 # - `irreversibility`: Determines the irreversibility criterion; in this case, set to "miehe."
 # - `fatigue`: Enables fatigue simulation when set to `True`.
@@ -224,12 +225,13 @@ V_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1))
 # Boundary Conditions
 # -------------------
 # Dirichlet boundary conditions are defined as follows:
+#
 # - `bc_bottom_left`: Constrains both x, y and z displacements on the bottom left boundary, 
-# ensuring that the leftmost bottom edge remains fixed.
+#   ensuring that the leftmost bottom edge remains fixed.
 # - `bc_bottom_right`: Constrains only the vertical displacement (y-displacement) on the
-# bottom right boundary, while allowing horizontal movement.
+#   bottom right boundary, while allowing horizontal movement.
 # - `bc_top`: Constrains the vertical displacement (y-displacement) on the top boundary, 
-# while allowing horizontal movement.
+#   while allowing horizontal movement.
 #
 # These boundary conditions ensure that the relevant portions of the mesh are correctly 
 # fixed or allowed to move according to the simulation requirements.
@@ -252,27 +254,31 @@ bcs_list_u = [bc_top, bc_bottom_left, bc_bottom_right]
 # incrementally adjusting the displacements applied to specific degrees of freedom.
 #
 # Parameters:
+#
 # - `bcs`: A list of boundary conditions, where each element corresponds to a boundary 
 #   condition applied to a specific facet of the mesh.
 # - `time`: A scalar representing the current time step in the analysis.
 #
 # Function Details:
+#
 # - The displacement value `val` is computed based on the current `time`:
-#   - For gradual loading, `val = dt0 * time`, where `dt0` is a small time step factor 
-#     (default: `10^-2`), simulating incremental displacement along the y-axis.
+# - For gradual loading, `val = dt0 * time`, where `dt0` is a small time step factor 
+#   (default: `10^-2`), simulating incremental displacement along the y-axis.
 # - This calculated value is assigned to the y-component of the displacement field 
 #   on the top boundary by modifying `bcs[0].g.value[1]`, where `bcs[0]` represents 
 #   the top boundary condition. The displacement is negated to represent a 
 #   displacement in the opposite direction.
 #
 # Return Value:
+#
 # - A tuple `(0, val, 0)` is returned, representing the incremental displacement vector:
-#   - The first element (0) corresponds to no update for the x-displacement.
-#   - The second element (`val`) is the calculated y-displacement.
-#   - The third element (0) corresponds to no update for the z-displacement, applicable 
-#     in 2D simulations.
+# - The first element (0) corresponds to no update for the x-displacement.
+# - The second element (`val`) is the calculated y-displacement.
+# - The third element (0) corresponds to no update for the z-displacement, applicable 
+#   in 2D simulations.
 #
 # Purpose:
+#
 # - This function facilitates quasi-static analysis by applying controlled, time-dependent
 #   boundary displacements. It is crucial for simulations involving gradual loading or
 #   unloading with controlled displacement evolution.
@@ -300,11 +306,13 @@ bcs_list_phi = []
 # This section sets up and calls the solver for a phase-field fracture problem.
 # 
 # **Key Points:**
+#
 # - The simulation is run for a final time of 150, with a time step of 1.0.
 # - The solver will manage the mesh, boundary conditions, and update the solution
 #   over the specified time steps.
 #
 # **Parameters:**
+#
 # - `dt`: The time step for the simulation, set to 1.0.
 # - `final_time`: The total simulation time, set to 150.0, which determines how 
 #   long the problem will be solved.
@@ -312,7 +320,9 @@ bcs_list_phi = []
 #   here it is set to `None`, meaning results will be saved to the default location.
 #
 # **Function Call:**
+#
 # The `solve` function is invoked with the following arguments:
+#
 # - `Data`: Contains the simulation parameters and configurations.
 # - `msh`: The mesh representing the domain for the problem.
 # - `final_time`: The total duration of the simulation.
@@ -372,7 +382,7 @@ S.set_color('b')
 # The phase-field result saved in the .vtu file is shown.
 # For this, the file is loaded using PyVista.
 file_vtu = pv.read(os.path.join(Data.results_folder_name, "paraview-solutions_vtu", "phasefieldx_p0_000037.vtu"))
-pv.start_xvfb()
+# pv.start_xvfb()
 file_vtu.plot(scalars='phi', cpos='xy', show_scalar_bar=True, show_edges=False)
 # # %%
 # # Create a plotter instance
@@ -409,15 +419,15 @@ file_vtu.plot(scalars='u', cpos='xy', show_scalar_bar=True, show_edges=False)
 # ------------------------------------
 # The vertical displacement is saved in S.dof_files["top.dof"]["Uy"].
 displacement = S.dof_files["top.dof"]["Uy"]
-fig, ax_reaction = plt.subplots()
+# fig, ax_reaction = plt.subplots()
 
-ax_reaction.plot(displacement, -S.reaction_files['top.reaction']["Ry"]*1000, 'k.', linewidth=2.0, label=S.label)
+# ax_reaction.plot(displacement, -S.reaction_files['bottom.reaction']["Ry"]*1000, 'k.', linewidth=2.0, label=S.label)
 
-ax_reaction.grid(color='k', linestyle='-', linewidth=0.3)
-ax_reaction.set_xlabel('displacement - u $[mm]$')
-ax_reaction.set_ylabel('reaction force - F $[N]$')
-ax_reaction.set_title('Reaction Force vs Vertical Displacement')
-ax_reaction.legend()
+# ax_reaction.grid(color='k', linestyle='-', linewidth=0.3)
+# ax_reaction.set_xlabel('displacement - u $[mm]$')
+# ax_reaction.set_ylabel('reaction force - F $[N]$')
+# ax_reaction.set_title('Reaction Force vs Vertical Displacement')
+# ax_reaction.legend()
 
 
 ###############################################################################

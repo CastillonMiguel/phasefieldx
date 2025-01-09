@@ -79,6 +79,7 @@ from phasefieldx.PostProcessing.ReferenceResult import AllResults
 # ----------------------------
 # `Data` is an input object containing essential parameters for simulation setup
 # and result storage:
+#
 # - `E`: Young's modulus, set to 210 $kN/mm^2$.
 # - `nu`: Poisson's ratio, set to 0.3.
 # - `Gc`: Critical energy release rate, set to 0.0027 $kN/mm$.
@@ -123,7 +124,6 @@ Data = Input(E=210.0,    # young modulus
 # ---------------
 # The mesh is generated using Gmsh and saved as a 'mesh.msh' file. For more details 
 # on how to create the mesh, refer to the :ref:`ref_examples_91` examples.
-# The following lines 
 
 msh_file = os.path.join("mesh", "mesh.msh")  # Path to the mesh file
 gdim = 2                                     # Geometric dimension of the mesh
@@ -140,6 +140,7 @@ fdim = msh.topology.dim - 1 # Dimension of the mesh facets
 # %%
 # Facets defined in the .geo file used to generate the 'mesh.msh' file are identified here.
 # Each marker variable corresponds to a specific region on the specimen:
+#
 # - `bottom_facet_marker`: Refers to the bottom part of the specimen.
 # - `top_facet_marker`: Refers to the top part of the specimen.
 # - `right_facet_marker`: Refers to the right side of the specimen.
@@ -152,6 +153,7 @@ left_facet_marker = facet_markers.find(12)
 # %%
 # The `get_ds_bound_from_marker` function creates measures for applying boundary conditions
 # on specific facets. These measures are generated for:
+#
 # - `bottom_facet_marker` → Stored in `ds_bottom`
 # - `top_facet_marker` → Stored in `ds_top`
 # - `right_facet_marker` → Stored in `ds_right`
@@ -164,10 +166,12 @@ ds_left = get_ds_bound_from_marker(left_facet_marker, msh, fdim)
 # %%
 # `ds_list` is an array that organizes boundary condition measures alongside descriptive names.
 # Each entry in `ds_list` consists of two elements:
+#
 # - A measure (e.g., `ds_bottom`)
 # - A corresponding name (e.g., `"bottom"`)
 # This structure simplifies the process of saving results by associating each boundary condition
 # measure with a clear label. For instance:
+#
 # - `ds_bottom` is labeled as `"bottom"`.
 # - `ds_top` is labeled as `"top"`.
 ds_list = np.array([
@@ -188,6 +192,7 @@ V_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1))
 # Boundary Conditions
 # -------------------
 # Dirichlet boundary conditions are defined as follows:
+#
 # - `bc_bottom`: Constrains both x and y displacements to 0 on the bottom boundary,
 # ensuring that the bottom edge is fixed.
 # - `bc_top`: The vertical displacement on the top boundary is updated dynamically
@@ -205,9 +210,10 @@ bcs_list_u = [bc_top, bc_bottom]
 ###############################################################################
 # Definition of the Cyclic Load
 # -----------------------------
-# The cyclic load is applied by updating the boundary condition at the top of the specimen. 
+# The cyclic load is applied by updating the boundary condition at the top of the specimen.
 # The cyclic load follows the form $ \frac{2}{\pi} A \arcsin[\sin(\omega t)] $.
 # where:
+#
 # - $A = 0.002 \, \text{mm}$: Amplitude of the load.
 # - $f = \frac{1}{8}$: Frequency of the load in Hz.
 # - $\omega = 2 \pi f $: Angular frequency.
@@ -227,20 +233,25 @@ w = 2 * np.pi * f
 # prescribed cyclic loading function.
 #
 # Parameters:
+#
 # - `bcs`: A list of boundary conditions, where each entry corresponds to a specific facet of the mesh.
 # For this implementation, `bcs[0]` refers to the top boundary condition.
 # - `time`: A scalar representing the current time step in the simulation.
 #
 # Inside the function:
+#
 # - `val` is computed based on the cyclic load formula:
-# $$ \text{val} = \frac{2}{\pi} \cdot \text{amplitude} \cdot \arcsin(\sin(\omega \cdot \text{time})) $$
+#   $\text{val} = \frac{2}{\pi} \cdot \text{amplitude} \cdot \arcsin(\sin(\omega \cdot \text{time}))$
+#
 # where:
+#
 # - `amplitude` defines the maximum displacement of the cyclic load.
 # - `w` (omega) is the angular frequency, given by \( \omega = 2 \pi f \), where \( f \) is the frequency.
 # - The computed `val` represents the y-displacement applied to the boundary at the current time step.
 # - This value is dynamically updated in `bcs[0].g.value[...]` to apply the displacement to the top boundary.
 #
 # Returns:
+#
 # - A tuple `(0, val, 0)`, where:
 # - The first element is `0` (indicating no x-displacement).
 # - The second element is `val`, the calculated y-displacement.
@@ -271,12 +282,14 @@ bcs_list_phi = []
 # fatigue problem.
 # 
 # **Key Points:**
+#
 # - The cyclic load and time parameters are synchronized to ensure 8 time steps are 
 #   completed per cycle.
 # - The solver function handles displacement updates and loading evolution for the 
 #   quasi-static analysis.
 #
 # **Parameters:**
+#
 # - `dt`: The time step for the simulation, set to 1.0.
 # - `final_time`: The total simulation time, computed as \( 8 \cdot 200 + 1 \), ensuring
 # sufficient steps for the cyclic loading behavior.
@@ -287,6 +300,7 @@ bcs_list_phi = []
 #
 # **Function Call:**
 # The `solve` function is invoked with the following arguments:
+#
 # - `Data`: Contains simulation parameters and configurations.
 # - `msh`: The mesh of the domain.
 # - `final_time`: The total simulation time.
@@ -414,6 +428,7 @@ ax_alpha.legend()
 #
 # The red curve represents the evolution of the crack length as a function of the 
 # number of cycles, showing how the crack propagates with each loading cycle.
+#
 # - `cycles`: The x-axis represents the number of loading cycles.
 # - The y-axis represents the normalized crack length, where the maximum value 
 #   of `gamma` is scaled to 0.5 to represent the crack growth.

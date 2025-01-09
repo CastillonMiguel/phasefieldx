@@ -1,4 +1,4 @@
-"""
+r"""
 .. _ref_1101:
 
 Force control
@@ -9,6 +9,7 @@ This script simulates a linear elastic problem using a force-control approach, b
 Model Overview
 --------------
 The model represents a square plate with:
+
 - A fully fixed bottom edge, preventing both displacement and rotation.
 - A controlled vertical force applied along the top edge.
 
@@ -74,10 +75,11 @@ from phasefieldx.PostProcessing.ReferenceResult import AllResults
 # ----------------------------
 # `Data` is an input object containing essential parameters for simulation setup
 # and result storage:
+#
 # - `E`: Young's modulus, set to 210 kN/mm².
 # - `nu`: Poisson's ratio, set to 0.3.
 # - `save_solution_xdmf` and `save_solution_vtu`: Set to `False` and `True`, respectively,
-# specifying the file format to save displacement results (.vtu here).
+#   specifying the file format to save displacement results (.vtu here).
 # - `results_folder_name`: Name of the folder for saving results. If it exists,
 # it will be replaced with a new empty folder.
 Data = Input(E=210.0,
@@ -91,6 +93,7 @@ Data = Input(E=210.0,
 # Mesh Definition
 # ---------------
 # The mesh is a structured grid with quadrilateral elements:
+#
 # - `divx`, `divy`: Number of elements along the x and y axes (10 each).
 # - `lx`, `ly`: Physical domain dimensions in x and y (1.0 units each).
 divx, divy = 10, 10
@@ -106,6 +109,7 @@ msh = dolfinx.mesh.create_rectangle(mpi4py.MPI.COMM_WORLD,
 # Boundary Identification
 # -----------------------
 # Boundary conditions and forces are applied to specific regions of the domain:
+#
 # - `bottom`: Identifies the $y=0$ boundary.
 # - `top`: Identifies the $y=ly$ boundary.
 # `fdim` is the dimension of boundary facets (1D for a 2D mesh).
@@ -113,7 +117,7 @@ def bottom(x):
     return np.isclose(x[1], 0)
 
 def top(x):
-    return np.isclose(x[1], lx)
+    return np.isclose(x[1], ly)
 
 fdim = msh.topology.dim - 1
 
@@ -128,7 +132,7 @@ top_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, top)
 # The `get_ds_bound_from_marker` function generates a measure for applying boundary conditions 
 # specifically to the facets identified by `top_facet_marker` and `bottom_facet_marker`, respectively. 
 # This measure is then assigned to `ds_bottom` and `ds_top`.
-ds_bottom = get_ds_bound_from_marker(top_facet_marker, msh, fdim)
+ds_bottom = get_ds_bound_from_marker(bottom_facet_marker, msh, fdim)
 ds_top = get_ds_bound_from_marker(top_facet_marker, msh, fdim)
 
 # %%
@@ -139,9 +143,7 @@ ds_top = get_ds_bound_from_marker(top_facet_marker, msh, fdim)
 # as `"bottom"` and `"top"`, respectively, to ensure clarity when saving results.
 ds_list = np.array([
                    [ds_bottom, "bottom"],
-                   [ds_top, "top"]
                    ])
-
 
 ###############################################################################
 # Function Space Definition
@@ -155,6 +157,7 @@ V_u = dolfinx.fem.functionspace(msh, ("Lagrange", 1, (msh.geometry.dim, )))
 # Boundary Conditions
 # -------------------
 # Dirichlet boundary conditions are applied as follows:
+#
 # - `bc_bottom`: Fixes x and y displacement to 0 on the bottom boundary.
 bc_bottom = bc_xy(bottom_facet_marker, V_u, fdim)
 
@@ -191,19 +194,22 @@ f = None
 # force application over time.
 #
 # Parameters:
+#
 # - `T_list_u`: List of tuples where each entry corresponds to a load applied to a specific 
-# boundary or facet of the mesh.
+#   boundary or facet of the mesh.
 # - `time`: Scalar representing the current time step in the analysis.
 #
 # Inside the function:
+#
 # - `val` is calculated as `0.1 * time`, a linear function of `time`, which represents the 
-# gradual application of force in the y-direction. This scaling factor (`0.1` in this case) can
-# be adjusted to control the rate of force increase.
+#   gradual application of force in the y-direction. This scaling factor (`0.1` in this case) can
+#   be adjusted to control the rate of force increase.
 # - The value `val` is assigned to the y-component of the external force field on the top boundary
-# by setting `T_list_u[0][0].value[1]`, where `T_list_u[0][0]` represents the load applied to
-# the designated top boundary facet (`ds_top`).
+#   by setting `T_list_u[0][0].value[1]`, where `T_list_u[0][0]` represents the load applied to
+#   the designated top boundary facet (`ds_top`).
 #
 # Returns:
+#
 # - A tuple `(0, val, 0)` where:
 # - The first element is zero, indicating no load in the x-direction.
 # - The second element is `val`, the calculated y-directional force.
@@ -228,15 +234,17 @@ f = None
 # is linear and time-independent.
 #
 # Parameters:
+#
 # - `final_time`: The end time for the simulation, set to 10.0.
 # - `dt`: The time step for the simulation, set to 1.0. In a static context, this
-# only provides uniformity with dynamic cases but does not change the results.
+#   only provides uniformity with dynamic cases but does not change the results.
 # - `path`: Optional path for saving results; set to `None` here to use the default.
 # - `quadrature_degree`: Defines the accuracy of numerical integration; set to 2
-# for this problem.
+#   for this problem.
 #
 # Function Call:
 # The `solve` function is called with:
+#
 # - `Data`: Simulation data and parameters.
 # - `msh`: Mesh of the domain.
 # - `V_u`: Function space for $\boldsymbol u$.
@@ -244,7 +252,7 @@ f = None
 # - `update_boundary_conditions`, `update_loading`: update the boundary condition for the quasi static analysis
 # - `ds_list`: Boundary measures for integration on specified boundaries.
 # - `dt` and `final_time` to define the static solution time window.
-final_time = 10.0
+final_time = 11.0
 dt = 1.0
 
 solve(Data,
@@ -295,7 +303,7 @@ steps = S.dof_files["top.dof"]["#step"]
 # Plot steps vs reaction force
 fig, ax = plt.subplots()
 
-ax.plot(steps, S.reaction_files['top.reaction']["Ry"], S.color + '.', linewidth=2.0, label=S.label)
+ax.plot(steps, S.reaction_files['bottom.reaction']["Ry"], S.color + '.', linewidth=2.0, label=S.label)
 
 ax.grid(color='k', linestyle='-', linewidth=0.3)
 ax.set_xlabel('steps')

@@ -148,11 +148,11 @@ V_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1))
 # are constant and do not change throughout the simulation.
 #
 # - `bc_phi` is a function that creates a Dirichlet boundary condition on a specified 
-# facet of the mesh for the scalar field $\phi$.
+#   facet of the mesh for the scalar field $\phi$.
 # - `bcs_list_phi` is a list that stores all the boundary conditions for $\phi$, 
-# facilitating easy management and extension of conditions if needed.
+#   facilitating easy management and extension of conditions if needed.
 # - `update_boundary_conditions` and `update_loading` are set to `None` as they are 
-# unused in this static case with constant boundary conditions and loading.
+#   unused in this static case with constant boundary conditions and loading.
 
 bc_bottom = bc_phi(bottom_facet_marker, V_phi, fdim, value=1.0)
 bcs_list_phi = [bc_bottom]
@@ -170,6 +170,7 @@ update_loading = None
 # is linear and time-independent.
 #
 # Parameters:
+#
 # - `final_time`: The end time for the simulation, set to 1.0.
 # - `dt`: The time step for the simulation, set to 1.0. In a static context, this
 # only provides uniformity with dynamic cases but does not change the results.
@@ -179,12 +180,13 @@ update_loading = None
 #
 # Function Call:
 # The `solve` function is called with:
+#
 # - `Data`: Simulation data and parameters.
 # - `msh`: Mesh of the domain.
 # - `V_phi`: Function space for `phi`.
 # - `bcs_list_phi`: List of boundary conditions.
 # - `update_boundary_conditions`, `update_loading`: Set to `None` as they are 
-# unused in this static problem.
+#   unused in this static problem.
 # - `ds_list`: Boundary measures for integration on specified boundaries.
 # - `dt` and `final_time` to define the static solution time window.
 
