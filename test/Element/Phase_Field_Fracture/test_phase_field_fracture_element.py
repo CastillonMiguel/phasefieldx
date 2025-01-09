@@ -61,8 +61,8 @@ def test_phase_field_simulation():
     ds_top = get_ds_bound_from_marker(top_facet_marker, msh, fdim)
 
     ds_list = np.array([
+        [ds_top, "top"],
         [ds_bottom, "bottom"],
-        [ds_top, "top"]
     ])
 
     ###############################################################################
