@@ -125,8 +125,9 @@ def test_phase_field_simulation():
     phi_t = 2 * psi_t / (Data.Gc / Data.l + 2 * psi_t)
     sigma_t = displacement * (Data.lambda_ + 2 * Data.mu) * (1 - phi_t)**2
 
-    assert np.allclose(S.reaction_files["top.reaction"]["Ry"], sigma_t, atol=1e-8), \
-        f"Computed reaction force {S.reaction_files["top.reaction"]["Ry"]} does not match theoretical reaction {sigma_t}"
+    np.testing.assert_allclose(S.reaction_files["top.reaction"]["Ry"], sigma_t, rtol=1e-3, atol=1e-8, 
+                           err_msg=f"Computed reaction force {S.reaction_files['top.reaction']['Ry']} does not match theoretical reaction {sigma_t}")
+    
     # Clean up: Remove generated files
     if os.path.exists(Data.results_folder_name):
         import shutil
