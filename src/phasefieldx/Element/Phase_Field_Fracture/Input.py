@@ -107,8 +107,7 @@ class Input:
         logger.info(f"  split_energy: {self.split_energy}")
         logger.info(f"  degradation_function: {self.degradation_function}")
         logger.info(f"  irreversibility: {self.irreversibility}")
-        logger.info(
-            f"  fatigue degradation function: {self.fatigue_degradation_function}")
+        logger.info(f"  fatigue degradation function: {self.fatigue_degradation_function}")
         logger.info(f"  fatigue_val: {self.fatigue_val}")
         logger.info("Stagger settings: ")
         logger.info(f"  minimum stagger iterations: {self.min_stagger_iter}")

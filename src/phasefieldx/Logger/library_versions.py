@@ -71,8 +71,7 @@ def log_library_versions(logger):
     This function logs the versions of important libraries including Python, DolfinX,
     ufl, basix, numpy, and logging.
     """
-    logger.info(f"Python version: {sys.version_info.major}.{
-                sys.version_info.minor}")
+    logger.info(f"Python version: {sys.version_info.major}.{sys.version_info.minor}")
     logger.info("=========== Library Versions ===========")
     logger.info(f"PhaseFieldX : {phasefieldx.__version__}")
     logger.info(f"DolfinX : {dolfinx.__version__}")
@@ -116,8 +115,7 @@ def log_end_analysis(logger, totaltime=0.0):
     logger.info(f"\n\n End of computations")
     logger.info(f" Analysis finished correctly.")
     logger.info(f" total simulation time: {totaltime}")
-    logger.info(f"Analysis finished on {time.strftime(
-        '%a %b %d %H:%M:%S %Y', time.localtime())}")
+    logger.info(f"Analysis finished on {time.strftime('%a %b %d %H:%M:%S %Y', time.localtime())}")
 
 
 def log_model_information(msh, logger):
