@@ -9,7 +9,6 @@ import dolfinx
 import numpy as np
 import petsc4py
 
-
 def calculate_reaction_forces(J_form, F_form, bcs, u, dimension):
     """
     Compute the reaction forces at the constrained degrees of freedom (DOFs).
@@ -40,8 +39,8 @@ def calculate_reaction_forces(J_form, F_form, bcs, u, dimension):
     dolfinx.fem.petsc.assemble_vector(residual_vector, F_form)
 
     # Apply lifting of the boundary conditions to include contributions at constrained DOFs
-    dolfinx.fem.petsc.apply_lifting(residual_vector, [J_form], [bcs], x0=[u.vector], scale=1.0)
-    dolfinx.fem.petsc.set_bc(residual_vector, bcs, u.vector, scale=1.0)
+    dolfinx.fem.petsc.apply_lifting(residual_vector, [J_form], [bcs], x0=[u.x.petsc_vec], alpha=1.0)
+    dolfinx.fem.petsc.set_bc(residual_vector, bcs, u.x.petsc_vec, alpha=1.0)
 
     # Synchronize ghost values (necessary for parallel runs)
     residual_vector.ghostUpdate(addv=petsc4py.PETSc.InsertMode.ADD,
@@ -49,7 +48,6 @@ def calculate_reaction_forces(J_form, F_form, bcs, u, dimension):
 
     # The reaction forces are the negative of the residual forces at the constrained DOFs
     residual_vector.scale(-1.0)
- 
     reaction_forces = np.array([0.0, 0.0, 0.0])
 
     if dimension == 1:
