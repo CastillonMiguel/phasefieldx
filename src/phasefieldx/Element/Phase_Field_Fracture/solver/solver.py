@@ -21,7 +21,7 @@ from phasefieldx.Logger.library_versions import set_logger, log_system_info, log
 
 
 from phasefieldx.Materials.elastic_isotropic import epsilon
-from phasefieldx.Element.Phase_Field_Fracture.reactions_forces_functions import calculate_reaction_forces_phi, calculate_reaction_forces
+from phasefieldx.Reactions import calculate_reaction_forces
 
 
 from phasefieldx.Element.Phase_Field_Fracture.g_degradation_functions import dg, g
@@ -137,7 +137,9 @@ def solve(Data,
     # Displacement -----------------------------------------------------------
     F_u = ufl.inner((g(phi_new, Data.degradation_function) + Data.k) *
                     sigma_a(u_new, Data) + sigma_b(u_new, Data), epsilon(δu)) * ufl.dx
-
+    #F_u_form = dolfinx.fem.form(F_u)
+    F_u_form = dolfinx.fem.form(ufl.inner((g(phi_new, Data.degradation_function) + Data.k) *
+                    sigma_a(u_new, Data) + sigma_b(u_new, Data), epsilon(δu)) * ufl.dx)
     # External forces --------------------------------------------------------
     if T_list_u is not None:
         L = ufl.inner(T_list_u[0][0], δu) * T_list_u[0][1]
@@ -147,6 +149,7 @@ def solve(Data,
         F_u -= L
 
     J_u = ufl.derivative(F_u, u_new)
+    J_u_form = dolfinx.fem.form(J_u)
     U_problem = dolfinx.fem.petsc.NonlinearProblem(
         F_u, u_new, bcs=bc_list_u, J=J_u)
 
@@ -306,16 +309,9 @@ def solve(Data,
 
         # Reaction -----------------------------------------------------------
         for i in range(0, ds_bound.shape[0]):
-            R_phi = calculate_reaction_forces_phi(
-                u_new, phi_new, Data, ds_bound[i][0], msh.topology.dim)
-            R = calculate_reaction_forces(
-                u_new, Data, ds_bound[i][0], msh.topology.dim)
-
+            R = calculate_reaction_forces(J_u_form, F_u_form, [bc_list_u[i]], u_new, msh.topology.dim)
             append_results_to_file(os.path.join(
-                result_folder_name, ds_bound[i][1] + ".reaction"), '#step\tRx\tRy\tRz', step, R_phi[0], R_phi[1], R_phi[2])
-
-            append_results_to_file(os.path.join(
-                result_folder_name, ds_bound[i][1] + "_natural.reaction"), '#step\tRx\tRy\tRz', step, R[0], R[1], R[2])
+                result_folder_name, ds_bound[i][1] + ".reaction"), '#step\tRx\tRy\tRz', step, R[0], R[1], R[2])
 
         # Energy -------------------------------------------------------------
         E = dolfinx.fem.assemble_scalar(dolfinx.fem.form(

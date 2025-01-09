@@ -15,6 +15,7 @@ from .Logger import *
 from .Materials import *
 from .Math import *
 from .PostProcessing import *
+from .Reactions import *
 from .solvers import *
 from .errors_functions import *
 from .files import *
@@ -30,6 +31,7 @@ __all__ = [
     'Materials',
     'Math',
     'PostProcessing',
+    'Reactions',
     'solvers',
     'errors_functions',
     'files',

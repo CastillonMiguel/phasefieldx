@@ -18,7 +18,7 @@ from phasefieldx.solvers.newton import NewtonSolver
 from phasefieldx.Logger.library_versions import set_logger, log_library_versions, log_system_info, log_end_analysis, log_model_information
 
 from phasefieldx.Materials.elastic_isotropic import epsilon, sigma, psi
-from phasefieldx.Element.Elasticity.reactions_forces_functions import calculate_reaction_forces
+from phasefieldx.Reactions import calculate_reaction_forces
 
 
 def solve(Data,
@@ -116,7 +116,8 @@ def solve(Data,
     dx = ufl.Measure("dx", domain=msh, metadata=metadata)
 
     # Displacement -----------------------------------------------------------
-    F_u = ufl.inner(sigma(u, Data.lambda_, Data.mu), epsilon(δu)) * ufl.dx
+    F_u = ufl.inner(sigma(u, Data.lambda_, Data.mu), epsilon(δu)) * dx
+    F_u_form = dolfinx.fem.form(F_u)
 
     # External forces --------------------------------------------------------
     if T_list_u is not None:
@@ -127,6 +128,7 @@ def solve(Data,
         F_u -= L
 
     J_u = ufl.derivative(F_u, u)
+    J_u_form = dolfinx.fem.form(J_u)
     problem = dolfinx.fem.petsc.NonlinearProblem(F_u, u, bcs=bc_list_u, J=J_u)
 
     solver_u = NewtonSolver(problem)
@@ -194,14 +196,12 @@ def solve(Data,
 
         # Reaction -----------------------------------------------------------
         for i in range(0, ds_bound.shape[0]):
-            R = calculate_reaction_forces(
-                u, Data, ds_bound[i][0], msh.topology.dim)
-            append_results_to_file(os.path.join(
-                result_folder_name, ds_bound[i][1] + ".reaction"), '#step\tRx\tRy\tRz', step, R[0], R[1], R[2])
-
+            R = calculate_reaction_forces(J_u_form, F_u_form, [bc_list_u[i]], u, msh.topology.dim)
+            append_results_to_file(os.path.join(result_folder_name, ds_bound[i][1] + ".reaction"), '#step\tRx\tRy\tRz', step, R[0], R[1], R[2])
+              
         # Energy -------------------------------------------------------------
         E = dolfinx.fem.assemble_scalar(dolfinx.fem.form(
-            psi(u, Data.lambda_, Data.mu) * ufl.dx))
+            psi(u, Data.lambda_, Data.mu) * dx))
         append_results_to_file(os.path.join(
             result_folder_name, "total.energy"), '#step\tE', step, E)
 
