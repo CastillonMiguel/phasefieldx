@@ -96,9 +96,7 @@ def test_allen_cahn_free_energy(a, l, divx):
 
     # Compare the computed total energy with the theoretical energy
     energy_simulation = S.energy_files["total.energy"]["gamma"][0]
-    assert np.isclose(energy_simulation, energy_theory, atol=1e-3), \
-        f"Simulated energy {
-            energy_simulation} does not match theoretical energy {energy_theory}"
+    assert np.isclose(energy_simulation, energy_theory, atol=1e-3), f"Simulated energy {energy_simulation} does not match theoretical energy {energy_theory}"
 
     # Clean up: remove the generated files
     if os.path.exists(Data.results_folder_name):

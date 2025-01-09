@@ -43,8 +43,7 @@ def eigenstate3_legacy(A):
     Note: Tensor A must not have complex eigenvalues!
     """
     if ufl.shape(A) != (3, 3):
-        raise RuntimeError(f"Tensor A of shape {
-                           ufl.shape(A)} != (3, 3) is not supported!")
+        raise RuntimeError(f"Tensor A of shape {ufl.shape(A)} != (3, 3) is not supported!")
     #
     eps = 1.0e-10
     #
@@ -91,8 +90,7 @@ def eigenstate3(A):
     Note: Tensor A must not have complex eigenvalues!
     """
     if ufl.shape(A) != (3, 3):
-        raise RuntimeError(f"Tensor A of shape {
-                           ufl.shape(A)} != (3, 3) is not supported!")
+        raise RuntimeError(f"Tensor A of shape {ufl.shape(A)} != (3, 3) is not supported!")
     #
     # slightly above 2**-(53 - 1), see https://en.wikipedia.org/wiki/IEEE_754
     eps = 3.0e-16
@@ -181,8 +179,7 @@ def eigenstate2(A):
     Note: Tensor A must not have complex eigenvalues!
     """
     if ufl.shape(A) != (2, 2):
-        raise RuntimeError(f"Tensor A of shape {
-                           ufl.shape(A)} != (2, 2) is not supported!")
+        raise RuntimeError(f"Tensor A of shape {ufl.shape(A)} != (2, 2) is not supported!")
     #
     # slightly above 2**-(53 - 1), see https://en.wikipedia.org/wiki/IEEE_754
     eps = 3.0e-16
@@ -219,8 +216,7 @@ def eigenstate(A):
     elif ufl.shape(A) == (2, 2):
         return eigenstate2(A)
     else:
-        raise RuntimeError(f"Tensor A of shape {
-                           ufl.shape(A)} is not supported!")
+        raise RuntimeError(f"Tensor A of shape {ufl.shape(A)} is not supported!")
 
 
 def matrix_function(A, fn=lambda A: A):

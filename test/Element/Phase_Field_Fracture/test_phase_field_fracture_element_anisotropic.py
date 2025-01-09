@@ -144,11 +144,9 @@ def test_phase_field_simulation_anisotropic(split_energy_i):
         sigma_t = k0 * ep + 2 * Data.mu * (2 / 3 * displacement) * (1 - phi_t)**2 + k0 * en
 
     else:
-        raise ValueError(f"Invalid value for split_energy: {
-                         Data.split_energy}. Expected 'spectral' or 'deviatoric'.")
+        raise ValueError(f"Invalid value for split_energy: {Data.split_energy}. Expected 'spectral' or 'deviatoric'.")
 
-    assert np.allclose(S.reaction_files['top.reaction']["Ry"], sigma_t, atol=1e-8), f"Computed reaction force {
-        S.reaction_files['top.reaction']["Ry"]} does not match theoretical reaction {sigma_t} for {Data.split_energy}"
+    assert np.allclose(S.reaction_files['top.reaction']["Ry"], sigma_t, atol=1e-8), f"Computed reaction force {S.reaction_files['top.reaction']["Ry"]} does not match theoretical reaction {sigma_t} for {Data.split_energy}"
 
     # Clean up: Remove generated files
     if os.path.exists(Data.results_folder_name):
