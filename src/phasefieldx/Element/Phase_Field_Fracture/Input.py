@@ -135,8 +135,7 @@ class Input:
             f"  split_energy: {self.split_energy}",
             f"  degradation_function: {self.degradation_function}",
             f"  irreversibility: {self.irreversibility}",
-            f"  fatigue degradation function: {
-                self.fatigue_degradation_function}",
+            f"  fatigue degradation function: {self.fatigue_degradation_function}",
             f"  fatigue_val: {self.fatigue_val}"
         ]
         return "\n".join(parameter_info)
