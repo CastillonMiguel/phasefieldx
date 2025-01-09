@@ -81,17 +81,13 @@ class NewtonSolver:
             A string representing the configuration settings.
         """
         config_str = "Newton Solver Configuration:\n"
-        config_str += f"  Convergence criterion: {
-            self.solver.convergence_criterion}\n"
+        config_str += f"  Convergence criterion: {self.solver.convergence_criterion}\n"
         config_str += f"  Absolute tolerance: {self.solver.atol}\n"
         config_str += f"  Relative tolerance: {self.solver.rtol}\n"
         config_str += f"  Maximum iterations: {self.solver.max_it}\n\n"
         config_str += "KSP settings:\n"
-        config_str += f"  KSP type: {
-            self.opts[f'{self.option_prefix}ksp_type']}\n"
-        config_str += f"  PC type: {
-            self.opts[f'{self.option_prefix}pc_type']}\n"
-        config_str += f"  PC factor mat solver type: {
-            self.opts[f'{self.option_prefix}pc_factor_mat_solver_type']}"
+        config_str += f"  KSP type: {self.opts[f'{self.option_prefix}ksp_type']}\n"
+        config_str += f"  PC type: {self.opts[f'{self.option_prefix}pc_type']}\n"
+        config_str += f"  PC factor mat solver type: {self.opts[f'{self.option_prefix}pc_factor_mat_solver_type']}"
 
         return config_str
