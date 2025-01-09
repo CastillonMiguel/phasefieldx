@@ -61,9 +61,7 @@ class NewtonSolver:
             The logger to save the information to.
         """
         logger.info("Newton Solver settings:")
-        logger.info(
-            f"  Convergence criterion: {self.solver.convergence_criterion}"
-        )
+        logger.info(f"  Convergence criterion: {self.solver.convergence_criterion}")
         logger.info(f"  Absolute tolerance: {self.solver.atol}")
         logger.info(f"  Relative tolerance: {self.solver.rtol}")
         logger.info(f"  Maximum iterations: {self.solver.max_it}")
