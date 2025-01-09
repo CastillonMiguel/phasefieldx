@@ -9,7 +9,7 @@ description = "PhaseFieldX: An Open-Source Framework for Advanced Phase-Field Si
 authors = [{ name="Miguel Castillon", email="phasefieldx@gmail.com" }]
 license = { file = "LICENSE" }
 readme = "README.rst"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",

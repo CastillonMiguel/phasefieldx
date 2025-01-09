@@ -19,7 +19,7 @@ jobs:
     - name: Set up Conda
       uses: conda-incubator/setup-miniconda@v2  
       with:
-        python-version: 3.8
+        python-version: 3.10
         auto-update-conda: true
         auto-activate-base: false
 
