@@ -218,11 +218,4 @@ html_theme_options = {
     "footer_start": ["sphinx-version"],
     "github_url": "https://github.com/CastillonMiguel/phasefieldx",
     "navbar_align": "left",
-    "icon_links": [
-        {
-            "name": "Google",
-            "url": "https://google.com",
-            "icon": "fa-brands fa-mastodon",
-        },
-    ],
 }
