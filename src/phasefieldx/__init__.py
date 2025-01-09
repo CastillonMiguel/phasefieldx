@@ -1,6 +1,6 @@
 # phasefieldx/__init__.py
 
-__version__ = "0.0.6"
+__version__ = "0.0.7"
 __author__ = "Miguel Castillón"
 __email__ = "phasefieldx@gmail.com"
 __license__ = "MIT"
