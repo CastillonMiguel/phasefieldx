@@ -7,7 +7,7 @@ dependencies:
   - numpy
   - pandas
   - pyvista
-  - python>=3.10
+  - python=3.10
   - pytest
   - pip 
   - pip:
