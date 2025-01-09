@@ -98,14 +98,14 @@ def test_phase_field_simulation(dimension):
     W_gradphi = 0.5 * tanh_a_div_l - 0.5 * a_div_l * (1.0 - tanh_a_div_l**2)
     W = np.tanh(a_div_l)
 
-    assert np.isclose(S.energy_files['total.energy']["gamma_phi"][0], 0.5 * W_phi, atol=1e-6), \
-        f"Computed phi energy {S.energy_files['total.energy']["gamma_phi"][0]} does not match theoretical energy {W_phi}"
+    assert np.isclose(S.energy_files["total.energy"]["gamma_phi"][0], 0.5 * W_phi, atol=1e-6), \
+        f"Computed phi energy {S.energy_files["total.energy"]["gamma_phi"][0]} does not match theoretical energy {W_phi}"
 
-    assert np.isclose(S.energy_files['total.energy']["gamma_gradphi"][0], 0.5 * W_gradphi, atol=1e-6), \
-        f"Computed gradphi energy {S.energy_files['total.energy']["gamma_gradphi"][0]} does not match theoretical energy {W_gradphi}"
+    assert np.isclose(S.energy_files["total.energy"]["gamma_gradphi"][0], 0.5 * W_gradphi, atol=1e-6), \
+        f"Computed gradphi energy {S.energy_files["total.energy"]["gamma_gradphi"][0]} does not match theoretical energy {W_gradphi}"
 
-    assert np.isclose(S.energy_files['total.energy']["gamma"][0], 0.5 * W, atol=1e-6), \
-        f"Computed energy {S.energy_files['total.energy']["gamma"][0]} does not match theoretical energy {W}"
+    assert np.isclose(S.energy_files["total.energy"]["gamma"][0], 0.5 * W, atol=1e-6), \
+        f"Computed energy {S.energy_files["total.energy"]["gamma"][0]} does not match theoretical energy {W}"
 
     # Clean up: Remove generated files
     if os.path.exists(Data.results_folder_name):
