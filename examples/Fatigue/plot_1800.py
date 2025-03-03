@@ -206,6 +206,7 @@ V_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1))
 bc_bottom = bc_xy(bottom_facet_marker, V_u, fdim)
 bc_top = bc_y(top_facet_marker, V_u, fdim)
 bcs_list_u = [bc_top, bc_bottom]
+bcs_list_u_names = ["top", "bottom"]
 
 ###############################################################################
 # Definition of the Cyclic Load
@@ -338,7 +339,8 @@ final_time = 8 * 200 + 1
 #       update_loading,
 #       ds_list,
 #       dt,
-#       path=None)
+#       path=None,
+#       bcs_list_u_names=bcs_list_u_names)
 
 
 ###############################################################################
