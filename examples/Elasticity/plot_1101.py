@@ -166,6 +166,7 @@ bc_bottom = bc_xy(bottom_facet_marker, V_u, fdim)
 # field $\boldsymbol u$. This list facilitates easy management of multiple boundary
 # conditions and can be expanded if additional conditions are needed.
 bcs_list_u = [bc_bottom]
+bcs_list_u_names = ["bottom"]
 
 def update_boundary_conditions(bcs, time):
     return 0, 0, 0
@@ -267,7 +268,8 @@ solve(Data,
       ds_list,
       dt,
       path=None,
-      quadrature_degree=2)
+      quadrature_degree=2,
+      bcs_list_u_names=bcs_list_u_names)
 
 
 ###############################################################################
@@ -309,6 +311,5 @@ ax.grid(color='k', linestyle='-', linewidth=0.3)
 ax.set_xlabel('steps')
 ax.set_ylabel('reaction force - F $[kN]$')
 ax.legend()
-
 
 plt.show()
