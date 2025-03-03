@@ -1,9 +1,9 @@
 """
-.. _ref_9106:
+.. _ref_9110:
 
-.geo File: ASTM Standard E-399-72
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-This example illustrates the process of generating a mesh for an ASTM Standard E-399-72 specimen, as described in \cite{TADA}.
+.geo File: Symmetry ASTM Standard E-399-72
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+This example illustrates the process of generating a mesh for an ASTM Standard E-399-72 specimen, as described in \cite{TADA}, considering only the symmetric half of the geometry.
 Note that Phasefieldx can import external meshes in the .msh format. This can be achieved by using Gmsh.
 
 Files with the .geo format define both the geometry and the mesh parameters, such as element types and sizes.
@@ -14,7 +14,7 @@ Below is an example of the .geo file used for mesh generation.
 .geo file
 ---------
 
-.. include::  ../../../../examples/GmshGeoFiles/9106_ASTM_Standard_E_399_72/file.geo
+.. include::  ../../../../examples/GmshGeoFiles/9110_Symmetry_ASTM_Standard_E_399_72/file.geo
    :literal:
 
 For more information about Gmsh and the `.geo` file format, please refer to the official `Gmsh website <https://gmsh.info>`_.
@@ -43,7 +43,7 @@ import os
 import gmsh
 import pyvista as pv
 
-folder = "9106_ASTM_Standard_E_399_72"
+folder = "9110_Symmetry_ASTM_Standard_E_399_72"
 
 # %%
 # Initialize Gmsh

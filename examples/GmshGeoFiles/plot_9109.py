@@ -1,9 +1,9 @@
 """
-.. _ref_9106:
+.. _ref_9109:
 
-.geo File: ASTM Standard E-399-72
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-This example illustrates the process of generating a mesh for an ASTM Standard E-399-72 specimen, as described in \cite{TADA}.
+.geo File: Tensile Specimen
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+This example demonstrates the procedure for generating a mesh for a standard tensile test.
 Note that Phasefieldx can import external meshes in the .msh format. This can be achieved by using Gmsh.
 
 Files with the .geo format define both the geometry and the mesh parameters, such as element types and sizes.
@@ -14,7 +14,7 @@ Below is an example of the .geo file used for mesh generation.
 .geo file
 ---------
 
-.. include::  ../../../../examples/GmshGeoFiles/9106_ASTM_Standard_E_399_72/file.geo
+.. include::  ../../../../examples/GmshGeoFiles/9109_TensileSpecimen/file.geo
    :literal:
 
 For more information about Gmsh and the `.geo` file format, please refer to the official `Gmsh website <https://gmsh.info>`_.
@@ -27,9 +27,6 @@ To generate the mesh in the `.msh` format from the terminal, use the following G
 Here, `-3` specifies that the mesh is 3-dimensional, and `-o mesh.msh` tells Gmsh to save the mesh to a file named `mesh.msh` with the `.msh` extension.
 
 Alternatively, you can generate the mesh using the Gmsh Python API, which allows for programmatic mesh generation within Python scripts.
-
-.. [TADA] The Stress Analysis of Cracks Handbook, Third Edition. Tada, Hiroshi; Paris, Paul C.  https://doi.org/10.1115/1.801535
-
 """
 
 ###############################################################################
@@ -43,7 +40,7 @@ import os
 import gmsh
 import pyvista as pv
 
-folder = "9106_ASTM_Standard_E_399_72"
+folder = "9109_TensileSpecimen"
 
 # %%
 # Initialize Gmsh
@@ -56,7 +53,7 @@ gmsh.open(geo_file)
 
 # %%
 # Generate the mesh (2D example, for 3D use generate(3))
-gmsh.model.mesh.generate(3)
+gmsh.model.mesh.generate(2)
 
 # %%
 # Write the mesh to a .vtk file for visualization
