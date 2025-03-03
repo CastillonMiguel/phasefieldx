@@ -54,7 +54,8 @@ def run_2d_simulation():
     bc_top = bc_xy(top_facet_marker, V_u, fdim, value_x=0.0, value_y=0.0)
     
     bcs_list_u = [bc_top, bc_bottom]
-
+    bcs_list_u_names= ["top", "bottom"]
+    
     def update_boundary_conditions(bcs, time):
         val = 0.0003 * time
         bcs[0].g.value[1] = petsc4py.PETSc.ScalarType(val)
@@ -79,7 +80,8 @@ def run_2d_simulation():
         ds_list,
         dt,
         path=None,
-        quadrature_degree=2)
+        quadrature_degree=2,
+        bcs_list_u_names=bcs_list_u_names)
 
 
 def run_3d_simulation():
@@ -122,6 +124,7 @@ def run_3d_simulation():
     bc_top = bc_xyz(top_facet_marker, V_u, fdim, value_x=0.0, value_y=0.0, value_z=0.0)
 
     bcs_list_u = [bc_top, bc_bottom]
+    bcs_list_u_names = ["top", "bottom"]
 
     def update_boundary_conditions(bcs, time):
         val = 0.0003 * time
@@ -147,7 +150,8 @@ def run_3d_simulation():
         ds_list,
         dt,
         path=None,
-        quadrature_degree=2)
+        quadrature_degree=2,
+        bcs_list_u_names=bcs_list_u_names)
 
 @pytest.fixture(scope="module")
 def run_simulations():

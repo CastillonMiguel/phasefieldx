@@ -82,7 +82,8 @@ def test_phase_field_simulation_anisotropic(split_energy_i):
     bc_bottom = bc_xy(bottom_facet_marker, V_u, fdim)
     bc_top = bc_xy(top_facet_marker, V_u, fdim)
     bcs_list_u = [bc_top, bc_bottom]
-
+    bcs_list_u_names = ["top", "bottom"]
+    
     def update_boundary_conditions(bcs, time):
         if time <= 50:
             val = 0.0003 * time
@@ -121,7 +122,8 @@ def test_phase_field_simulation_anisotropic(split_energy_i):
           update_loading,
           ds_list,
           dt,
-          path=None)
+          path=None,
+          bcs_list_u_names=bcs_list_u_names)
 
     S = AllResults(Data.results_folder_name)
     displacement = S.dof_files["top.dof"]["Uy"]
