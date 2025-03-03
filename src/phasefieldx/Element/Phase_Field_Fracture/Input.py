@@ -29,9 +29,6 @@ class Input:
         fatigue_degradation_function (str): Fatigue degradation function type.
         fatigue_val (float): Fatigue degradation value.
         k (int): A numerical parameter.
-        min_stagger_iter (int): Minimum stagger iterations for numerical simulations.
-        max_stagger_iter (int): Maximum stagger iterations for numerical simulations.
-        stagger_error_tol (float): Tolerance for stagger error in simulations.
         save_solution_xdmf (bool): Indicates whether to save solutions in XDMF format.
         save_solution_vtu (bool): Indicates whether to save solutions in VTU format.
         result_folder_name (str): Name of the folder to save simulation results.
@@ -56,9 +53,6 @@ class Input:
                  fatigue_degradation_function="asymptotic",
                  fatigue_val=0.05625,
                  k=0,
-                 min_stagger_iter=2,
-                 max_stagger_iter=500,
-                 stagger_error_tol=1e-8,
                  save_solution_xdmf=False,
                  save_solution_vtu=True,
                  results_folder_name="results"):
@@ -79,9 +73,6 @@ class Input:
         self.fatigue_degradation_function = fatigue_degradation_function
         self.fatigue_val = fatigue_val
         self.k = k
-        self.min_stagger_iter = min_stagger_iter
-        self.max_stagger_iter = max_stagger_iter
-        self.stagger_error_tol = stagger_error_tol
 
         self.save_solution_xdmf = save_solution_xdmf
         self.save_solution_vtu = save_solution_vtu
@@ -109,10 +100,6 @@ class Input:
         logger.info(f"  irreversibility: {self.irreversibility}")
         logger.info(f"  fatigue degradation function: {self.fatigue_degradation_function}")
         logger.info(f"  fatigue_val: {self.fatigue_val}")
-        logger.info("Stagger settings: ")
-        logger.info(f"  minimum stagger iterations: {self.min_stagger_iter}")
-        logger.info(f"  maximum stagger iterations: {self.max_stagger_iter}")
-        logger.info(f"  stagger error tolerance: {self.stagger_error_tol}")
 
     def __str__(self):
         """

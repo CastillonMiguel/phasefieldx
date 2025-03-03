@@ -49,7 +49,10 @@ def solve(Data,
           ds_bound=None,
           dt=1.0,
           path=None,
-          bcs_list_u_names=None):
+          bcs_list_u_names=None,
+          min_stagger_iter=2,
+          max_stagger_iter=10000,
+          stagger_error_tol=1e-8):
     """
     Solve the phase-field fracture and fatigue problem.
 
@@ -83,6 +86,12 @@ def solve(Data,
         Time step size.
     path : str, optional
         Directory path for saving simulation results. Defaults to current working directory.
+    min_stagger_iter: int
+        Minimum stagger iterations for numerical simulations.
+    max_stagger_iter: int
+        Maximum stagger iterations for numerical simulations.
+    stagger_error_tol: float
+        Tolerance for stagger error in simulations.
 
     Returns
     -------
@@ -101,6 +110,11 @@ def solve(Data,
     log_library_versions(logger)  # log Library versions
     Data.save_log_info(logger)  # log Simulation input data
     log_model_information(msh, logger)
+
+    logger.info("========== Stagger settings ===========")
+    logger.info(f"  minimum stagger iterations: {min_stagger_iter}")
+    logger.info(f"  maximum stagger iterations: {max_stagger_iter}")
+    logger.info(f"  stagger error tolerance: {stagger_error_tol}")
 
     # Dolfinx cpp logger
     dolfinx.log.set_log_level(dolfinx.log.LogLevel.INFO)
@@ -233,8 +247,8 @@ def solve(Data,
         error_L2_phi = 1
         error_L2_u = 1
         stagger_iter = 0
-        while (error_L2_phi > Data.stagger_error_tol or error_L2_u > Data.stagger_error_tol or stagger_iter <
-               Data.min_stagger_iter) and (stagger_iter < Data.max_stagger_iter):
+        while (error_L2_phi > stagger_error_tol or error_L2_u > stagger_error_tol or stagger_iter <
+               min_stagger_iter) and (stagger_iter < max_stagger_iter):
             stagger_iter += 1
             logger.info(f" Stagger Iteration : {stagger_iter}")
             logger.info(f" ---------------------- ")
