@@ -194,6 +194,7 @@ bc_top = bc_y(top_facet_marker, V_u, fdim)
 # field $\boldsymbol u$. This list facilitates easy management of multiple boundary
 # conditions and can be expanded if additional conditions are needed.
 bcs_list_u = [bc_top, bc_bottom]
+bcs_list_u_names = ["top", "bottom"]
 
 ###############################################################################
 # Function: `update_boundary_conditions`
@@ -312,7 +313,8 @@ final_time = 150.0
 #       update_loading,
 #       ds_list,
 #       dt,
-#       path=None)
+#       path=None,
+#       bcs_list_u_names=bcs_list_u_names)
 
 
 ###############################################################################

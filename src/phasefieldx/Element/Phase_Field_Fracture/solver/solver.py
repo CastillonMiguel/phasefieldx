@@ -48,7 +48,8 @@ def solve(Data,
           update_loading=None,
           ds_bound=None,
           dt=1.0,
-          path=None):
+          path=None,
+          bcs_list_u_names=None):
     """
     Solve the phase-field fracture and fatigue problem.
 
@@ -106,6 +107,9 @@ def solve(Data,
     dolfinx.cpp.log.set_output_file(
         os.path.join(result_folder_name, "dolfinx.log"))
 
+    if bcs_list_u_names is None:
+        bcs_list_u_names = [f"bc_u_{i}" for i in range(len(bc_list_u))]
+       
     # Formulation ##########################################################
     ########################################################################
 
@@ -308,10 +312,10 @@ def solve(Data,
                                '#step\tUx\tUy\tUz\tphi', step, bc_ux, bc_uy, bc_uz, 0.0)
 
         # Reaction -----------------------------------------------------------
-        for i in range(0, ds_bound.shape[0]):
+        for i in range(0, len(bc_list_u)):
             R = calculate_reaction_forces(J_u_form, F_u_form, [bc_list_u[i]], u_new, msh.topology.dim)
             append_results_to_file(os.path.join(
-                result_folder_name, ds_bound[i][1] + ".reaction"), '#step\tRx\tRy\tRz', step, R[0], R[1], R[2])
+                result_folder_name, bcs_list_u_names[i] + ".reaction"), '#step\tRx\tRy\tRz', step, R[0], R[1], R[2])
 
         # Energy -------------------------------------------------------------
         E = dolfinx.fem.assemble_scalar(dolfinx.fem.form(
