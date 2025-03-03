@@ -102,9 +102,6 @@ Data = Input(E=210.0,   # young modulus
              fatigue_degradation_function="asymptotic",
              fatigue_val=0.0,
              k=0.0,
-             min_stagger_iter=2,
-             max_stagger_iter=5000,
-             stagger_error_tol=1e-8,
              save_solution_xdmf=False,
              save_solution_vtu=True,
              results_folder_name="1713_Symmetry_Single_Edge_Notched_Tension_Test")
@@ -304,7 +301,10 @@ final_time = 150.0
 #       ds_list,
 #       dt,
 #       path=None,
-#       bcs_list_u_names=bcs_list_u_names)
+#       bcs_list_u_names=bcs_list_u_names,
+#       min_stagger_iter=2,
+#       max_stagger_iter=500,
+#       stagger_error_tol=1e-8)
 
 ###############################################################################
 # Load results
