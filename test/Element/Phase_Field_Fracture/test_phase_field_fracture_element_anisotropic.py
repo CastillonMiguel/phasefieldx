@@ -80,7 +80,7 @@ def test_phase_field_simulation_anisotropic(split_energy_i):
     bc_top = bc_xy(top_facet_marker, V_u, fdim)
     bcs_list_u = [bc_top, bc_bottom]
     bcs_list_u_names = ["top", "bottom"]
-    
+
     def update_boundary_conditions(bcs, time):
         if time <= 50:
             val = 0.0003 * time
@@ -148,8 +148,8 @@ def test_phase_field_simulation_anisotropic(split_energy_i):
     else:
         raise ValueError(f"Invalid value for split_energy: {Data.split_energy}. Expected 'spectral' or 'deviatoric'.")
 
-    np.testing.assert_allclose(S.reaction_files["top.reaction"]["Ry"], sigma_t, rtol=1e-3, atol=1e-8, 
-                           err_msg=f"Computed reaction force {S.reaction_files['top.reaction']['Ry']} does not match theoretical reaction {sigma_t} for {Data.split_energy}")
+    np.testing.assert_allclose(S.reaction_files["top.reaction"]["Ry"], sigma_t, rtol=1e-3, atol=1e-8,
+                               err_msg=f"Computed reaction force {S.reaction_files['top.reaction']['Ry']} does not match theoretical reaction {sigma_t} for {Data.split_energy}")
 
     # Clean up: Remove generated files
     if os.path.exists(Data.results_folder_name):
