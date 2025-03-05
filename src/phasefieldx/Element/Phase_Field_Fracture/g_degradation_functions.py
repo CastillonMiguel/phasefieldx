@@ -45,7 +45,7 @@ def borden_degradation_function(phi):
     Returns:
         float: The degradation function value.
     """
-    s = 1.0
+    s = 0.0
     return (3.0 - s) * (1.0 - phi) * (1.0 - phi) - \
         (2.0 - s) * (1.0 - phi) * (1.0 - phi) * (1.0 - phi)
 
@@ -60,8 +60,8 @@ def borden_degradation_derivative(phi):
     Returns:
         float: The derivative value.
     """
-    s = 1.0
-    return -2.0 * s * (1.0 - phi) + 3.0 * s * (1.0 - phi) * (1.0 - phi)
+    s = 0.0
+    return -2.0 * (3.0 - s) * (1.0 - phi) + 3.0 * (2.0 - s) * (1.0 - phi) * (1.0 - phi)
 
 
 def alessi_degradation_function(phi):

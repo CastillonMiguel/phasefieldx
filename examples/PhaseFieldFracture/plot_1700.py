@@ -113,9 +113,6 @@ Data = Input(E=210.0,   # young modulus
              fatigue_degradation_function="asymptotic",
              fatigue_val=0.0,
              k=0.0,
-             min_stagger_iter=2,
-             max_stagger_iter=500,
-             stagger_error_tol=1e-8,
              save_solution_xdmf=False,
              save_solution_vtu=True,
              results_folder_name="1700_One_element_isotropic_tension")
@@ -204,6 +201,7 @@ bc_top = bc_xy(top_facet_marker, V_u, fdim)
 # field $\boldsymbol u$. This list facilitates easy management of multiple boundary
 # conditions and can be expanded if additional conditions are needed.
 bcs_list_u = [bc_top, bc_bottom]
+bcs_list_u_names = ["top", "bottom"]
 
 ###############################################################################
 # Function: `update_boundary_conditions`
@@ -317,7 +315,11 @@ solve(Data,
       update_loading,
       ds_list,
       dt,
-      path=None)
+      path=None,
+      bcs_list_u_names=bcs_list_u_names,
+      min_stagger_iter=2,
+      max_stagger_iter=500,
+      stagger_error_tol=1e-8)
 
 
 ###############################################################################

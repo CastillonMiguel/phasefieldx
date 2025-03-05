@@ -31,9 +31,6 @@ def test_phase_field_simulation_anisotropic(split_energy_i):
                  fatigue_degradation_function="asymptotic",
                  fatigue_val=0.05625,
                  k=0.0,
-                 min_stagger_iter=2,
-                 max_stagger_iter=500,
-                 stagger_error_tol=1e-8,
                  save_solution_xdmf=False,
                  save_solution_vtu=True,
                  results_folder_name="1700_One_element_isotropic_tension_test_anisotropic")
@@ -82,6 +79,7 @@ def test_phase_field_simulation_anisotropic(split_energy_i):
     bc_bottom = bc_xy(bottom_facet_marker, V_u, fdim)
     bc_top = bc_xy(top_facet_marker, V_u, fdim)
     bcs_list_u = [bc_top, bc_bottom]
+    bcs_list_u_names = ["top", "bottom"]
 
     def update_boundary_conditions(bcs, time):
         if time <= 50:
@@ -121,7 +119,11 @@ def test_phase_field_simulation_anisotropic(split_energy_i):
           update_loading,
           ds_list,
           dt,
-          path=None)
+          path=None,
+          bcs_list_u_names=bcs_list_u_names,
+          min_stagger_iter=2,
+          max_stagger_iter=500,
+          stagger_error_tol=1e-8)
 
     S = AllResults(Data.results_folder_name)
     displacement = S.dof_files["top.dof"]["Uy"]
@@ -146,8 +148,8 @@ def test_phase_field_simulation_anisotropic(split_energy_i):
     else:
         raise ValueError(f"Invalid value for split_energy: {Data.split_energy}. Expected 'spectral' or 'deviatoric'.")
 
-    np.testing.assert_allclose(S.reaction_files["top.reaction"]["Ry"], sigma_t, rtol=1e-3, atol=1e-8, 
-                           err_msg=f"Computed reaction force {S.reaction_files['top.reaction']['Ry']} does not match theoretical reaction {sigma_t} for {Data.split_energy}")
+    np.testing.assert_allclose(S.reaction_files["top.reaction"]["Ry"], sigma_t, rtol=1e-3, atol=1e-8,
+                               err_msg=f"Computed reaction force {S.reaction_files['top.reaction']['Ry']} does not match theoretical reaction {sigma_t} for {Data.split_energy}")
 
     # Clean up: Remove generated files
     if os.path.exists(Data.results_folder_name):

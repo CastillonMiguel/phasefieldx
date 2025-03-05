@@ -48,7 +48,11 @@ def solve(Data,
           update_loading=None,
           ds_bound=None,
           dt=1.0,
-          path=None):
+          path=None,
+          bcs_list_u_names=None,
+          min_stagger_iter=2,
+          max_stagger_iter=10000,
+          stagger_error_tol=1e-8):
     """
     Solve the phase-field fracture and fatigue problem.
 
@@ -82,6 +86,12 @@ def solve(Data,
         Time step size.
     path : str, optional
         Directory path for saving simulation results. Defaults to current working directory.
+    min_stagger_iter: int
+        Minimum stagger iterations for numerical simulations.
+    max_stagger_iter: int
+        Maximum stagger iterations for numerical simulations.
+    stagger_error_tol: float
+        Tolerance for stagger error in simulations.
 
     Returns
     -------
@@ -101,11 +111,19 @@ def solve(Data,
     Data.save_log_info(logger)  # log Simulation input data
     log_model_information(msh, logger)
 
+    logger.info("========== Stagger settings ===========")
+    logger.info(f"  minimum stagger iterations: {min_stagger_iter}")
+    logger.info(f"  maximum stagger iterations: {max_stagger_iter}")
+    logger.info(f"  stagger error tolerance: {stagger_error_tol}")
+
     # Dolfinx cpp logger
     dolfinx.log.set_log_level(dolfinx.log.LogLevel.INFO)
     dolfinx.cpp.log.set_output_file(
         os.path.join(result_folder_name, "dolfinx.log"))
 
+    if bcs_list_u_names is None:
+        bcs_list_u_names = [f"bc_u_{i}" for i in range(len(bc_list_u))]
+       
     # Formulation ##########################################################
     ########################################################################
 
@@ -229,8 +247,8 @@ def solve(Data,
         error_L2_phi = 1
         error_L2_u = 1
         stagger_iter = 0
-        while (error_L2_phi > Data.stagger_error_tol or error_L2_u > Data.stagger_error_tol or stagger_iter <
-               Data.min_stagger_iter) and (stagger_iter < Data.max_stagger_iter):
+        while (error_L2_phi > stagger_error_tol or error_L2_u > stagger_error_tol or stagger_iter <
+               min_stagger_iter) and (stagger_iter < max_stagger_iter):
             stagger_iter += 1
             logger.info(f" Stagger Iteration : {stagger_iter}")
             logger.info(f" ---------------------- ")
@@ -308,10 +326,10 @@ def solve(Data,
                                '#step\tUx\tUy\tUz\tphi', step, bc_ux, bc_uy, bc_uz, 0.0)
 
         # Reaction -----------------------------------------------------------
-        for i in range(0, ds_bound.shape[0]):
+        for i in range(0, len(bc_list_u)):
             R = calculate_reaction_forces(J_u_form, F_u_form, [bc_list_u[i]], u_new, msh.topology.dim)
             append_results_to_file(os.path.join(
-                result_folder_name, ds_bound[i][1] + ".reaction"), '#step\tRx\tRy\tRz', step, R[0], R[1], R[2])
+                result_folder_name, bcs_list_u_names[i] + ".reaction"), '#step\tRx\tRy\tRz', step, R[0], R[1], R[2])
 
         # Energy -------------------------------------------------------------
         E = dolfinx.fem.assemble_scalar(dolfinx.fem.form(

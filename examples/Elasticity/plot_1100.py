@@ -168,6 +168,7 @@ bc_top = bc_xy(top_facet_marker, V_u, fdim, value_x=0.0, value_y=0.0)
 # field $\boldsymbol u$. This list facilitates easy management of multiple boundary
 # conditions and can be expanded if additional conditions are needed.
 bcs_list_u = [bc_top, bc_bottom]
+bcs_list_u_names = ["top", "bottom"]
 
 
 ###############################################################################
@@ -253,7 +254,8 @@ solve(Data,
       ds_list,
       dt,
       path=None,
-      quadrature_degree=2)
+      quadrature_degree=2,
+      bcs_list_u_names=bcs_list_u_names)
 
 
 ###############################################################################

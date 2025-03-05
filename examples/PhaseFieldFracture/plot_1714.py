@@ -103,9 +103,6 @@ Data = Input(E=20.8,     # young modulus
              fatigue_degradation_function="asymptotic",
              fatigue_val=0.05625,
              k=0.0,
-             min_stagger_iter=2,
-             max_stagger_iter=1000,
-             stagger_error_tol=1e-6,
              save_solution_xdmf=False,
              save_solution_vtu=True,
              results_folder_name="1714_Three_point_bending")
@@ -215,6 +212,7 @@ bc_top = bc_y(top_facet_marker, V_u, fdim)
 # field $\boldsymbol u$. This list facilitates easy management of multiple boundary
 # conditions and can be expanded if additional conditions are needed.
 bcs_list_u = [bc_top, bc_bottom_left, bc_bottom_right]
+bcs_list_u_names = ["top", "bottom_left", "bottom_right"]
 
 ###############################################################################
 # Function: `update_boundary_conditions`
@@ -326,7 +324,11 @@ dt = 1
 #       update_loading,
 #       ds_list,
 #       dt,
-#       path=None)
+#       path=None,
+#       bcs_list_u_names=bcs_list_u_names,
+#       min_stagger_iter=2,
+#       max_stagger_iter=1000,
+#       stagger_error_tol=1e-6)
 
 
 ###############################################################################

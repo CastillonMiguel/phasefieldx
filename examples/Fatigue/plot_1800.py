@@ -111,9 +111,6 @@ Data = Input(E=210.0,    # young modulus
              fatigue_degradation_function="asymptotic",
              fatigue_val=0.05625,
              k=0.0,
-             min_stagger_iter=2,
-             max_stagger_iter=500,
-             stagger_error_tol=1e-8,
              save_solution_xdmf=False,
              save_solution_vtu=True,
              results_folder_name="1800_Fatigue_Single_Edge_Notched_Tension_Test")
@@ -206,6 +203,7 @@ V_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1))
 bc_bottom = bc_xy(bottom_facet_marker, V_u, fdim)
 bc_top = bc_y(top_facet_marker, V_u, fdim)
 bcs_list_u = [bc_top, bc_bottom]
+bcs_list_u_names = ["top", "bottom"]
 
 ###############################################################################
 # Definition of the Cyclic Load
@@ -338,7 +336,11 @@ final_time = 8 * 200 + 1
 #       update_loading,
 #       ds_list,
 #       dt,
-#       path=None)
+#       path=None,
+#       bcs_list_u_names=bcs_list_u_names,
+#       min_stagger_iter=2,
+#       max_stagger_iter=500,
+#       stagger_error_tol=1e-8)
 
 
 ###############################################################################

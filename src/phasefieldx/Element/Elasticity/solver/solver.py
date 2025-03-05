@@ -33,7 +33,8 @@ def solve(Data,
           ds_bound=None,
           dt=1.0,
           path=None,
-          quadrature_degree=2):
+          quadrature_degree=2,
+          bcs_list_u_names=None):
     """
     Solver for elasticity problems.
 
@@ -104,6 +105,9 @@ def solve(Data,
     dolfinx.cpp.log.set_output_file(
         os.path.join(result_folder_name, "dolfinx.log"))
 
+    if bcs_list_u_names is None:
+        bcs_list_u_names = [f"bc_u_{i}" for i in range(len(bc_list_u))]
+
     # Formulation ##########################################################
     ########################################################################
 
@@ -133,6 +137,7 @@ def solve(Data,
 
     solver_u = NewtonSolver(problem)
     solver_u.save_log_info(logger)
+
 
     # Solve ################################################################
     ########################################################################
@@ -195,10 +200,10 @@ def solve(Data,
             result_folder_name, "top.dof"), '#step\tUx\tUy\tUz', step, bc_ux, bc_uy, bc_uz)
 
         # Reaction -----------------------------------------------------------
-        for i in range(0, ds_bound.shape[0]):
+        for i in range(0, len(bc_list_u)):
             R = calculate_reaction_forces(J_u_form, F_u_form, [bc_list_u[i]], u, msh.topology.dim)
-            append_results_to_file(os.path.join(result_folder_name, ds_bound[i][1] + ".reaction"), '#step\tRx\tRy\tRz', step, R[0], R[1], R[2])
-              
+            append_results_to_file(os.path.join(result_folder_name, bcs_list_u_names[i] + ".reaction"), '#step\tRx\tRy\tRz', step, R[0], R[1], R[2])
+
         # Energy -------------------------------------------------------------
         E = dolfinx.fem.assemble_scalar(dolfinx.fem.form(
             psi(u, Data.lambda_, Data.mu) * dx))
