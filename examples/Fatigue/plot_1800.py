@@ -39,7 +39,7 @@ The material properties, length scale parameter, and fatigue parameter are summa
 +----------+---------+--------+
 | nu       | 0.3     | [-]    |
 +----------+---------+--------+
-| Gc       | 0.0027  | kN/mm2 |
+| Gc       | 0.0027  | kN/mm  |
 +----------+---------+--------+
 | l        | 0.004   | mm     |
 +----------+---------+--------+

@@ -185,10 +185,6 @@ def solve(Data,
             Data.l / 2 * ufl.inner(ufl.grad(phi), ufl.grad(phi)) * dx))
         gamma = gamma_phi + gamma_gradphi
 
-        W_phi = gamma_phi
-        W_gradphi = gamma_gradphi
-        W = W_phi + W_gradphi
-
         append_results_to_file(os.path.join(result_folder_name, "total.energy"),
                                '#step\tgamma\tgamma_phi\tgamma_gradphi', step, gamma, gamma_phi, gamma_gradphi)
 
