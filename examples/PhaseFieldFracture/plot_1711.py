@@ -36,7 +36,7 @@ The Young's modulus, Poisson's ratio, and the critical energy release rate are g
 +----+---------+--------+
 | nu | 0.3     | [-]    |
 +----+---------+--------+
-| Gc | 0.0027  | kN/mm2 |
+| Gc | 0.0027  | kN/mm  |
 +----+---------+--------+
 | l  | 0.015   | mm     |
 +----+---------+--------+
