@@ -27,7 +27,7 @@ The **PhaseFieldX** project is designed to simulate and analyze material behavio
 
 - **Phase-Field Fracture**:
 
-The phase-field fracture model was extended by [@Miehe2010] to incorporate a regularized crack field within the variational framework of Griffith’s fracture theory, as developed by [@FrancfortMarigo1998]. This model provides a robust and versatile approach for simulating fracture and material failure, representing cracks implicitly through a continuous phase-field variable rather than requiring explicit crack tracking. This implicit representation simplifies numerical implementation and naturally enables the simulation of complex crack patterns, including branching, merging, and interactions among multiple cracks.
+The phase-field fracture model was extended by @Miehe2010 to incorporate a regularized crack field within the variational framework of Griffith’s fracture theory, as developed by @FrancfortMarigo1998. This model provides a robust and versatile approach for simulating fracture and material failure, representing cracks implicitly through a continuous phase-field variable rather than requiring explicit crack tracking. This implicit representation simplifies numerical implementation and naturally enables the simulation of complex crack patterns, including branching, merging, and interactions among multiple cracks.
 
 A diffuse variable, the “phase-field” $\phi$, distinguishes between intact ($\phi = 0$) and fractured ($\phi = 1$) regions, with a smooth transition between them. This setup allows cracks to evolve based on energy minimization principles, eliminating the need for explicit crack-path tracking. The functional is given by \autoref{eq:phase_field_fracture_functional},
 \begin{equation}\label{eq:phase_field_fracture_functional}
@@ -37,11 +37,11 @@ where $\phi$ is the phase-field variable, $\boldsymbol u$ is the displacement ve
 
 The energy can be split into two components $\psi(\epsilon(\boldsymbol u)) = \psi_a(\epsilon(\boldsymbol u)) + \psi_b(\epsilon(\boldsymbol u))$, where $\psi_a$ represents the energy associated with tensile stresses capable of generating fractures, and the degradation function is applied only to this component. This yields the form $g(\phi) \psi_a(\epsilon(\boldsymbol u)) + \psi_b(\epsilon(\boldsymbol u))$, preventing crack formation due to compressive forces. Various methods exist for performing this energy split, such as the spectral decomposition [@Miehe2010] and the volumetric-deviatoric decomposition [@Amor2009]. Models that incorporate this energy split are known as anisotropic models, while models without energy splitting are referred to as isotropic models.
 
-To enforce crack irreversibility, [@Miehe2010] introduces a history field, defined as the maximum reference energy obtained throughout the material’s history, which drives the phase field. As a result, this variable will always increase, ensuring that cracks cannot heal.
+To enforce crack irreversibility, @Miehe2010 introduces a history field, defined as the maximum reference energy obtained throughout the material’s history, which drives the phase field. As a result, this variable will always increase, ensuring that cracks cannot heal.
 
 - **Phase-Field Fatigue**:
 
-Following [@Carrara2020], fatigue effects can be modeled by introducing a fatigue degradation function, $f(\bar{\alpha}(t))$, which reduces fracture toughness based on a cumulative history variable, $\bar{\alpha}(t)$, where $t$ represents a pseudotime in the simulation setup. This new history variable, can be any scalar quantity that effectively captures the material’s fatigue history. The functional, in the absence of external terms, is given by \autoref{eq:phase_field_fatigue_functional}.
+Following @Carrara2020, fatigue effects can be modeled by introducing a fatigue degradation function, $f(\bar{\alpha}(t))$, which reduces fracture toughness based on a cumulative history variable, $\bar{\alpha}(t)$, where $t$ represents a pseudotime in the simulation setup. This new history variable, can be any scalar quantity that effectively captures the material’s fatigue history. The functional, in the absence of external terms, is given by \autoref{eq:phase_field_fatigue_functional}.
 \begin{equation}\label{eq:phase_field_fatigue_functional}
 \mathcal{E}(\boldsymbol u, \phi) = \int_\Omega g(\phi) \psi(\epsilon(\boldsymbol u)) \mathrm{d}\Omega + f(\bar{\alpha}(t)) G_c \int_\Omega \left( \frac{1}{2l}\phi^2 + \frac{l}{2} |\nabla \phi|^2 \right)  \mathrm{d}\Omega.
 \end{equation}
@@ -82,7 +82,7 @@ The platform’s modular design empowers users to customize parameters such as d
 
 # Applications
 
-**PhaseFieldX** offers a comprehensive range of applications in materials science and engineering. For phase-field fracture simulations, it supports various degradation functions and energy split methods, such as the volumetric-deviatoric split [@Amor2009] and spectral decomposition [@Miehe2010]. The framework accommodates multiple formulations, including isotropic, anisotropic, and hybrid approaches [@Ambati2015]. For example, two well-known simulations from [@Miehe2010] can be conducted through **PhaseFieldX**, specifically using an anisotropic formulation with spectral energy decomposition.
+**PhaseFieldX** offers a comprehensive range of applications in materials science and engineering. For phase-field fracture simulations, it supports various degradation functions and energy split methods, such as the volumetric-deviatoric split [@Amor2009] and spectral decomposition [@Miehe2010]. The framework accommodates multiple formulations, including isotropic, anisotropic, and hybrid approaches [@Ambati2015]. For example, two well-known simulations from @Miehe2010 can be conducted through **PhaseFieldX**, specifically using an anisotropic formulation with spectral energy decomposition.
 
 The first example, a single-edge notched tension test, consists of a square plate with a centrally located notch extending from the left edge, as illustrated in \autoref{fig:example_sentt}. The lower edge of the plate is fully constrained, while the upper edge is free to slide vertically. A vertical displacement is applied to the top until the crack propagates. The final phase-field values displayed in \autoref{fig:example_sentt}.
 
