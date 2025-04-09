@@ -218,4 +218,16 @@ html_theme_options = {
     "footer_start": ["sphinx-version"],
     "github_url": "https://github.com/CastillonMiguel/phasefieldx",
     "navbar_align": "left",
+    'icon_links': [
+        {
+            'name': 'Contributing',
+            'url': 'https://github.com/CastillonMiguel/phasefieldx/blob/main/CONTRIBUTING.rst',
+            'icon': 'fa fa-gavel fa-fw',
+        },
+        {
+            'name': 'The Paper',
+            'url': 'https://doi.org/10.21105/joss.07307',
+            'icon': 'fa fa-file-text fa-fw',
+        },
+    ],
 }

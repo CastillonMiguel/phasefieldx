@@ -1,0 +1,28 @@
+cff-version: "1.2.0"
+authors:
+- family-names: Castillón
+  given-names: Miguel
+  orcid: "https://orcid.org/0009-0008-6383-7103"
+doi: 10.5281/zenodo.15077939
+message: If you use this software, please cite our article in the
+  Journal of Open Source Software.
+preferred-citation:
+  authors:
+  - family-names: Castillón
+    given-names: Miguel
+    orcid: "https://orcid.org/0009-0008-6383-7103"
+  date-published: 2025-04-08
+  doi: 10.21105/joss.07307
+  issn: 2475-9066
+  issue: 108
+  journal: Journal of Open Source Software
+  publisher:
+    name: Open Journals
+  start: 7307
+  title: "PhaseFieldX: An Open-Source Framework for Advanced Phase-Field
+    Simulations"
+  type: article
+  url: "https://joss.theoj.org/papers/10.21105/joss.07307"
+  volume: 10
+title: "PhaseFieldX: An Open-Source Framework for Advanced Phase-Field
+  Simulations"

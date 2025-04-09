@@ -24,8 +24,8 @@ Welcome to **PhaseFieldX**. `documentation <https://phasefieldx.readthedocs.io/e
     :target: https://github.com/CastillonMiguel/phasefieldx/blob/main/LICENSE
     :alt: License
 
-.. image:: https://joss.theoj.org/papers/7111b621625200b3d2c4b199ea9568c0/status.svg
-    :target: https://joss.theoj.org/papers/7111b621625200b3d2c4b199ea9568c0
+.. image:: https://joss.theoj.org/papers/10.21105/joss.07307/status.svg
+    :target: https://doi.org/10.21105/joss.07307
     :alt: Joss
 
 .. image:: https://github.com/CastillonMiguel/phasefieldx/actions/workflows/testing.yml/badge.svg
@@ -118,3 +118,30 @@ Contributions and Feedback
 We welcome contributions and feedback from the community to enhance the code's functionality, reliability, and user experience.To get started, please review our `Contributing Guidelines <https://phasefieldx.readthedocs.io/en/latest/extras/DeveloperNotes/main.html>`_ to share your insights and collaborate with fellow developers.
 
 Thank you for choosing our Phase-Field Fracture simulation code. We trust this tool will prove invaluable in advancing your understanding of fracture mechanics and its practical applications.
+
+
+Citing PhaseFieldX
+------------------
+There is a `paper about PhaseFieldX <https://doi.org/10.21105/joss.07307>`_.
+
+If you use **PhaseFieldX** in your scientific research, please consider citing our work to support its development and increase its scientific visibility.
+
+    Castillón, M. (2025). PhaseFieldX: An Open-Source Framework for Advanced Phase-Field Simulations. Journal of Open Source Software, 10(108), 7307, https://doi.org/10.21105/joss.07307
+
+
+BibTex:
+
+.. code:: latex
+
+    @article{Castillon2025phasefieldx, 
+      doi = {10.21105/joss.07307}, 
+      url = {https://doi.org/10.21105/joss.07307}, 
+      year = {2025}, 
+      publisher = {The Open Journal}, 
+      volume = {10}, 
+      number = {108}, 
+      pages = {7307},
+      author = {Miguel Castillón}, 
+      title = {PhaseFieldX: An Open-Source Framework for Advanced Phase-Field Simulations},
+      journal = {Journal of Open Source Software} 
+    }
