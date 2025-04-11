@@ -35,7 +35,6 @@ jobs:
         conda init zsh
         source ~/.zshrc
         conda activate phasefieldx-env
-        pip install .
 
     - name: Run tests with pytest
       run: |
