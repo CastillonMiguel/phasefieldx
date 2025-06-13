@@ -5,39 +5,62 @@ Input: Phase-Field Fracture
 """
 
 from phasefieldx.Materials.conversion import get_lambda_lame, get_mu_lame
-
+import csv
 
 class Input:
     """
     Class for managing phase-field fracture simulation parameters.
 
     This class encapsulates parameters related to phase-field fracture simulations
-    and provides methods for setting and logging these parameters.
+    and provides methods for setting, logging, and exporting these parameters.
 
-    Attributes:
-        E (float): Young's modulus of the material.
-        nu (float): Poisson's ratio of the material.
-        Gc (float): Critical energy release rate.
-        l (float): Length scale parameter.
-        lambda_ (float): Lame's first parameter calculated from E and nu.
-        mu (float): Shear modulus calculated from E and nu.
-        degradation (str): Type of material degradation (isotropic or anisotropic).
-        split_energy (str): Type of energy splitting (spectral, deviatoric, or none).
-        degradation_function (str): Type of degradation function (e.g., quadratic).
-        irreversibility (str): Indication of irreversibility of damage.
-        fatigue (bool): Indicates if fatigue degradation is enabled.
-        fatigue_degradation_function (str): Fatigue degradation function type.
-        fatigue_val (float): Fatigue degradation value.
-        k (int): A numerical parameter.
-        save_solution_xdmf (bool): Indicates whether to save solutions in XDMF format.
-        save_solution_vtu (bool): Indicates whether to save solutions in VTU format.
-        result_folder_name (str): Name of the folder to save simulation results.
+    Attributes
+    ----------
+    E : float
+        Young's modulus of the material.
+    nu : float
+        Poisson's ratio of the material.
+    Gc : float
+        Critical energy release rate.
+    l : float
+        Length scale parameter.
+    lambda_ : float
+        Lame's first parameter calculated from E and nu.
+    mu : float
+        Shear modulus calculated from E and nu.
+    degradation : str
+        Type of material degradation (isotropic or anisotropic).
+    split_energy : str
+        Type of energy splitting (spectral, deviatoric, or none).
+    degradation_function : str
+        Type of degradation function (e.g., quadratic).
+    irreversibility : str
+        Indication of irreversibility of damage.
+    fatigue : bool
+        Indicates if fatigue degradation is enabled.
+    fatigue_degradation_function : str
+        Fatigue degradation function type.
+    fatigue_val : float
+        Fatigue degradation value.
+    k : int
+        A numerical parameter.
+    save_solution_xdmf : bool
+        Indicates whether to save solutions in XDMF format.
+    save_solution_vtu : bool
+        Indicates whether to save solutions in VTU format.
+    results_folder_name : str
+        Name of the folder to save simulation results.
 
-    Methods:
-        __init__(...): Initialize the SimulationPhaseFieldFracture class with default parameters.
-        save_log_info(logger): Logs the simulation parameters using the provided logger.
-        __str__(): Returns a string representation of the simulation parameters.
-
+    Methods
+    -------
+    __init__(...)
+        Initialize the Input class with default parameters.
+    save_log_info(logger)
+        Log the simulation parameters using the provided logger.
+    save_parameters_to_csv(filename="input_parameters.csv")
+        Save the simulation parameters to a two-column text file (tab-separated) for easy loading with pandas.
+    __str__()
+        Return a string representation of the simulation parameters.
     """
 
     def __init__(self,
@@ -101,6 +124,36 @@ class Input:
         logger.info(f"  fatigue degradation function: {self.fatigue_degradation_function}")
         logger.info(f"  fatigue_val: {self.fatigue_val}")
 
+    def save_parameters_to_csv(self, filename="input_parameters.csv"):
+        """
+        Save the simulation parameters to a CSV file for easy loading with pandas.
+
+        Parameters:
+            filename (str): The name of the CSV file to save the parameters.
+        """
+        params = {
+            "E": self.E,
+            "nu": self.nu,
+            "Gc": self.Gc,
+            "l": self.l,
+            "k": self.k,
+            "lambda": self.lambda_,
+            "mu": self.mu,
+            "degradation": self.degradation,
+            "split_energy": self.split_energy,
+            "degradation_function": self.degradation_function,
+            "irreversibility": self.irreversibility,
+            "fatigue": self.fatigue,
+            "fatigue_degradation_function": self.fatigue_degradation_function,
+            "fatigue_val": self.fatigue_val,
+            "save_solution_xdmf": self.save_solution_xdmf,
+            "save_solution_vtu": self.save_solution_vtu,
+            "results_folder_name": self.results_folder_name
+        }
+        with open(filename, "w") as f:
+                for key, value in params.items():
+                    f.write(f"{key}\t{value}\n")
+     
     def __str__(self):
         """
         Return a string representation of the simulation parameters.

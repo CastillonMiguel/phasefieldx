@@ -10,18 +10,29 @@ class Input:
     Class for managing phase-field simulation parameters.
 
     This class encapsulates parameters related to phase-field fracture simulations
-    and provides methods for setting and logging these parameters.
+    and provides methods for setting, logging, and exporting these parameters.
 
-    Attributes:
-        l (float): Length scale parameter.
-        label (str): A label associated with the simulation.
-        color (str): A color associated with the simulation.
+    Attributes
+    ----------
+    l : float
+        Length scale parameter.
+    save_solution_xdmf : bool
+        Indicates whether to save solutions in XDMF format.
+    save_solution_vtu : bool
+        Indicates whether to save solutions in VTU format.
+    results_folder_name : str
+        Name of the folder to save simulation results.
 
-    Methods:
-        __init__(): Initialize the Input class with default parameters.
-        save_log_info(logger): Logs the simulation parameters using the provided logger.
-        __str__(): Returns a string representation of the simulation parameters.
-
+    Methods
+    -------
+    __init__(l=1.0, save_solution_xdmf=False, save_solution_vtu=True, results_folder_name="results")
+        Initialize the Input class with default parameters.
+    save_log_info(logger)
+        Log the simulation parameters using the provided logger.
+    save_parameters_to_csv(filename="input_parameters.csv")
+        Save the simulation parameters to a two-column text file (tab-separated) for easy loading with pandas.
+    __str__()
+        Return a string representation of the simulation parameters.
     """
 
     def __init__(self,
@@ -47,6 +58,23 @@ class Input:
         """
         logger.info("Parameters:")
         logger.info(f"  l: {self.l}")
+
+    def save_parameters_to_csv(self, filename="input_parameters.csv"):
+        """
+        Save the simulation parameters to a CSV file for easy loading with pandas.
+
+        Parameters:
+            filename (str): The name of the CSV file to save the parameters.
+        """
+        params = {
+            "l": self.l,
+            "save_solution_xdmf": self.save_solution_xdmf,
+            "save_solution_vtu": self.save_solution_vtu,
+            "results_folder_name": self.results_folder_name
+        }
+        with open(filename, "w") as f:
+                for key, value in params.items():
+                    f.write(f"{key}\t{value}\n")
 
     def __str__(self):
         """
