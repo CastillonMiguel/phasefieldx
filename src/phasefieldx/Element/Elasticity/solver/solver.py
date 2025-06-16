@@ -98,7 +98,7 @@ def solve(Data,
     log_system_info(logger)  # log system imformation
     log_library_versions(logger)  # log Library versions
     Data.save_log_info(logger)  # log Simulation input data
-    Data.save_parameters_to_csv(os.path.join(result_folder_name,"input_parameters.csv"))
+    Data.save_parameters_to_csv(os.path.join(result_folder_name,"parameters.input"))
     log_model_information(msh, logger)
 
     # Dolfinx cpp logger

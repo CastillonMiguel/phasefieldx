@@ -37,7 +37,7 @@ class Input:
         Initialize the Input class with default parameters.
     save_log_info(logger)
         Log the simulation parameters using the provided logger.
-    save_parameters_to_csv(filename="input_parameters.csv")
+    save_parameters_to_csv(filename="parameters.input")
         Save the simulation parameters to a two-column text file (tab-separated) for easy loading with pandas.
     __str__()
         Return a string representation of the simulation parameters.
@@ -74,7 +74,7 @@ class Input:
         logger.info(f"  lambda: {self.lambda_}")
         logger.info(f"  mu: {self.mu}")
 
-    def save_parameters_to_csv(self, filename="input_parameters.csv"):
+    def save_parameters_to_csv(self, filename="parameters.input"):
         """
         Save the simulation parameters to a CSV file for easy loading with pandas.
 
