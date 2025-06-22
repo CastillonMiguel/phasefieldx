@@ -32,6 +32,9 @@ Welcome to **PhaseFieldX**. `documentation <https://phasefieldx.readthedocs.io/e
     :target: https://github.com/CastillonMiguel/phasefieldx/actions/workflows/testing.yml   
     :alt: Unit Testing
  
+.. image:: https://deepwiki.com/badge.svg
+   :target: https://deepwiki.com/CastillonMiguel/phasefieldx
+   :alt: Ask DeepWiki
 
 Introduction
 ------------
@@ -112,6 +115,7 @@ API Documentation
 -----------------
 For detailed API documentation, including class references, function definitions, and usage examples, please refer to the `API documentation <https://phasefieldx.readthedocs.io/en/latest/api/index.html>`_.
 
+You can also explore the project on DeepWiki — an AI-powered, interactive knowledge base built from the code and documentation: `Explore PhaseFieldX on DeepWiki <https://deepwiki.com/CastillonMiguel/phasefieldx>`_
 
 Contributions and Feedback
 --------------------------
