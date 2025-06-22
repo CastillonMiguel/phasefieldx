@@ -28,6 +28,7 @@ class AllResults:
         """
         self.folder_path = folder_path
 
+        self.input = {}
         self.convergence_files = {}
         self.energy_files = {}
         self.reaction_files = {}
@@ -52,6 +53,10 @@ class AllResults:
                     file_path, sep='\t')
             elif file_name.endswith(".dof"):
                 self.dof_files[file_name] = pd.read_csv(file_path, sep='\t')
+            elif file_name.endswith(".input"):
+                df = pd.read_csv(file_path, sep='\t', header=None, comment='/')
+                # Convert to dictionary
+                self.input[file_name] = dict(zip(df[0], df[1]))
 
         self.folder_names = get_foldernames_in_folder(self.folder_path)
 

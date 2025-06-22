@@ -177,7 +177,7 @@ def update_boundary_conditions(bcs, time):
 # ------------------------
 # Here, we define the external load to be applied to the top boundary (`ds_top`). 
 # `T_top` represents the external force applied in the y-direction.
-T_top = loading_Txy(V_u, msh, ds_top)
+T_top = loading_Txy(msh)
 
 # %%
 # The load is added to the list of external loads, `T_list_u`, which will be updated
