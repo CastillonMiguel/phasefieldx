@@ -16,4 +16,5 @@ Welcome to the API Reference chapter of our documentation! This section provides
    Materials/main
    Math/main
    PostProcessing/main
+   Reactions/main
    Solvers/main

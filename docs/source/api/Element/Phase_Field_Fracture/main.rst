@@ -37,15 +37,6 @@ $f(\bar{\alpha})$ Fatigue Degradation functions
    :show-inheritance:
 
 
-Reaction forces
----------------
-
-.. automodule:: phasefieldx.Element.reactions_forces_functions
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 Solver
 ------
 
