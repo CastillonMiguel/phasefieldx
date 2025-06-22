@@ -1,8 +1,8 @@
 # phasefieldx/__init__.py
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 __author__ = "Miguel Castillón"
-__email__ = "phasefieldx@gmail.com"
+__email__ = "miguel.research@pm.me"
 __license__ = "MIT"
 __description__ = "PhaseFieldX: An Open-Source Framework for Advanced Phase-Field Simulations"
 __url__ = "https://github.com/CastillonMiguel/phasefieldx"

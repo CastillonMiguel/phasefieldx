@@ -64,7 +64,7 @@ PhaseFieldX uses the ``numpydoc`` style for its docstrings. Please follow the `n
 Seeking Support
 ---------------
 
-If you have any questions or need guidance, feel free to start a discussion on our `GitHub Discussions <https://github.com/CastillonMiguel/phasefieldx/discussions>`_ page or contact us via email at `phasefieldx@gmail.com <mailto:phasefieldx@gmail.com>`_.
+If you have any questions or need guidance, feel free to start a discussion on our `GitHub Discussions <https://github.com/CastillonMiguel/phasefieldx/discussions>`_ page.
 
 
 Code of Conduct
