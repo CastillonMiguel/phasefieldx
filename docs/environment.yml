@@ -3,7 +3,7 @@ channels:
   - conda-forge
 dependencies:
   - python=3.10
-  - pyvista
+  - pyvista==0.44.2
   - jupyterlab
   - numpy
   - vtk
