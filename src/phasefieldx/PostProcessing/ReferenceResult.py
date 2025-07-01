@@ -179,22 +179,22 @@ class AllResults:
         """
         self.paraview = ParaviewResult(path)
 
-def set_label(self, label):
-        """
-        Set the label for this result set.
+    def set_label(self, label):
+            """
+            Set the label for this result set.
 
-        Parameters
-        ----------
-        label : str
-            Label to identify this result set in plots and analysis.
-            This label will be used in plot legends and other visual representations.
+            Parameters
+            ----------
+            label : str
+                Label to identify this result set in plots and analysis.
+                This label will be used in plot legends and other visual representations.
 
-        Examples
-        --------
-        >>> results = AllResults("./simulation_results")
-        >>> results.set_label("High Resolution Mesh")
-        """
-        self.label = label
+            Examples
+            --------
+            >>> results = AllResults("./simulation_results")
+            >>> results.set_label("High Resolution Mesh")
+            """
+            self.label = label
 
     def set_color(self, color):
         """
