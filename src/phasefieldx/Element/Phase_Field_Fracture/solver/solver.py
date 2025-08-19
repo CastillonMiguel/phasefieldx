@@ -40,7 +40,7 @@ def solve(Data,
           msh,
           final_time,
           V_u,
-          V_phi,
+          V_Φ,
           bc_list_u=[],
           bc_list_phi=[],
           update_boundary_conditions=None,
@@ -67,7 +67,7 @@ def solve(Data,
         The final simulation time.
     V_u : dolfinx.FunctionSpace
         The function space for the displacement field.
-    V_phi : dolfinx.FunctionSpace
+    V_Φ : dolfinx.FunctionSpace
         The function space for the phase-field.
     bc_list_u : list of dolfinx.DirichletBC, optional
         List of Dirichlet boundary conditions for the displacement field.
@@ -146,30 +146,30 @@ def solve(Data,
     δu = ufl.TestFunction(V_u)
 
     # Phase-field -------------------------
-    phi_new = dolfinx.fem.Function(V_phi, name="phi")
-    phi_old = dolfinx.fem.Function(V_phi, name="phi_old")
-    δphi = ufl.TestFunction(V_phi)
+    Φ_new = dolfinx.fem.Function(V_Φ, name="phi")
+    Φ_old = dolfinx.fem.Function(V_Φ, name="Φ_old")
+    δΦ = ufl.TestFunction(V_Φ)
 
     # History------------------------------
-    H = dolfinx.fem.Function(V_phi, name="H")
-    V_c = dolfinx.fem.Function(V_phi, name="V_c")
-    V_n = dolfinx.fem.Function(V_phi, name="V_n")
+    H = dolfinx.fem.Function(V_Φ, name="H")
+    V_c = dolfinx.fem.Function(V_Φ, name="V_c")
+    V_n = dolfinx.fem.Function(V_Φ, name="V_n")
 
     # Fatigue------------------------------
     if Data.fatigue:
-        Fatigue = dolfinx.fem.Function(V_phi, name="fatigue")
+        Fatigue = dolfinx.fem.Function(V_Φ, name="fatigue")
 
-        alpha_c = dolfinx.fem.Function(V_phi, name="alpha_c")
-        alpha_n = dolfinx.fem.Function(V_phi, name="alpha_n")
-        alpha_cum_bar_c = dolfinx.fem.Function(V_phi, name="alpha_cum_bar_c")
-        alpha_cum_bar_n = dolfinx.fem.Function(V_phi, name="alpha_cum_bar_n")
-        delta_alpha = dolfinx.fem.Function(V_phi, name="delta_alpha")
+        alpha_c = dolfinx.fem.Function(V_Φ, name="alpha_c")
+        alpha_n = dolfinx.fem.Function(V_Φ, name="alpha_n")
+        alpha_cum_bar_c = dolfinx.fem.Function(V_Φ, name="alpha_cum_bar_c")
+        alpha_cum_bar_n = dolfinx.fem.Function(V_Φ, name="alpha_cum_bar_n")
+        delta_alpha = dolfinx.fem.Function(V_Φ, name="delta_alpha")
 
     # Displacement -----------------------------------------------------------
-    F_u = ufl.inner((g(phi_new, Data.degradation_function) + Data.k) *
+    F_u = ufl.inner((g(Φ_new, Data.degradation_function) + Data.k) *
                     sigma_a(u_new, Data) + sigma_b(u_new, Data), epsilon(δu)) * ufl.dx
     #F_u_form = dolfinx.fem.form(F_u)
-    F_u_form = dolfinx.fem.form(ufl.inner((g(phi_new, Data.degradation_function) + Data.k) *
+    F_u_form = dolfinx.fem.form(ufl.inner((g(Φ_new, Data.degradation_function) + Data.k) *
                     sigma_a(u_new, Data) + sigma_b(u_new, Data), epsilon(δu)) * ufl.dx)
     # External forces --------------------------------------------------------
     if T_list_u is not None:
@@ -191,18 +191,18 @@ def solve(Data,
         solver_u.save_log_info(logger)
 
     # Phase-field ------------------------------------------------------------
-    F_phi = dg(phi_new, Data.degradation_function) * H * δphi * ufl.dx
+    F_phi = dg(Φ_new, Data.degradation_function) * H * δΦ * ufl.dx
 
     if Data.fatigue:
-        F_phi += Fatigue * Data.Gc * (1 / Data.l * ufl.inner(phi_new, δphi) + Data.l *
-                                      ufl.inner(ufl.grad(phi_new), ufl.grad(δphi))) * ufl.dx
+        F_phi += Fatigue * Data.Gc * (1 / Data.l * ufl.inner(Φ_new, δΦ) + Data.l *
+                                      ufl.inner(ufl.grad(Φ_new), ufl.grad(δΦ))) * ufl.dx
     else:
-        F_phi += Data.Gc * (1 / Data.l * ufl.inner(phi_new, δphi) + Data.l *
-                            ufl.inner(ufl.grad(phi_new), ufl.grad(δphi))) * ufl.dx
+        F_phi += Data.Gc * (1 / Data.l * ufl.inner(Φ_new, δΦ) + Data.l *
+                            ufl.inner(ufl.grad(Φ_new), ufl.grad(δΦ))) * ufl.dx
 
-    J_phi = ufl.derivative(F_phi, phi_new)
+    J_phi = ufl.derivative(F_phi, Φ_new)
     PHI_problem = dolfinx.fem.petsc.NonlinearProblem(
-        F_phi, phi_new, bcs=bc_list_phi, J=J_phi)
+        F_phi, Φ_new, bcs=bc_list_phi, J=J_phi)
 
     solver_phi = NewtonSolver(PHI_problem)
     if rank == 0 and logger:
@@ -314,7 +314,7 @@ def solve(Data,
                 H.x.array[:] = V_c.x.array
 
             if Data.fatigue:
-                project(g(phi_old, Data.degradation_function) * V_c, alpha_c)
+                project(g(Φ_old, Data.degradation_function) * V_c, alpha_c)
 
                 accelerated = False
                 if accelerated:
@@ -330,24 +330,24 @@ def solve(Data,
 
             # Phase-field ---------------------------------------------
             if rank == 0 and logger:
-                logger.info(f">>> Solving phase for dofs: phi ")
-            phi_iterations, _ = solver_phi.solver.solve(phi_new)
+                logger.info(f">>> Solving phase for dofs: Φ ")
+            phi_iterations, _ = solver_phi.solver.solve(Φ_new)
             if rank == 0 and logger:
                 logger.info(f" Newton iterations: {phi_iterations}")
-            # error_L2_phi = eval_error_L2(phi_new, phi_old, msh)/1
-            error_L2_phi = eval_error_L2_normalized(phi_new, phi_old, msh)
+            # error_L2_phi = eval_error_L2(Φ_new, Φ_old, msh)/1
+            error_L2_phi = eval_error_L2_normalized(Φ_new, Φ_old, msh)
             if rank == 0 and logger:
-                resisual_phi = solver_phi.ksp.getResidualNorm()
-                logger.info(f" Residual norm phi: {resisual_phi}")
-                logger.info(f" L2 error in phi direction:  {error_L2_phi}")
-            phi_old.x.array[:] = phi_new.x.array
+                residual_Φ = solver_phi.ksp.getResidualNorm()
+                logger.info(f" Residual norm Φ: {residual_Φ}")
+                logger.info(f" L2 error in Φ direction:  {error_L2_phi}")
+            Φ_old.x.array[:] = Φ_new.x.array
 
         # Irreversibility ....
         if Data.irreversibility == "miehe":
             V_n.x.array[:] = np.maximum(V_c.x.array, V_n.x.array)
 
         if Data.fatigue:
-            # project(g(phi_new, Data.degradation_function) * V_c, alpha_c)
+            # project(g(Φ_new, Data.degradation_function) * V_c, alpha_c)
             # delta_alpha = np.abs(alpha_c.x.array - alpha_n.x.array) * np.heaviside((alpha_c.x.array - alpha_n.x.array) / dt, 1)
 
             # alpha_cum_bar_c.x.array[:] = alpha_cum_bar_c.x.array + delta_alpha
@@ -377,19 +377,19 @@ def solve(Data,
 
         # Energy -------------------------------------------------------------
         E = comm.allreduce(dolfinx.fem.assemble_scalar(dolfinx.fem.form(
-            (g(phi_new, Data.degradation_function) * psi_a(u_new, Data) + psi_b(u_new, Data)) * ufl.dx)),op=MPI.SUM)
+            (g(Φ_new, Data.degradation_function) * psi_a(u_new, Data) + psi_b(u_new, Data)) * ufl.dx)),op=MPI.SUM)
 
         gamma_phi = comm.allreduce(dolfinx.fem.assemble_scalar(dolfinx.fem.form(
-            1 / (2 * Data.l) * ufl.inner(phi_new, phi_new) * ufl.dx)),op=MPI.SUM)
+            1 / (2 * Data.l) * ufl.inner(Φ_new, Φ_new) * ufl.dx)),op=MPI.SUM)
         gamma_gradphi = comm.allreduce(dolfinx.fem.assemble_scalar(dolfinx.fem.form(
-            Data.l / 2 * ufl.inner(ufl.grad(phi_new), ufl.grad(phi_new)) * ufl.dx)),op=MPI.SUM)
+            Data.l / 2 * ufl.inner(ufl.grad(Φ_new), ufl.grad(Φ_new)) * ufl.dx)),op=MPI.SUM)
         gamma = gamma_phi + gamma_gradphi
 
         if Data.fatigue:
             W_phi = comm.allreduce(dolfinx.fem.assemble_scalar(dolfinx.fem.form(
-                Fatigue * Data.Gc * 1 / (2 * Data.l) * ufl.inner(phi_new, phi_new) * ufl.dx)),op=MPI.SUM)
+                Fatigue * Data.Gc * 1 / (2 * Data.l) * ufl.inner(Φ_new, Φ_new) * ufl.dx)),op=MPI.SUM)
             W_gradphi = comm.allreduce(dolfinx.fem.assemble_scalar(dolfinx.fem.form(
-                Fatigue * Data.Gc * Data.l / 2 * ufl.inner(ufl.grad(phi_new), ufl.grad(phi_new)) * ufl.dx)),op=MPI.SUM)
+                Fatigue * Data.Gc * Data.l / 2 * ufl.inner(ufl.grad(Φ_new), ufl.grad(Φ_new)) * ufl.dx)),op=MPI.SUM)
             alpha_acum = comm.allreduce(dolfinx.fem.assemble_scalar(
                 dolfinx.fem.form(alpha_cum_bar_c * ufl.dx)),op=MPI.SUM)
         else:
@@ -413,11 +413,11 @@ def solve(Data,
 
         # Paraview -----------------------------------------------------------
         if Data.save_solution_xdmf:
-            xdmf_phi.write_function(phi_new, step)
+            xdmf_phi.write_function(Φ_new, step)
             xdmf_u.write_function(u_new, step)
 
         if Data.save_solution_vtu:
-            vtk_sol.write_function([phi_new, u_new], step)
+            vtk_sol.write_function([Φ_new, u_new], step)
 
         t += dt
         step += 1
