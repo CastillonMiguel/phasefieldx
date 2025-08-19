@@ -10,6 +10,7 @@ import os
 import time
 import dolfinx
 import ufl
+from mpi4py import MPI
 from dolfinx.fem.petsc import NonlinearProblem
 
 
@@ -75,24 +76,36 @@ def solve(Data,
     # This will simulate the phase-field evolution in time, saving results in the current directory.
     """
 
+    # Get MPI communicator info
+    comm = msh.comm
+    rank = comm.Get_rank()
+    
     if path is None:
         path = os.getcwd()
 
-    # Common #############################################################
+    # Common - Only rank 0 handles file operations
     ######################################################################
     result_folder_name = Data.results_folder_name
-    prepare_simulation(path, result_folder_name)
-    logger = set_logger(result_folder_name)
-    log_system_info(logger)  # log system imformation
-    log_library_versions(logger)  # log Library versions
-    Data.save_log_info(logger)  # log Simulation input data
-    Data.save_parameters_to_csv(os.path.join(result_folder_name,"parameters.input"))
-    log_model_information(msh, logger)
+   
+    if rank == 0:
+        prepare_simulation(path, result_folder_name)
+        logger = set_logger(result_folder_name)
+        log_system_info(logger)  # log system information
+        log_library_versions(logger)  # log Library versions
+        Data.save_log_info(logger)  # log Simulation input data
+        Data.save_parameters_to_csv(os.path.join(result_folder_name, "parameters.input"))
+        log_model_information(msh, logger)
+    else:
+        logger = None
 
-    # Dolfinx cpp logger
+    # Synchronize all processes
+    comm.Barrier()
+
+    # Dolfinx cpp logger - all processes
     dolfinx.log.set_log_level(dolfinx.log.LogLevel.INFO)
-    dolfinx.cpp.log.set_output_file(
-        os.path.join(result_folder_name, "dolfinx.log"))
+    if rank == 0:
+        dolfinx.cpp.log.set_output_file(
+            os.path.join(result_folder_name, "dolfinx.log"))
 
     # Formulation ##########################################################
     ########################################################################
@@ -120,42 +133,54 @@ def solve(Data,
         F_phi, phi, bcs=bc_list_phi, J=J_phi)
 
     solver_phi = NewtonSolver(problem)
-    solver_phi.save_log_info(logger)
+    if rank == 0 and logger:
+        solver_phi.save_log_info(logger)
 
     # Solve ################################################################
     ########################################################################
     start = time.perf_counter()
-    logger.info(f" start time: {start}")
+    if rank == 0 and logger:
+        logger.info(f" start time: {start}")
 
-    # Paraview ------------------------
+    # Paraview files - DOLFINx handles parallel I/O automatically
     if Data.save_solution_xdmf:
         paraview_solution_folder_name_xdmf = os.path.join(
             result_folder_name, "paraview-solutions_xdmf")
+        # Create directory only on rank 0
+        if rank == 0:
+            os.makedirs(paraview_solution_folder_name_xdmf, exist_ok=True)
+        comm.Barrier()  # Wait for directory creation
+        
         xdmf_phi = dolfinx.io.XDMFFile(msh.comm, os.path.join(
             paraview_solution_folder_name_xdmf, "phi.xdmf"), "w")
         xdmf_phi.write_mesh(msh)
 
-        xdmf_u = dolfinx.io.XDMFFile(msh.comm, os.path.join(
-            paraview_solution_folder_name_xdmf, "u.xdmf"), "w")
-        xdmf_u.write_mesh(msh)
-
     if Data.save_solution_vtu:
         paraview_solution_folder_name_vtu = os.path.join(
             result_folder_name, "paraview-solutions_vtu")
+        # Create directory only on rank 0
+        if rank == 0:
+            os.makedirs(paraview_solution_folder_name_vtu, exist_ok=True)
+        
+        comm.Barrier()  # Wait for directory creation
+        
         vtk_sol = dolfinx.io.VTKFile(msh.comm, os.path.join(
             paraview_solution_folder_name_vtu, "phasefieldx.pvd"), "w")
 
-    logger.info(f" S t a r t i n g    A n a l y s i s ")
-    logger.info(f" ---------------------------------- ")
-    logger.info(f" ---------------------------------- ")
+    if rank == 0 and logger:
+        logger.info(f" S t a r t i n g    A n a l y s i s ")
+        logger.info(f" ---------------------------------- ")
+        logger.info(f" ---------------------------------- ")
 
+    # Main solution loop
     t = 0
     step = 0
     while t < final_time:
-        logger.info(
-            f"\n\nSolution at (pseudo) time = {t}, dt = {dt}, Step = {step} ")
-        logger.info(
-            f"===========================================================================")
+        if rank == 0 and logger:
+            logger.info(
+                f"\n\nSolution at (pseudo) time = {t}, dt = {dt}, Step = {step} ")
+            logger.info(
+                f"===========================================================================")
 
         if update_boundary_conditions is not None:
             bc_ux = update_boundary_conditions(bc_list_phi, t)
@@ -163,31 +188,38 @@ def solve(Data,
         if update_loading is not None:
             f, grad_f = update_loading(x, 0)
 
-        # Phase-field ---------------------------------------------
-        logger.info(f">>> Solving phase for dofs: phi ")
+        # Phase-field solution - all processes participate
+        if rank == 0 and logger:
+            logger.info(f">>> Solving phase for dofs: phi ")
+        
         phi_iterations, _ = solver_phi.solver.solve(phi)
-        # residuals = solver_u.ksp.getConvergenceHistory()
-        logger.info(f" Newton iterations: {phi_iterations}")
-        resisual_phi = solver_phi.ksp.getResidualNorm()
-        logger.info(f" Residual norm phi: {resisual_phi}")
+        
+        if rank == 0 and logger:
+            logger.info(f" Newton iterations: {phi_iterations}")
+            resisual_phi = solver_phi.ksp.getResidualNorm()
+            logger.info(f" Residual norm phi: {resisual_phi}")
 
-        # Save results
+        # Save results - Only rank 0 writes text files
         ######################################################################
-        logger.info(f"\n\n Saving results: ")
+        if rank == 0:
+            if logger:
+                logger.info(f"\n\n Saving results: ")
 
-        # conv ---------------------------------------------------------------
-        append_results_to_file(os.path.join(
-            result_folder_name, "phasefieldx.conv"), '#step\titerations', step, phi_iterations)
+            # conv ---------------------------------------------------------------
+            append_results_to_file(os.path.join(
+                result_folder_name, "phasefieldx.conv"), '#step\titerations', step, phi_iterations)
 
         # Energy -------------------------------------------------------------
-        gamma_phi = dolfinx.fem.assemble_scalar(
-            dolfinx.fem.form(1 / (2 * Data.l) * ufl.inner(phi, phi) * dx))
-        gamma_gradphi = dolfinx.fem.assemble_scalar(dolfinx.fem.form(
-            Data.l / 2 * ufl.inner(ufl.grad(phi), ufl.grad(phi)) * dx))
+        gamma_phi = comm.allreduce(dolfinx.fem.assemble_scalar(
+            dolfinx.fem.form(1 / (2 * Data.l) * ufl.inner(phi, phi) * dx)),op=MPI.SUM)
+        gamma_gradphi = comm.allreduce(dolfinx.fem.assemble_scalar(dolfinx.fem.form(
+            Data.l / 2 * ufl.inner(ufl.grad(phi), ufl.grad(phi)) * dx)),op=MPI.SUM)
         gamma = gamma_phi + gamma_gradphi
 
-        append_results_to_file(os.path.join(result_folder_name, "total.energy"),
-                               '#step\tgamma\tgamma_phi\tgamma_gradphi', step, gamma, gamma_phi, gamma_gradphi)
+        # Only rank 0 writes energy results
+        if rank == 0:
+            append_results_to_file(os.path.join(result_folder_name, "total.energy"),
+                                   '#step\tgamma\tgamma_phi\tgamma_gradphi', step, gamma, gamma_phi, gamma_gradphi)
 
         # Paraview -----------------------------------------------------------
         if Data.save_solution_xdmf:
@@ -199,11 +231,14 @@ def solve(Data,
         t += dt
         step += 1
 
+    # Cleanup - all processes
     if Data.save_solution_xdmf:
         xdmf_phi.close()
 
     if Data.save_solution_vtu:
         vtk_sol.close()
 
-    end = time.perf_counter()
-    log_end_analysis(logger, end - start)
+    if rank == 0:
+        end = time.perf_counter()
+        if logger:
+            log_end_analysis(logger, end - start)
