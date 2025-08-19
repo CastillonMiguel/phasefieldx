@@ -10,6 +10,7 @@ import os
 import time
 import dolfinx
 import ufl
+from mpi4py import MPI
 from dolfinx.fem.petsc import NonlinearProblem
 
 
@@ -87,27 +88,39 @@ def solve(Data,
     # This will simulate the elasticity problem in time, saving results in the specified directory.
     """
 
+    # Get MPI communicator info
+    comm = msh.comm
+    rank = comm.Get_rank()
+    
     if path is None:
         path = os.getcwd()
 
-    # Common #############################################################
+    # Common - Only rank 0 handles file operations
     ######################################################################
     result_folder_name = Data.results_folder_name
-    prepare_simulation(path, result_folder_name)
-    logger = set_logger(result_folder_name)
-    log_system_info(logger)  # log system imformation
-    log_library_versions(logger)  # log Library versions
-    Data.save_log_info(logger)  # log Simulation input data
-    Data.save_parameters_to_csv(os.path.join(result_folder_name,"parameters.input"))
-    log_model_information(msh, logger)
+   
+    if rank == 0:
+        prepare_simulation(path, result_folder_name)
+        logger = set_logger(result_folder_name)
+        log_system_info(logger)  # log system information
+        log_library_versions(logger)  # log Library versions
+        Data.save_log_info(logger)  # log Simulation input data
+        Data.save_parameters_to_csv(os.path.join(result_folder_name, "parameters.input"))
+        log_model_information(msh, logger)
+    else:
+        logger = None
 
-    # Dolfinx cpp logger
+    # Synchronize all processes
+    comm.Barrier()
+
+    # Dolfinx cpp logger - all processes
     dolfinx.log.set_log_level(dolfinx.log.LogLevel.INFO)
-    dolfinx.cpp.log.set_output_file(
-        os.path.join(result_folder_name, "dolfinx.log"))
+    if rank == 0:
+        dolfinx.cpp.log.set_output_file(
+            os.path.join(result_folder_name, "dolfinx.log"))
 
-    if bcs_list_u_names is None:
-        bcs_list_u_names = [f"bc_u_{i}" for i in range(len(bc_list_u))]
+        if bcs_list_u_names is None:
+            bcs_list_u_names = [f"bc_u_{i}" for i in range(len(bc_list_u))]
 
     # Formulation ##########################################################
     ########################################################################
@@ -137,19 +150,24 @@ def solve(Data,
     problem = dolfinx.fem.petsc.NonlinearProblem(F_u, u, bcs=bc_list_u, J=J_u)
 
     solver_u = NewtonSolver(problem)
-    solver_u.save_log_info(logger)
+    if rank == 0 and logger:
+        solver_u.save_log_info(logger)
 
 
     # Solve ################################################################
     ########################################################################
     start = time.perf_counter()
+    if rank == 0 and logger:
+        logger.info(f" start time: {start}")
 
-    logger.info(f" start time: {start}")
-
-    # Paraview ------------------------
+    # Paraview files - DOLFINx handles parallel I/O automatically
     if Data.save_solution_xdmf:
         paraview_solution_folder_name_xdmf = os.path.join(
             result_folder_name, "paraview-solutions_xdmf")
+        # Create directory only on rank 0
+        if rank == 0:
+            os.makedirs(paraview_solution_folder_name_xdmf, exist_ok=True)
+        comm.Barrier()  # Wait for directory creation
         xdmf_u = dolfinx.io.XDMFFile(msh.comm, os.path.join(
             paraview_solution_folder_name_xdmf, "u.xdmf"), "w")
         xdmf_u.write_mesh(msh)
@@ -157,20 +175,28 @@ def solve(Data,
     if Data.save_solution_vtu:
         paraview_solution_folder_name_vtu = os.path.join(
             result_folder_name, "paraview-solutions_vtu")
+        # Create directory only on rank 0
+        if rank == 0:
+            os.makedirs(paraview_solution_folder_name_vtu, exist_ok=True)
+        
+        comm.Barrier()  # Wait for directory creation
+        
         vtk_sol = dolfinx.io.VTKFile(msh.comm, os.path.join(
             paraview_solution_folder_name_vtu, "phasefieldx.pvd"), "w")
 
-    logger.info(f" S t a r t i n g    A n a l y s i s ")
-    logger.info(f" ---------------------------------- ")
-    logger.info(f" ---------------------------------- ")
+    if rank == 0 and logger:
+        logger.info(f" S t a r t i n g    A n a l y s i s ")
+        logger.info(f" ---------------------------------- ")
+        logger.info(f" ---------------------------------- ")
 
     t = 0
     step = 0
     while t < final_time:
-        logger.info(
-            f"\n\nSolution at (pseudo) time = {t}, dt = {dt}, Step = {step} ")
-        logger.info(
-            f"===========================================================================")
+        if rank == 0 and logger:
+            logger.info(
+                f"\n\nSolution at (pseudo) time = {t}, dt = {dt}, Step = {step} ")
+            logger.info(
+                f"===========================================================================")
 
         if bc_list_u is not None:
             bc_ux, bc_uy, bc_uz = update_boundary_conditions(bc_list_u, t)
@@ -181,35 +207,47 @@ def solve(Data,
             T_ux, T_uy, T_uz = update_loading(T_list_u, t)
 
         # Displacement --------------------------------------------
-        logger.info(f">>> Solving phase for dofs: u ")
+        if rank == 0 and logger:
+            logger.info(f">>> Solving phase for dofs: u ")
+            
         u_iterations, _ = solver_u.solver.solve(u)
+        
         # residuals = solver_u.ksp.getConvergenceHistory()
-        logger.info(f" Newton iterations: {u_iterations}")
-        resisual_u = solver_u.ksp.getResidualNorm()
-        logger.info(f" Residual norm u: {resisual_u}")
+        
+        if rank == 0 and logger:
+            logger.info(f" Newton iterations: {u_iterations}")
+            residual_u = solver_u.ksp.getResidualNorm()
+            logger.info(f" Residual norm u: {residual_u}")
 
-        # Save results
+        # Save results - Only rank 0 writes text files
         ######################################################################
-        logger.info(f"\n\n Saving results: ")
+        if rank == 0:
+            if logger:
+                logger.info(f"\n\n Saving results: ")
 
-        # conv ---------------------------------------------------------------
-        append_results_to_file(os.path.join(
-            result_folder_name, "phasefieldx.conv"), '#step\titerations', step, u_iterations)
+            # conv ---------------------------------------------------------------
+            append_results_to_file(os.path.join(
+                result_folder_name, "phasefieldx.conv"), '#step\titerations', step, u_iterations)
 
-        # Degree of freedom --------------------------------------------------
-        append_results_to_file(os.path.join(
-            result_folder_name, "top.dof"), '#step\tUx\tUy\tUz', step, bc_ux, bc_uy, bc_uz)
+
+            # Degree of freedom --------------------------------------------------
+            append_results_to_file(os.path.join(
+                result_folder_name, "top.dof"), '#step\tUx\tUy\tUz', step, bc_ux, bc_uy, bc_uz)
 
         # Reaction -----------------------------------------------------------
-        for i in range(0, len(bc_list_u)):
-            R = calculate_reaction_forces(J_u_form, F_u_form, [bc_list_u[i]], u, msh.topology.dim)
-            append_results_to_file(os.path.join(result_folder_name, bcs_list_u_names[i] + ".reaction"), '#step\tRx\tRy\tRz', step, R[0], R[1], R[2])
+        if comm.Get_size() == 1: # Only available for single process
+            for i in range(0, len(bc_list_u)):
+                R = calculate_reaction_forces(J_u_form, F_u_form, [bc_list_u[i]], u, msh.topology.dim)
+                append_results_to_file(os.path.join(result_folder_name, bcs_list_u_names[i] + ".reaction"), '#step\tRx\tRy\tRz', step, R[0], R[1], R[2])
 
         # Energy -------------------------------------------------------------
-        E = dolfinx.fem.assemble_scalar(dolfinx.fem.form(
-            psi(u, Data.lambda_, Data.mu) * dx))
-        append_results_to_file(os.path.join(
-            result_folder_name, "total.energy"), '#step\tE', step, E)
+        E = comm.allreduce(dolfinx.fem.assemble_scalar(dolfinx.fem.form(
+            psi(u, Data.lambda_, Data.mu) * dx)),op=MPI.SUM)
+        
+        # Only rank 0 writes energy results
+        if rank == 0:
+            append_results_to_file(os.path.join(
+                result_folder_name, "total.energy"), '#step\tE', step, E)
 
         # Paraview -----------------------------------------------------------
         if Data.save_solution_xdmf:
@@ -221,11 +259,14 @@ def solve(Data,
         t += dt
         step += 1
 
+    # Cleanup - all processes
     if Data.save_solution_xdmf:
         xdmf_u.close()
 
     if Data.save_solution_vtu:
         vtk_sol.close()
 
-    end = time.perf_counter()
-    log_end_analysis(logger, end - start)
+    if rank == 0:
+        end = time.perf_counter()
+        if logger:
+            log_end_analysis(logger, end - start)
