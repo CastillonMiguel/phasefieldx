@@ -147,7 +147,7 @@ def solve(Data,
 
     # Phase-field -------------------------
     Φ_new = dolfinx.fem.Function(V_Φ, name="phi")
-    Φ_old = dolfinx.fem.Function(V_Φ, name="Φ_old")
+    Φ_old = dolfinx.fem.Function(V_Φ, name="phi_old")
     δΦ = ufl.TestFunction(V_Φ)
 
     # History------------------------------

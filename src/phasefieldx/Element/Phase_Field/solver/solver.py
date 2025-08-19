@@ -111,7 +111,7 @@ def solve(Data,
     ########################################################################
 
     # Phase-field -------------------------
-    Φ = dolfinx.fem.Function(V_Φ, name="Φ")
+    Φ = dolfinx.fem.Function(V_Φ, name="phi")
     δΦ = ufl.TestFunction(V_Φ)
 
     metadata = {"quadrature_degree": quadrature_degree}
