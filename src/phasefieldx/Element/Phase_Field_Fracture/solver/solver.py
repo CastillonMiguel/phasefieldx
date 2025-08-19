@@ -13,6 +13,7 @@ import os
 import time
 import dolfinx
 import ufl
+from mpi4py import MPI
 import numpy as np
 
 from phasefieldx.files import prepare_simulation, append_results_to_file
@@ -98,32 +99,43 @@ def solve(Data,
     None
     """
 
+    # Get MPI communicator info
+    comm = msh.comm
+    rank = comm.Get_rank()
+    
     if path is None:
         path = os.getcwd()
 
-    # Common #############################################################
+    # Common - Only rank 0 handles file operations
     ######################################################################
     result_folder_name = Data.results_folder_name
-    prepare_simulation(path, result_folder_name)
-    logger = set_logger(result_folder_name)
-    log_system_info(logger)  # log system imformation
-    log_library_versions(logger)  # log Library versions
-    Data.save_log_info(logger)  # log Simulation input data
-    Data.save_parameters_to_csv(os.path.join(result_folder_name,"parameters.input"))
-    log_model_information(msh, logger)
+   
+    if rank == 0:
+        prepare_simulation(path, result_folder_name)
+        logger = set_logger(result_folder_name)
+        log_system_info(logger)  # log system information
+        log_library_versions(logger)  # log Library versions
+        Data.save_log_info(logger)  # log Simulation input data
+        Data.save_parameters_to_csv(os.path.join(result_folder_name, "parameters.input"))
+        log_model_information(msh, logger)
+        logger.info("========== Stagger settings ===========")
+        logger.info(f"  minimum stagger iterations: {min_stagger_iter}")
+        logger.info(f"  maximum stagger iterations: {max_stagger_iter}")
+        logger.info(f"  stagger error tolerance: {stagger_error_tol}")
+    else:
+        logger = None
 
-    logger.info("========== Stagger settings ===========")
-    logger.info(f"  minimum stagger iterations: {min_stagger_iter}")
-    logger.info(f"  maximum stagger iterations: {max_stagger_iter}")
-    logger.info(f"  stagger error tolerance: {stagger_error_tol}")
+    # Synchronize all processes
+    comm.Barrier()
 
-    # Dolfinx cpp logger
+    # Dolfinx cpp logger - all processes
     dolfinx.log.set_log_level(dolfinx.log.LogLevel.INFO)
-    dolfinx.cpp.log.set_output_file(
-        os.path.join(result_folder_name, "dolfinx.log"))
+    if rank == 0:
+        dolfinx.cpp.log.set_output_file(
+            os.path.join(result_folder_name, "dolfinx.log"))
 
-    if bcs_list_u_names is None:
-        bcs_list_u_names = [f"bc_u_{i}" for i in range(len(bc_list_u))]
+        if bcs_list_u_names is None:
+            bcs_list_u_names = [f"bc_u_{i}" for i in range(len(bc_list_u))]
        
     # Formulation ##########################################################
     ########################################################################
@@ -173,9 +185,10 @@ def solve(Data,
         F_u, u_new, bcs=bc_list_u, J=J_u)
 
     solver_u = NewtonSolver(U_problem)
-    logger.info(f" Newton solver parameters for: u  ")
-    logger.info(f" ---------------------------------")
-    solver_u.save_log_info(logger)
+    if rank == 0 and logger:
+        logger.info(f" Newton solver parameters for: u  ")
+        logger.info(f" ---------------------------------")
+        solver_u.save_log_info(logger)
 
     # Phase-field ------------------------------------------------------------
     F_phi = dg(phi_new, Data.degradation_function) * H * δphi * ufl.dx
@@ -192,17 +205,18 @@ def solve(Data,
         F_phi, phi_new, bcs=bc_list_phi, J=J_phi)
 
     solver_phi = NewtonSolver(PHI_problem)
-    logger.info(f" Newton solver parameters for: phi")
-    logger.info(f" ---------------------------------")
-    solver_phi.save_log_info(logger)
+    if rank == 0 and logger:
+        logger.info(f" Newton solver parameters for: phi")
+        logger.info(f" ---------------------------------")
+        solver_phi.save_log_info(logger)
 
     # Solve ################################################################
     ########################################################################
     start = time.perf_counter()
+    if rank == 0 and logger:
+        logger.info(f" start time: {start}")
 
-    logger.info(f" start time: {start}")
-
-    # Paraview ------------------------
+    # Paraview files - DOLFINx handles parallel I/O automatically
     if Data.save_solution_xdmf:
         paraview_solution_folder_name_xdmf = os.path.join(
             result_folder_name, "paraview-solutions_xdmf")
@@ -212,25 +226,43 @@ def solve(Data,
 
         xdmf_u = dolfinx.io.XDMFFile(msh.comm, os.path.join(
             paraview_solution_folder_name_xdmf, "u.xdmf"), "w")
-        xdmf_u.write_mesh(msh)
+        
+        # Create directory only on rank 0
+        if rank == 0:
+            os.makedirs(paraview_solution_folder_name_xdmf, exist_ok=True)
+        comm.Barrier()  # Wait for directory creation
+        xdmf_phi = dolfinx.io.XDMFFile(msh.comm, os.path.join(
+            paraview_solution_folder_name_xdmf, "phi.xdmf"), "w")
+        xdmf_phi.write_mesh(msh)
+        
+        xdmf_u = dolfinx.io.XDMFFile(msh.comm, os.path.join(
+            paraview_solution_folder_name_xdmf, "u.xdmf"), "w")
 
     if Data.save_solution_vtu:
         paraview_solution_folder_name_vtu = os.path.join(
             result_folder_name, "paraview-solutions_vtu")
+        # Create directory only on rank 0
+        if rank == 0:
+            os.makedirs(paraview_solution_folder_name_vtu, exist_ok=True)
+        
+        comm.Barrier()  # Wait for directory creation
+        
         vtk_sol = dolfinx.io.VTKFile(msh.comm, os.path.join(
             paraview_solution_folder_name_vtu, "phasefieldx.pvd"), "w")
 
-    logger.info(f" S t a r t i n g    A n a l y s i s ")
-    logger.info(f" ---------------------------------- ")
-    logger.info(f" ---------------------------------- ")
+    if rank == 0 and logger:
+        logger.info(f" S t a r t i n g    A n a l y s i s ")
+        logger.info(f" ---------------------------------- ")
+        logger.info(f" ---------------------------------- ")
 
     t = 0
     step = 0
     while t < final_time:
-        logger.info(
-            f"\n\nSolution at (pseudo) time = {t}, dt = {dt}, Step = {step} ")
-        logger.info(
-            f"===========================================================================")
+        if rank == 0 and logger:
+            logger.info(
+                f"\n\nSolution at (pseudo) time = {t}, dt = {dt}, Step = {step} ")
+            logger.info(
+                f"===========================================================================")
 
         if update_boundary_conditions is not None:
             bc_ux, bc_uy, bc_uz = update_boundary_conditions(bc_list_u, t)
@@ -251,20 +283,26 @@ def solve(Data,
         while (error_L2_phi > stagger_error_tol or error_L2_u > stagger_error_tol or stagger_iter <
                min_stagger_iter) and (stagger_iter < max_stagger_iter):
             stagger_iter += 1
-            logger.info(f" Stagger Iteration : {stagger_iter}")
-            logger.info(f" ---------------------- ")
+            
+            if rank == 0 and logger:
+                logger.info(f" Stagger Iteration: {stagger_iter}")
+                logger.info(f" ---------------------- ")
 
             # Displacement --------------------------------------------
-            logger.info(f">>> Solving phase for dofs: u ")
+            if rank == 0 and logger:
+                logger.info(f">>> Solving phase for dofs: u ")
             u_iterations, _ = solver_u.solver.solve(u_new)
             # residuals = solver_u.ksp.getConvergenceHistory()
-            logger.info(f" Newton iterations: {u_iterations}")
+            if rank == 0 and logger:
+                logger.info(f" Newton iterations: {u_iterations}")
             # error_L2_u = eval_error_L2(u_new, u_old, msh)/1
             error_L2_u = eval_error_L2_normalized(u_new, u_old, msh)
 
-            resisual_u = solver_u.ksp.getResidualNorm()
-            logger.info(f" Residual norm u: {resisual_u}")
-            logger.info(f" L2 error in u   direction:  {error_L2_u}")
+            
+            if rank == 0 and logger:
+                resisual_u = solver_u.ksp.getResidualNorm()
+                logger.info(f" Residual norm u: {resisual_u}")
+                logger.info(f" L2 error in u   direction:  {error_L2_u}")
             u_old.x.array[:] = u_new.x.array
 
             #  Irreversibility ....
@@ -291,14 +329,17 @@ def solve(Data,
                     alpha_cum_bar_c.x.array, Data)
 
             # Phase-field ---------------------------------------------
-            logger.info(f">>> Solving phase for dofs: phi ")
+            if rank == 0 and logger:
+                logger.info(f">>> Solving phase for dofs: phi ")
             phi_iterations, _ = solver_phi.solver.solve(phi_new)
-            logger.info(f" Newton iterations: {phi_iterations}")
+            if rank == 0 and logger:
+                logger.info(f" Newton iterations: {phi_iterations}")
             # error_L2_phi = eval_error_L2(phi_new, phi_old, msh)/1
             error_L2_phi = eval_error_L2_normalized(phi_new, phi_old, msh)
-            resisual_phi = solver_phi.ksp.getResidualNorm()
-            logger.info(f" Residual norm phi: {resisual_phi}")
-            logger.info(f" L2 error in phi direction:  {error_L2_phi}")
+            if rank == 0 and logger:
+                resisual_phi = solver_phi.ksp.getResidualNorm()
+                logger.info(f" Residual norm phi: {resisual_phi}")
+                logger.info(f" L2 error in phi direction:  {error_L2_phi}")
             phi_old.x.array[:] = phi_new.x.array
 
         # Irreversibility ....
@@ -316,39 +357,41 @@ def solve(Data,
 
         # Save results
         ######################################################################
-        logger.info(f"\n\n Saving results: ")
+        if rank == 0 and logger:
+            logger.info(f"\n\n Saving results: ")
 
-        # conv ---------------------------------------------------------------
-        append_results_to_file(os.path.join(result_folder_name, "phasefieldx.conv"),
-                               '#step\tstagger\titerPhi\titerU', step, stagger_iter, phi_iterations, u_iterations)
+            # conv ---------------------------------------------------------------
+            append_results_to_file(os.path.join(result_folder_name, "phasefieldx.conv"),
+                                '#step\tstagger\titerPhi\titerU', step, stagger_iter, phi_iterations, u_iterations)
 
-        # Degree of freedom --------------------------------------------------
-        append_results_to_file(os.path.join(result_folder_name, "top.dof"),
-                               '#step\tUx\tUy\tUz\tphi', step, bc_ux, bc_uy, bc_uz, 0.0)
+            # Degree of freedom --------------------------------------------------
+            append_results_to_file(os.path.join(result_folder_name, "top.dof"),
+                                '#step\tUx\tUy\tUz\tphi', step, bc_ux, bc_uy, bc_uz, 0.0)
 
         # Reaction -----------------------------------------------------------
-        for i in range(0, len(bc_list_u)):
-            R = calculate_reaction_forces(J_u_form, F_u_form, [bc_list_u[i]], u_new, msh.topology.dim)
-            append_results_to_file(os.path.join(
-                result_folder_name, bcs_list_u_names[i] + ".reaction"), '#step\tRx\tRy\tRz', step, R[0], R[1], R[2])
+        if comm.Get_size() == 1: # Only available for single process
+            for i in range(0, len(bc_list_u)):
+                R = calculate_reaction_forces(J_u_form, F_u_form, [bc_list_u[i]], u_new, msh.topology.dim)
+                append_results_to_file(os.path.join(
+                    result_folder_name, bcs_list_u_names[i] + ".reaction"), '#step\tRx\tRy\tRz', step, R[0], R[1], R[2])
 
         # Energy -------------------------------------------------------------
-        E = dolfinx.fem.assemble_scalar(dolfinx.fem.form(
-            (g(phi_new, Data.degradation_function) * psi_a(u_new, Data) + psi_b(u_new, Data)) * ufl.dx))
+        E = comm.allreduce(dolfinx.fem.assemble_scalar(dolfinx.fem.form(
+            (g(phi_new, Data.degradation_function) * psi_a(u_new, Data) + psi_b(u_new, Data)) * ufl.dx)),op=MPI.SUM)
 
-        gamma_phi = dolfinx.fem.assemble_scalar(dolfinx.fem.form(
-            1 / (2 * Data.l) * ufl.inner(phi_new, phi_new) * ufl.dx))
-        gamma_gradphi = dolfinx.fem.assemble_scalar(dolfinx.fem.form(
-            Data.l / 2 * ufl.inner(ufl.grad(phi_new), ufl.grad(phi_new)) * ufl.dx))
+        gamma_phi = comm.allreduce(dolfinx.fem.assemble_scalar(dolfinx.fem.form(
+            1 / (2 * Data.l) * ufl.inner(phi_new, phi_new) * ufl.dx)),op=MPI.SUM)
+        gamma_gradphi = comm.allreduce(dolfinx.fem.assemble_scalar(dolfinx.fem.form(
+            Data.l / 2 * ufl.inner(ufl.grad(phi_new), ufl.grad(phi_new)) * ufl.dx)),op=MPI.SUM)
         gamma = gamma_phi + gamma_gradphi
 
         if Data.fatigue:
-            W_phi = dolfinx.fem.assemble_scalar(dolfinx.fem.form(
-                Fatigue * Data.Gc * 1 / (2 * Data.l) * ufl.inner(phi_new, phi_new) * ufl.dx))
-            W_gradphi = dolfinx.fem.assemble_scalar(dolfinx.fem.form(
-                Fatigue * Data.Gc * Data.l / 2 * ufl.inner(ufl.grad(phi_new), ufl.grad(phi_new)) * ufl.dx))
-            alpha_acum = dolfinx.fem.assemble_scalar(
-                dolfinx.fem.form(alpha_cum_bar_c * ufl.dx))
+            W_phi = comm.allreduce(dolfinx.fem.assemble_scalar(dolfinx.fem.form(
+                Fatigue * Data.Gc * 1 / (2 * Data.l) * ufl.inner(phi_new, phi_new) * ufl.dx)),op=MPI.SUM)
+            W_gradphi = comm.allreduce(dolfinx.fem.assemble_scalar(dolfinx.fem.form(
+                Fatigue * Data.Gc * Data.l / 2 * ufl.inner(ufl.grad(phi_new), ufl.grad(phi_new)) * ufl.dx)),op=MPI.SUM)
+            alpha_acum = comm.allreduce(dolfinx.fem.assemble_scalar(
+                dolfinx.fem.form(alpha_cum_bar_c * ufl.dx)),op=MPI.SUM)
         else:
             W_phi = Data.Gc * gamma_phi
             W_gradphi = Data.Gc * gamma_gradphi
@@ -356,15 +399,17 @@ def solve(Data,
 
         W = W_phi + W_gradphi
 
-        PSI_a = dolfinx.fem.assemble_scalar(
-            dolfinx.fem.form(psi_a(u_new, Data) * ufl.dx))
-        PSI_b = dolfinx.fem.assemble_scalar(
-            dolfinx.fem.form(psi_b(u_new, Data) * ufl.dx))
+        PSI_a = comm.allreduce(dolfinx.fem.assemble_scalar(
+            dolfinx.fem.form(psi_a(u_new, Data) * ufl.dx)),op=MPI.SUM)
+        PSI_b = comm.allreduce(dolfinx.fem.assemble_scalar(
+            dolfinx.fem.form(psi_b(u_new, Data) * ufl.dx)),op=MPI.SUM)
         EplusW = E + W
 
-        header = '#step\tEplusW\tE\tW\tW_phi\tW_gradphi\tgamma\tgamma_phi\tgamma_gradphi\tPSI_a\tPSI_b\talpha_acum'
-        append_results_to_file(os.path.join(result_folder_name, "total.energy"), header, step, EplusW,
-                               E, W, W_phi, W_gradphi, gamma, gamma_phi, gamma_gradphi, PSI_a, PSI_b, alpha_acum)
+        # Only rank 0 writes energy results
+        if rank == 0:
+            header = '#step\tEplusW\tE\tW\tW_phi\tW_gradphi\tgamma\tgamma_phi\tgamma_gradphi\tPSI_a\tPSI_b\talpha_acum'
+            append_results_to_file(os.path.join(result_folder_name, "total.energy"), header, step, EplusW,
+                                E, W, W_phi, W_gradphi, gamma, gamma_phi, gamma_gradphi, PSI_a, PSI_b, alpha_acum)
 
         # Paraview -----------------------------------------------------------
         if Data.save_solution_xdmf:
@@ -384,5 +429,8 @@ def solve(Data,
     if Data.save_solution_vtu:
         vtk_sol.close()
 
-    end = time.perf_counter()
-    log_end_analysis(logger, end - start)
+    if rank == 0:
+        end = time.perf_counter()
+        if logger:
+            log_end_analysis(logger, end - start)
+
