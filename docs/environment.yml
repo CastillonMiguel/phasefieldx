@@ -33,3 +33,4 @@ dependencies:
   - pip:
       - pytest-memprof
       - -r requirements.txt
+      - -e ..

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<VTKFile type="PUnstructuredGrid" version="1.0">
+  <PUnstructuredGrid GhostLevel="1">
+    <PPointData>
+      <PDataArray type="Int64" Name="vtkOriginalPointIds" IdType="1" />
+      <PDataArray type="UInt8" Name="vtkGhostType" />
+      <PDataArray type="Float64" Name="phi" NumberOfComponents="1" />
+    </PPointData>
+    <PCellData>
+      <PDataArray type="UInt8" Name="vtkGhostType" />
+      <PDataArray type="Int64" Name="vtkOriginalCellIds" IdType="1" />
+    </PCellData>
+    <PPoints>
+      <PDataArray type="Float64" NumberOfComponents="3" />
+    </PPoints>
+    <Piece Source="phasefieldx_p0_000000.vtu" />
+    <Piece Source="phasefieldx_p1_000000.vtu" />
+    <Piece Source="phasefieldx_p2_000000.vtu" />
+    <Piece Source="phasefieldx_p3_000000.vtu" />
+    <Piece Source="phasefieldx_p4_000000.vtu" />
+  </PUnstructuredGrid>
+</VTKFile>
