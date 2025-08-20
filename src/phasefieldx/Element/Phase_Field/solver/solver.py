@@ -3,7 +3,6 @@ Solver: Phase-field
 ===================
 
 '''
-
 # Libraries ############################################################
 ########################################################################
 import os
@@ -13,11 +12,11 @@ import ufl
 from mpi4py import MPI
 from dolfinx.fem.petsc import NonlinearProblem
 
-
+ 
 from phasefieldx.files import prepare_simulation, append_results_to_file
 from phasefieldx.solvers.newton import NewtonSolver
 from phasefieldx.Logger.library_versions import set_logger, log_library_versions, log_system_info, log_end_analysis, log_model_information
-
+from phasefieldx.Element.Phase_Field.energy import calculate_crack_surface_energy
 
 def solve(Data,
           msh,
@@ -210,11 +209,7 @@ def solve(Data,
                 result_folder_name, "phasefieldx.conv"), '#step\titerations', step, phi_iterations)
 
         # Energy -------------------------------------------------------------
-        gamma_phi = comm.allreduce(dolfinx.fem.assemble_scalar(
-            dolfinx.fem.form(1 / (2 * Data.l) * ufl.inner(Φ, Φ) * dx)),op=MPI.SUM)
-        gamma_gradphi = comm.allreduce(dolfinx.fem.assemble_scalar(dolfinx.fem.form(
-            Data.l / 2 * ufl.inner(ufl.grad(Φ), ufl.grad(Φ)) * dx)),op=MPI.SUM)
-        gamma = gamma_phi + gamma_gradphi
+        gamma, gamma_phi, gamma_gradphi = calculate_crack_surface_energy(Φ, Data.l, comm, "AT2", dx)
 
         # Only rank 0 writes energy results
         if rank == 0:
