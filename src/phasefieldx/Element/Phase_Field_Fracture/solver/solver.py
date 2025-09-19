@@ -30,6 +30,10 @@ from phasefieldx.Element.Phase_Field_Fracture.split_energy_stress_tangent_functi
                                                                                             sigma_b)
 from phasefieldx.Element.Phase_Field_Fracture.fatigue_degradation_functions import fatigue_degradation
 
+from phasefieldx.Element.Phase_Field.geometric_crack import geometric_crack_function_derivative, geometric_crack_coefficient
+from phasefieldx.Element.Phase_Field.energy import calculate_crack_surface_energy
+from phasefieldx.Element.Phase_Field_Fracture.energy import compute_total_energies
+
 from phasefieldx.Math.projection import project
 from phasefieldx.errors_functions import eval_error_L2, eval_error_L2_normalized
 from phasefieldx.files import prepare_simulation
@@ -98,7 +102,7 @@ def solve(Data,
     -------
     None
     """
-
+    case = 'AT2'
     # Get MPI communicator info
     comm = msh.comm
     rank = comm.Get_rank()
@@ -192,13 +196,13 @@ def solve(Data,
 
     # Phase-field ------------------------------------------------------------
     F_phi = dg(Φ_new, Data.degradation_function) * H * δΦ * ufl.dx
-
+    c0 = geometric_crack_coefficient(case)
+    
     if Data.fatigue:
         F_phi += Fatigue * Data.Gc * (1 / Data.l * ufl.inner(Φ_new, δΦ) + Data.l *
                                       ufl.inner(ufl.grad(Φ_new), ufl.grad(δΦ))) * ufl.dx
     else:
-        F_phi += Data.Gc * (1 / Data.l * ufl.inner(Φ_new, δΦ) + Data.l *
-                            ufl.inner(ufl.grad(Φ_new), ufl.grad(δΦ))) * ufl.dx
+        F_phi += Data.Gc*(1.0/(c0*Data.l)*geometric_crack_function_derivative(Φ_new, case)*δΦ + Data.l * 2/c0*ufl.inner(ufl.grad(Φ_new), ufl.grad(δΦ)))*ufl.dx
 
     J_phi = ufl.derivative(F_phi, Φ_new)
     PHI_problem = dolfinx.fem.petsc.NonlinearProblem(
@@ -376,14 +380,8 @@ def solve(Data,
                     result_folder_name, bcs_list_u_names[i] + ".reaction"), '#step\tRx\tRy\tRz', step, R[0], R[1], R[2])
 
         # Energy -------------------------------------------------------------
-        E = comm.allreduce(dolfinx.fem.assemble_scalar(dolfinx.fem.form(
-            (g(Φ_new, Data.degradation_function) * psi_a(u_new, Data) + psi_b(u_new, Data)) * ufl.dx)),op=MPI.SUM)
-
-        gamma_phi = comm.allreduce(dolfinx.fem.assemble_scalar(dolfinx.fem.form(
-            1 / (2 * Data.l) * ufl.inner(Φ_new, Φ_new) * ufl.dx)),op=MPI.SUM)
-        gamma_gradphi = comm.allreduce(dolfinx.fem.assemble_scalar(dolfinx.fem.form(
-            Data.l / 2 * ufl.inner(ufl.grad(Φ_new), ufl.grad(Φ_new)) * ufl.dx)),op=MPI.SUM)
-        gamma = gamma_phi + gamma_gradphi
+        E, PSI_a, PSI_b = compute_total_energies(u_new, Φ_new, Data, comm, dx=ufl.dx)
+        gamma, gamma_phi, gamma_gradphi = calculate_crack_surface_energy(Φ_new, Data.l, comm, case, ufl.dx)
 
         if Data.fatigue:
             W_phi = comm.allreduce(dolfinx.fem.assemble_scalar(dolfinx.fem.form(
@@ -399,10 +397,6 @@ def solve(Data,
 
         W = W_phi + W_gradphi
 
-        PSI_a = comm.allreduce(dolfinx.fem.assemble_scalar(
-            dolfinx.fem.form(psi_a(u_new, Data) * ufl.dx)),op=MPI.SUM)
-        PSI_b = comm.allreduce(dolfinx.fem.assemble_scalar(
-            dolfinx.fem.form(psi_b(u_new, Data) * ufl.dx)),op=MPI.SUM)
         EplusW = E + W
 
         # Only rank 0 writes energy results
@@ -433,4 +427,3 @@ def solve(Data,
         end = time.perf_counter()
         if logger:
             log_end_analysis(logger, end - start)
-

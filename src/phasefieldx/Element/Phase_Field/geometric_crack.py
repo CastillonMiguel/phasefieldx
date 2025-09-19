@@ -85,6 +85,6 @@ def geometric_crack_coefficient(case='AT2'):
     elif case == 'WU':
         return 3.141592653589793116
     elif case == 'DOUBLE':
-        return 3.0/8.0
+        return 8.0/3.0
     else:
         raise ValueError(f"Unknown case: {case}")
