@@ -94,10 +94,14 @@ extensions = [
     'sphinx_math_dollar',
     'sphinx_gallery.gen_gallery',
     'pyvista.ext.plot_directive',  #'matplotlib.sphinxext.plot_directive',
-    "pyvista.ext.viewer_directive",
-    "sphinx_design"
+    'pyvista.ext.viewer_directive',
+    'sphinx_design',
+    'sphinxcontrib.tikz',
+    'sphinxcontrib.bibtex',
 ]
-   
+
+bibtex_bibfiles = ['../../references.bib']
+
 from pyvista.plotting.utilities.sphinx_gallery import DynamicScraper
 
 class ResetPyVista:

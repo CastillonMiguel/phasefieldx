@@ -19,13 +19,14 @@ scipy
 sphinx
 sphinx-autobuild
 sphinx-copybutton
-sphinx_math_dollar
+sphinx-math-dollar
 sphinx-design
 sphinx-gallery
 sphinx-notfound-page
 sphinx-toolbox
 sphinxcontrib-asciinema
 sphinxcontrib-websupport
+sphinxcontrib-bibtex
 sympy
 trame
 trame-vtk
