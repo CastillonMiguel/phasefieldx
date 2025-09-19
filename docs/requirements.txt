@@ -27,6 +27,7 @@ sphinx-toolbox
 sphinxcontrib-asciinema
 sphinxcontrib-websupport
 sphinxcontrib-bibtex
+sphinxcontrib-tikz
 sympy
 trame
 trame-vtk
