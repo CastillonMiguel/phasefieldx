@@ -4,9 +4,9 @@ r"""
 Symmetry: Single edge notched tension test
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-A well-known benchmark simulation in fracture mechanics is performed, based on the simulation conducted by [Miehe]_. This simulation employs an anisotropic formulation with spectral energy decomposition, though we have also repeated the simulations with an isotropic formulation.
+A well-known benchmark simulation in fracture mechanics is performed, based on the simulation conducted by :footcite:t:`phase_field_Miehe2010`. This simulation employs an anisotropic formulation with spectral energy decomposition, though we have also repeated the simulations with an isotropic formulation.
 
-The setup is identical to that presented in (:ref:`ref_1711`), but in this case, taking advantage of the specimen's symmetric nature, only half of the domain will be considered, as shown in the figure below.
+The setup is identical to that presented in (:ref:`ref_1711`), but in this case, taking advantage of the specimen's symmetric nature, only half of the domain is considered, as shown in the figure below.
 
 .. code-block::
 
@@ -24,8 +24,7 @@ The setup is identical to that presented in (:ref:`ref_1711`), but in this case,
    #     |
    #     *---X
 
-
-The Young's modulus, Poisson's ratio, and the critical energy release rate are given in the table :ref:`Properties <table_properties_label>`. Young's modulus $E$ and Poisson's ratio $\nu$ can be represented with the Lamé parameters as: $\lambda=\frac{E\nu}{(1+\nu)(1-2\nu)}$; $\mu=\frac{E}{2(1+\nu)}$.
+The Young's modulus, Poisson's ratio, and the critical energy release rate are given in Table :ref:`Properties <table_properties_label>`. Young's modulus $E$ and Poisson's ratio $\nu$ can be represented with the Lamé parameters as: $\lambda=\frac{E\nu}{(1+\nu)(1-2\nu)}$; $\mu=\frac{E}{2(1+\nu)}$.
 
 .. _table_properties_label:
 
@@ -41,7 +40,8 @@ The Young's modulus, Poisson's ratio, and the critical energy release rate are g
 | l  | 0.015   | mm     |
 +----+---------+--------+
 
-.. [Miehe] A phase field model for rate-independent crack propagation: Robust algorithmic implementation based on operator splits, https://doi.org/10.1016/j.cma.2010.04.011.
+.. footbibliography::
+
 """
 
 ###############################################################################

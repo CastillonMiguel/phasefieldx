@@ -20,7 +20,7 @@ from phasefieldx.Logger.library_versions import set_logger, log_library_versions
 
 from phasefieldx.Materials.elastic_isotropic import epsilon, sigma, psi
 from phasefieldx.Reactions import calculate_reaction_forces
-
+from phasefieldx.Element.Elasticity.energy import calculate_elastic_energy
 
 def solve(Data,
           msh,
@@ -240,10 +240,9 @@ def solve(Data,
                 R = calculate_reaction_forces(J_u_form, F_u_form, [bc_list_u[i]], u, msh.topology.dim)
                 append_results_to_file(os.path.join(result_folder_name, bcs_list_u_names[i] + ".reaction"), '#step\tRx\tRy\tRz', step, R[0], R[1], R[2])
 
-        # Energy -------------------------------------------------------------
-        E = comm.allreduce(dolfinx.fem.assemble_scalar(dolfinx.fem.form(
-            psi(u, Data.lambda_, Data.mu) * dx)),op=MPI.SUM)
-        
+        # Energy -------------------------------------------------------------        
+        E = calculate_elastic_energy(u, Data, comm, dx)
+     
         # Only rank 0 writes energy results
         if rank == 0:
             append_results_to_file(os.path.join(

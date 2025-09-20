@@ -4,3 +4,4 @@
 
 from .Input import *
 from .solver import *
+from .energy import *

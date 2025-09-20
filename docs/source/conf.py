@@ -73,7 +73,7 @@ warnings.filterwarnings(
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 
-from sphinx_gallery.sorting import FileNameSortKey
+from sphinx_gallery.sorting import FileNameSortKey, ExplicitOrder
 
 extensions = [
     'sphinx.ext.autodoc',
@@ -94,10 +94,14 @@ extensions = [
     'sphinx_math_dollar',
     'sphinx_gallery.gen_gallery',
     'pyvista.ext.plot_directive',  #'matplotlib.sphinxext.plot_directive',
-    "pyvista.ext.viewer_directive",
-    "sphinx_design"
+    'pyvista.ext.viewer_directive',
+    'sphinx_design',
+    'sphinxcontrib.tikz',
+    'sphinxcontrib.bibtex',
 ]
-   
+
+bibtex_bibfiles = ['../../references.bib']
+
 from pyvista.plotting.utilities.sphinx_gallery import DynamicScraper
 
 class ResetPyVista:
@@ -118,7 +122,6 @@ class ResetPyVista:
 
 
 reset_pyvista = ResetPyVista()
-
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning, module="trame.app")
 nbsphinx_execute = 'auto'
@@ -134,6 +137,14 @@ sphinx_gallery_conf = {
     "remove_config_comments": True,
     # Sort gallery example by file name instead of number of lines (default)
     "within_subsection_order": FileNameSortKey,
+    "subsection_order": ExplicitOrder([
+        '../../examples/PhaseFieldFracture',
+        '../../examples/Fatigue',
+        '../../examples/Elasticity',
+        '../../examples/PhaseField',
+        '../../examples/AllenCahn',
+        '../../examples/GmshGeoFiles',
+    ]),
     # directory where function granular galleries are stored
     "backreferences_dir": None,
     # Modules for which function level galleries are created.  In

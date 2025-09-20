@@ -17,3 +17,13 @@ Solver
    :members:
    :undoc-members:
    :show-inheritance:
+
+
+Energy
+------
+
+.. automodule:: phasefieldx.Element.Elasticity.energy
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   
