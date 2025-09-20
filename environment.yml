@@ -3,6 +3,7 @@ channels:
   - conda-forge
 dependencies:
   - fenics-dolfinx==0.9.0
+  - scifem
   - mpi4py
   - numpy
   - pandas
