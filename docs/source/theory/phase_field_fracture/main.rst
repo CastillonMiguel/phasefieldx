@@ -37,12 +37,12 @@ the degradation function :math:`g(\phi)` degrades all the energy :math:`\psi(\bo
 
 the energy $\psi(\boldsymbol \epsilon(\boldsymbol u))$ is split in two components, $\psi=\psi_a+\psi_b$, in which the component :math:`\psi_a` attains to the energy relative to tensions, so the degradation function only applied to it, avoiding the creation of crack due to compression effort.
 
-There are several methods to carry out the energy slip. PhaseFieldX code implements the Spectral [Miehe]_ and volumetric-deviatoric [Amor]_ decomposition.
+There are several methods to carry out the energy slip. PhaseFieldX code implements the Spectral :footcite:t:`phase_field_Miehe2010` and volumetric-deviatoric :footcite:t:`phase_field_Amor2009` decomposition.
 
 .. note::
 
-   * Spectral decomposition 
-      The strain tensor is split into its positive and negative parts through spectral decomposition, :math:`\boldsymbol \epsilon=\sum_{i=1}^{\alpha} \epsilon^i \boldsymbol n^i \otimes \boldsymbol n^i` where :math:`{\epsilon^i}` are the principal strains, and :math:`{\boldsymbol n^i}` are the principal strains directions. the positive and negative parts of the tensor :math:`\boldsymbol \epsilon    = \boldsymbol \epsilon^+ + \boldsymbol \epsilon^-`,  are defined as:
+   * Spectral decomposition
+      The strain tensor is split into its positive and negative parts through spectral decomposition, :math:`\boldsymbol \epsilon=\sum_{i=1}^{\alpha} \epsilon^i \boldsymbol n^i \otimes \boldsymbol n^i` where :math:`{\epsilon^i}` are the principal strains, and :math:`{\boldsymbol n^i}` are the principal strains directions. the positive and negative parts of the tensor :math:`\boldsymbol \epsilon = \boldsymbol \epsilon^+ + \boldsymbol \epsilon^-`, are defined as:
    
       :math:`\boldsymbol \epsilon^+: = \sum_{i=1}^{\alpha} \langle \epsilon^i \rangle^+ \boldsymbol n^i \otimes \boldsymbol n^i`,
       :math:`\boldsymbol \epsilon^-: = \sum_{i=1}^{\alpha} \langle \epsilon^i \rangle^- \boldsymbol n^i \otimes \boldsymbol n^i`
@@ -87,9 +87,9 @@ other types of degradation functions:
 
 .. note::
 
-   * Borden [Jian]_     :math:`g(\phi)=(3-s)(1-\phi)^2-(2-s)(1-\phi)^3`, (implemented with s=1)
-   * Alessi [Jian]_     :math:`g(\phi)=\frac{(1-\phi)^2}{(1+(k-1)Q)}`, :math:`Q=1-(1-\phi)^2` (implemented with k=100)
-   * Sargado [Sargado]_ Exponential-type degradation function  
+   * Borden :footcite:t:`phase_field_modelling_of_fracture`     :math:`g(\phi)=(3-s)(1-\phi)^2-(2-s)(1-\phi)^3`, (implemented with s=1)
+   * Alessi :footcite:t:`phase_field_modelling_of_fracture`     :math:`g(\phi)=\frac{(1-\phi)^2}{(1+(k-1)Q)}`, :math:`Q=1-(1-\phi)^2` (implemented with k=100)
+   * Sargado :footcite:t:`phase_field_degradation_function_sargado` Exponential-type degradation function
    * limit
 
 All the degradation functions have the properties $g(0)=1$, $g(1)=0$ and $g'(1)=0$. The fisrt two properties attains the unbroken and the fully broken situations respectivily.  The last ones ensures that the energetic fracture force converges to a finite value if $\phi=0$.
@@ -121,7 +121,7 @@ Fatigue
 -------
 
 .. note::
-   The major part of the fatigue model is taken from the paper by Lorenzis [Lorenzis_fatigue]_
+   The fatigue modeling approach described here is primarily based on the framework presented by Carrara et al. :footcite:t:`phase_field_Carrara2020`, which extends the variational phase-field method to account for fatigue effects in brittle materials.
 
 It is possible to consider fatigue phenomena, by modifiying the critical energy release depending of the repeated applied loads.
 
@@ -191,14 +191,4 @@ The fatigue degradation function :math:`f(\bar{\alpha(t)})` **describes how** fa
    
    where :math:`k` is a material parameter, and :math:`\alpha_T` is a threshold controlling when the fatigue effect is triggered.
 
-   
-
-
-.. [Sargado] High-accuracy phase-field models for brittle fracture based on a new family of degradation functions. https://doi.org/10.1016/j.jmps.2017.10.015
-.. [Jian] Phase-field modelling of fracture. Jian-Ying Wu , Vinh Phu Nguyen , Chi Thanh Nguyen , Danas Sutula , Sina Sinaie ,and Stephane Bordas
-.. [Miehe] A phase field model for rate-independent crack propagation: Robust algorithmic implementation based on operator splits, https://doi.org/10.1016/j.cma.2010.04.011.
-.. [Amor] Regularized formulation of the variational brittle fracture with unilateral contact: Numerical experiments, https://doi.org/10.1016/j.jmps.2009.04.011.
-.. [Lorenzis_fatigue] A framework to model the fatigue behavior of brittle materials based on a variational phase-field approach. P. Carraraa, M. Ambati, R. Alessi, L. De Lorenzis. https://doi.org/10.1016/j.cma.2019.112731
-
-Implementation
---------------
+.. footbibliography::

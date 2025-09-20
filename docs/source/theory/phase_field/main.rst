@@ -3,7 +3,7 @@
 Crack Surface Density Functional
 ================================
 
-Before studying the phase-field fracture simulation, which is a coupled problem of displacement (elasticity) and phase-field, it is recommended to understand each of the problems separately. In this case, the *crack surface density functional* will be studied alone, as described in [Miehe]_.
+Before studying phase-field fracture simulation—which couples displacement (elasticity) and phase-field—it is recommended to first understand each problem independently. Here, we focus on the *crack surface density functional* alone, as described in :footcite:t:`phase_field_Miehe2010`.
 
 The aim of this functional is to provide a continuous representation of a discontinuous field. It should be noted that when the length scale parameter tends to 0, the continuous representation approximates the discontinuous case.
 
@@ -80,7 +80,7 @@ The solution to this equation is given by:
 
 .. note::
 
-    Note that [Miehe]_ considers an infinite domain (or infinite bar). Therefore, if $a/l \rightarrow \infty $, the solution coincides with that of Miehe, which means an infinite bar if $a \rightarrow \infty $, or equivalently, $l \rightarrow 0 $ for a finite bar. Thus, the solution of [Miehe]_ is recovered.
+	Note that :footcite:t:`phase_field_Miehe2010` considers an infinite domain (or infinite bar). Therefore, as $a/l \rightarrow \infty$, the solution approaches that of Miehe—corresponding to an infinite bar when $a \rightarrow \infty$, or equivalently, to $l \rightarrow 0$ for a finite bar. In both cases, the solution presented in :footcite:t:`phase_field_Miehe2010` is recovered.
 
 The phase field along the bar for two different length scales, $l=1.0$ and $l=0.5$, is shown in the following figure.
 
@@ -140,10 +140,5 @@ Additionally, the figure shows the energy versus the $a/l$ relation:
 
 .. image:: images/energy_al_vs_energy.png
 
-References
-----------
-.. [Miehe] A phase field model for rate-independent crack propagation: Robust algorithmic implementation based on operator splits, https://doi.org/10.1016/j.cma.2010.04.011.
 
-
-Implementation
---------------
+.. footbibliography::
