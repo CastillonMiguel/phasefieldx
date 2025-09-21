@@ -17,7 +17,6 @@ import numpy as np
 import scifem
 import ufl
 
-import adios4dolfinx
 
 from phasefieldx.files import prepare_simulation, append_results_to_file
 from phasefieldx.Logger.library_versions import set_logger, log_system_info, log_library_versions, log_end_analysis, log_model_information
