@@ -54,52 +54,44 @@ def solve(Data,
           threshold_gamma_save=None,
           continue_simulation=False,
           step_continue=10):
-      """
-      solve _summary_
+    """
+    Solve the phase-field fracture and fatigue problem.
 
-      _extended_summary_
+    Parameters
+    ----------
+    Data : object
+        An object containing the simulation parameters and settings.
+    msh : dolfinx.mesh
+        The computational mesh for the simulation.
+    final_time : float
+        The final simulation time.
+    V_u : dolfinx.FunctionSpace
+        The function space for the displacement field.
+    V_phi : dolfinx.FunctionSpace
+        The function space for the phase-field.
+    bc_list_u : list of dolfinx.DirichletBC, optional
+        List of Dirichlet boundary conditions for the displacement field.
+    bc_list_phi : list of dolfinx.DirichletBC, optional
+        List of Dirichlet boundary conditions for the phase-field.
+    update_boundary_conditions : callable, optional
+        A function to update boundary conditions dynamically.
+    f_list_u : list, optional
+        List of body forces.
+    T_list_u : list of tuple, optional
+        List of tuples containing traction forces and corresponding measures.
+    update_loading : callable, optional
+        A function to update loading conditions dynamically.
+    ds_bound : numpy.ndarray, optional
+        Array of boundary measures for calculating reaction forces.
+    dt : float, optional
+        Time step size.
+    path : str, optional
+        Directory path for saving simulation results. Defaults to current working directory.
+    threshold_h_save : float or None, optional
+        If set, Paraview files are saved only when h increases by more than this value. If None or 0, files are saved every step.
 
-      Parameters
-      ----------
-      Data : _type_
-          _description_
-      msh : _type_
-          _description_
-      final_gamma : _type_
-          _description_
-      V_u : _type_
-          _description_
-      V_ : _type_
-          _description_
-      bc_list_u : list, optional
-          _description_, by default []
-      bc_list_phi : list, optional
-          _description_, by default []
-      f_list_u : _type_, optional
-          _description_, by default None
-      T_list_u : _type_, optional
-          _description_, by default None
-      ds_bound : _type_, optional
-          _description_, by default None
-      dt : float, optional
-          _description_, by default 0.0005
-      dt_min : _type_, optional
-          _description_, by default 1e-12
-      dt_max : float, optional
-          _description_, by default 0.1
-      path : _type_, optional
-          _description_, by default None
-      bcs_list_u_names : _type_, optional
-          _description_, by default None
-      c1 : float, optional
-          _description_, by default 1.0
-      c2 : float, optional
-          _description_, by default 1.0
-      threshold_gamma_save : _type_, optional
-          _description_, by default None
-      continue_simulation : bool, optional
-          _description_, by default False
-      step_continue : int, optional
-          _description_, by default 10
-      """
+    Returns
+    -------
+    None
+    """
     print("Solving with non-variational phase-field fracture model")
