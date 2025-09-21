@@ -139,6 +139,7 @@ sphinx_gallery_conf = {
     "within_subsection_order": FileNameSortKey,
     "subsection_order": ExplicitOrder([
         '../../examples/PhaseFieldFracture',
+        '../../examples/PhaseFieldFractureEnergyControlled',
         '../../examples/Fatigue',
         '../../examples/Elasticity',
         '../../examples/PhaseField',
