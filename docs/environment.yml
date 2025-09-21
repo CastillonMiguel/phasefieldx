@@ -4,6 +4,7 @@ channels:
 dependencies:
   - python=3.10
   - pyvista==0.44.2
+  - scifem
   - jupyterlab
   - numpy
   - vtk

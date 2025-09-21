@@ -37,10 +37,20 @@ $f(\bar{\alpha})$ Fatigue Degradation functions
    :show-inheritance:
 
 
-Solver
-------
+Solvers
+-------
 
 .. automodule:: phasefieldx.Element.Phase_Field_Fracture.solver.solver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: phasefieldx.Element.Phase_Field_Fracture.solver.solver_ener_variational
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: phasefieldx.Element.Phase_Field_Fracture.solver.solver_ener_non_variational
    :members:
    :undoc-members:
    :show-inheritance:
