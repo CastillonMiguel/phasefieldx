@@ -296,7 +296,6 @@ displacement_half = abs(2*S.energy_files['total.energy']["E"]/(S.reaction_files[
 stiffness_half    = abs(S.reaction_files['bottom_left.reaction']["Ry"]/displacement_half)
 compliance_half   = 1/stiffness_half
 gamma_half        = S.energy_files['total.energy']["gamma"]
-lambda_half       = S.dof_files["lambda.dof"]["lambda"]
 
 
 ###############################################################################
