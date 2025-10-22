@@ -8,19 +8,19 @@ Crack Length Measurement via Image Post-Processing and Skeletonization Algorithm
 ---------------------------------------------------------------------------------
 
  :footcite:t:`Castillon2025_arxiv`
- 
+
 .. raw:: html
 
    <div style="padding: 30px 0; margin: 20px 0;">
          <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
             <div style="text-align: center;">
-               <img src="animations/SIMULATION_1.gif" width="180px" style="border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);" loop="infinite" autoplay />
+               <img src="../../../_static/animations/SIMULATION_1.gif" width="180px" style="border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);" loop="infinite" autoplay />
             </div>
             <div style="text-align: center;">
-               <img src="animations/SIMULATION_2.gif" width="180px" style="border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);" loop="infinite" autoplay />
+               <img src="../../../_static/animations/SIMULATION_2.gif" width="180px" style="border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);" loop="infinite" autoplay />
             </div>
             <div style="text-align: center;">
-               <img src="animations/SIMULATION_4.gif" width="180px" style="border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);" loop="infinite" autoplay />
+               <img src="../../../_static/animations/SIMULATION_4.gif" width="180px" style="border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);" loop="infinite" autoplay />
             </div>
          </div>
    </div>
