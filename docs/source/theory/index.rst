@@ -22,5 +22,6 @@ Through a systematic exploration of these interconnected problem domains, we aim
    elasticity/main
    phase_field/main
    phase_field_fracture/main
+   crack_measurement/main
    Allen_Cahn/main
    errors/main
