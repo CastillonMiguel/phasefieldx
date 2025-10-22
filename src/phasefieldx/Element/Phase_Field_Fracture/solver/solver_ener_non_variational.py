@@ -466,7 +466,7 @@ def solve(Data,
            
         except Exception as e:
             if rank == 0 and logger:
-                logger.info(f"Solver failed at tau={tau} with error: {e}. Reducing dt.")
+                logger.info(f"Solver failed at tau={tau} with error: {e}. Reducing dtau.")
           
             u.x.array[:] = u_c.x.array
             Φ.x.array[:] = Φ_c.x.array
@@ -489,7 +489,7 @@ def solve(Data,
 
                 if Data.save_solution_vtu:
                     if rank == 0 and logger:
-                        logger.info(f"Saving VTU Paraview files at step={step}, gamma={gamma:.6f}, t={t:.6f}")
+                        logger.info(f"Saving VTU Paraview files at step={step}, gamma={gamma:.6f}, tau={tau:.6f}")
                     vtk_sol.write_function([Φ_c, u_c], step)
                   
                 break
