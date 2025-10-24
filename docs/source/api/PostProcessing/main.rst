@@ -18,3 +18,13 @@ Paraview
    :members:
    :undoc-members:
    :show-inheritance:
+
+
+
+Measure crack length 2D
+-----------------------
+
+.. automodule:: phasefieldx.PostProcessing.measure_crack_length_2d
+   :members:
+   :undoc-members:
+   :show-inheritance:
