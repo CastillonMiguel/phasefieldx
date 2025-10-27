@@ -79,7 +79,7 @@ Follow these steps to set up your environment:
    
    .. code-block:: sh
    
-      conda install -c conda-forge fenics-dolfinx=0.9.0 mpi4py numpy pyvista pandas pyvista
+      conda install -c conda-forge fenics-dolfinx=0.9.0 scifem mpi4py numpy pyvista pandas pyvista
 
 4. Install `gmsh`
    
@@ -93,6 +93,14 @@ Follow these steps to set up your environment:
    .. code-block::
    
       pip install phasefieldx
+
+.. note::
+
+   For functionalities related to image post-processing, such as crack measurement, additional dependencies are required. You can install them using pip:
+
+   .. code-block:: sh
+
+      pip install imageio scikit-image
 
 
 These steps will set up all the necessary dependencies for running the code in this repository. Make sure to activate the `phasefieldx-env` environment whenever you work with this project.
