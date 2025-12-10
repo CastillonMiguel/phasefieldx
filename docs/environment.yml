@@ -3,11 +3,11 @@ channels:
   - conda-forge
 dependencies:
   - python=3.10
-  - pyvista==0.45.0
+  - pyvista
   - scifem
   - jupyterlab
   - numpy
-  - vtk==9.5.0
+  - vtk
   - scooby>=0.5.1
   - fenics-dolfinx==0.10.0
   - meshio
