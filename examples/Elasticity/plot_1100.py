@@ -276,7 +276,6 @@ S.set_color('b')
 # ----------------------------------
 # The displacement result saved in the .vtu file is shown.
 # For this, the file is loaded using PyVista.
-pv.start_xvfb()
 file_vtu = pv.read(os.path.join(Data.results_folder_name, "paraview-solutions_vtu", "phasefieldx_p0_000009.vtu"))
 file_vtu.plot(scalars='u', cpos='xy', show_scalar_bar=True, show_edges=False)
 

@@ -334,6 +334,7 @@ S = AllResults(Data.results_folder_name)
 S.set_label('Simulation')
 S.set_color('b')
 
+# S2 = AllResults("/Users/miguelcastillon/Programs/ProximalGalerkin/examples/Center_cracked/1700_One_element_isotropic_tension")
 
 ###############################################################################
 # Plot: phase-field $\phi$
@@ -341,7 +342,6 @@ S.set_color('b')
 # The phase-field result saved in the .vtu file is shown.
 # For this, the file is loaded using PyVista.
 file_vtu = pv.read(os.path.join(Data.results_folder_name, "paraview-solutions_vtu", "phasefieldx_p0_000080.vtu"))
-pv.start_xvfb()
 file_vtu.plot(scalars='phi', cpos='xy', show_scalar_bar=True, show_edges=False)
 
 

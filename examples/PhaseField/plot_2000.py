@@ -94,7 +94,7 @@ from phasefieldx.PostProcessing.ReferenceResult import AllResults
 # empty folder will be created in its place.
 #
 Data = Input(
-    l=4.0,
+    l=1.0,
     save_solution_xdmf=False,
     save_solution_vtu=True,
     results_folder_name="2000_General"
@@ -201,7 +201,7 @@ ds_list = np.array([
 # Define function spaces for the phase-field using Lagrange elements of
 # degree 1.
 V_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1))
-
+# V_gradient_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1, (msh.geometry.dim, )))
 
 ###############################################################################
 # Boundary Condition Setup for Scalar Field $\phi$
@@ -266,7 +266,8 @@ solve(Data,
       ds_list,
       dt,
       path=None,
-      quadrature_degree=2)
+      quadrature_degree=2,
+      V_gradient_Φ=None)
 
 
 ###############################################################################
@@ -287,8 +288,7 @@ S.set_color('b')
 # ------------------------
 # The phase-field result saved in the .vtu file is shown.
 # For this, the file is loaded using PyVista.
-pv.start_xvfb()
-file_vtu = pv.read(os.path.join(Data.results_folder_name, "paraview-solutions_vtu", "phasefieldx_p0_000000.vtu"))
+file_vtu = pv.read(os.path.join(Data.results_folder_name, "paraview-solutions_vtu", "phasefieldx000000.pvtu"))
 file_vtu.plot(scalars='phi', cpos='xy', show_scalar_bar=True, show_edges=False)
 
 
@@ -312,6 +312,25 @@ ax_phi.set_ylabel('$\\phi(x)$')
 ax_phi.set_xlabel('x')
 ax_phi.legend()
 
+###############################################################################
+# Plot: Phase-field gradient along the x-axis
+# -------------------------------------------
+# The phase-field gradient along the x-axis is plotted and compared with the
+# analytic solution. The analytic solution is given by:
+# $\phi'(x) = -\frac{1}{l} e^{-|x|/l} + \frac{1}{e^{\frac{2a}{l}}+1} \frac{2}{l} \cosh\left(\frac{|x|}{l}\right)$
+# Note: in this case a = lx
+one_div_exp2adivl_one = 1 / (np.exp(2 * lx / Data.l) + 1)
+phi_gradient_theory = -np.sign(xt) / Data.l * np.exp(-abs(xt) / Data.l) + one_div_exp2adivl_one * np.sign(xt) / Data.l * 2 * np.cosh(np.abs(xt) / Data.l)
+
+fig, ax_phi = plt.subplots()
+
+ax_phi.plot(xt, phi_gradient_theory, 'k-', label='Theory')
+# ax_phi.plot(file_vtu.points[:, 0], file_vtu['gradient_phi'][:, 0], 'r.', label=S.label)
+
+ax_phi.grid(color='k', linestyle='-', linewidth=0.3)
+ax_phi.set_ylabel('$\\phi\'(x)$')
+ax_phi.set_xlabel('x')
+ax_phi.legend()
 
 ###############################################################################
 # Plot: Energy Values Comparison
@@ -363,16 +382,16 @@ W = np.tanh(a_div_l)
 
 fig, energy = plt.subplots()  # Create a figure for plotting energy
 
-energy.plot(l_array, W_phi, 'r-', label='$W_{\phi}$')  # Energy for `phi`
-energy.plot(l_array, W_gradphi, 'b-', label='$W_{V \phi}$')  # Energy for gradient of `phi`
+energy.plot(l_array, W_phi, 'r-', label=r'$W_{\phi}$')  # Energy for `phi`
+energy.plot(l_array, W_gradphi, 'b-', label=r'$W_{V \phi}$')  # Energy for gradient of `phi`
 energy.plot(l_array, W, 'k-', label='$W$')  # Total energy
 
 energy.plot(Data.l, 2 * S.energy_files['total.energy']["gamma_phi"][0], 'k*', label=S.label)
 energy.plot(Data.l, 2 * S.energy_files['total.energy']["gamma_gradphi"][0], 'k*')
 energy.plot(Data.l, 2 * S.energy_files['total.energy']["gamma"][0], 'k*')
 
-energy.set_xlabel('Length Scale Parameter $l$')  
-energy.set_ylabel('Energy')  
+energy.set_xlabel(r'Length Scale Parameter $l$')  
+energy.set_ylabel(r'Energy')  
 energy.grid(color='k', linestyle='-', linewidth=0.3)
 energy.legend()
 

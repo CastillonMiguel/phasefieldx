@@ -231,7 +231,7 @@ if rank == 0:
       # 1. Visualize the Domain Decomposition
       # We load the individual .vtu file for each of the 5 processes. This allows
       # us to see how the mesh was partitioned across the processes.
-      pv.start_xvfb()
+      
       results_dir = os.path.join(Data.results_folder_name, "paraview-solutions_vtu")
       file_vtu_p0 = pv.read(os.path.join(results_dir, "phasefieldx_p0_000000.vtu"))
       file_vtu_p1 = pv.read(os.path.join(results_dir, "phasefieldx_p1_000000.vtu"))

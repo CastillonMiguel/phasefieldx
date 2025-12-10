@@ -302,7 +302,6 @@ lambda_half       = S.dof_files["lambda.dof"]["lambda"]
 ###############################################################################
 # Plot: Phase-Field
 # -----------------
-pv.start_xvfb()
 file_vtu = pv.read(os.path.join(Data.results_folder_name, "paraview-solutions_vtu", "phasefieldx_p0_000043.vtu"))
 file_vtu.plot(scalars='phi', cpos='xy', show_scalar_bar=True, show_edges=False)
 
