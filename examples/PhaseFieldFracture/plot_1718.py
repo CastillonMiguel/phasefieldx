@@ -142,7 +142,10 @@ mesh_comm = mpi4py.MPI.COMM_WORLD            # MPI communicator for parallel com
 # %%
 # The mesh, cell markers, and facet markers are extracted from the 'mesh.msh' file
 # using the `read_from_msh` function.
-msh, cell_markers, facet_markers = dolfinx.io.gmshio.read_from_msh(msh_file, mesh_comm, gmsh_model_rank, gdim)
+mesh_data = dolfinx.io.gmsh.read_from_msh(msh_file, mesh_comm, gmsh_model_rank, gdim)
+msh = mesh_data.mesh
+cell_markers = mesh_data.cell_tags
+facet_markers = mesh_data.facet_tags
 
 fdim = msh.topology.dim - 1 # Dimension of the mesh facets
 
