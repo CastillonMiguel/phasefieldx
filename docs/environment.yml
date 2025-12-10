@@ -3,11 +3,11 @@ channels:
   - conda-forge
 dependencies:
   - python=3.10
-  - pyvista==0.44.2
+  - pyvista==0.45.0
   - scifem
   - jupyterlab
   - numpy
-  - vtk
+  - vtk==9.5.0
   - scooby>=0.5.1
   - fenics-dolfinx==0.10.0
   - meshio
@@ -27,9 +27,9 @@ dependencies:
   - rtree
   - pyembree
   - pooch
-  - trame>=2.5.2
-  - trame-vuetify>=2.3.1
-  - trame-vtk>=2.5.8
+  - trame
+  - trame-vuetify
+  - trame-vtk
   - typing-extensions
   - pip:
       - pytest-memprof
