@@ -201,7 +201,7 @@ ds_list = np.array([
 # Define function spaces for the phase-field using Lagrange elements of
 # degree 1.
 V_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1))
-# V_gradient_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1, (msh.geometry.dim, )))
+V_gradient_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1, (msh.geometry.dim, )))
 
 ###############################################################################
 # Boundary Condition Setup for Scalar Field $\phi$
@@ -267,7 +267,7 @@ solve(Data,
       dt,
       path=None,
       quadrature_degree=2,
-      V_gradient_Φ=None)
+      V_gradient_Φ=V_gradient_phi)
 
 
 ###############################################################################
@@ -325,7 +325,7 @@ phi_gradient_theory = -np.sign(xt) / Data.l * np.exp(-abs(xt) / Data.l) + one_di
 fig, ax_phi = plt.subplots()
 
 ax_phi.plot(xt, phi_gradient_theory, 'k-', label='Theory')
-# ax_phi.plot(file_vtu.points[:, 0], file_vtu['gradient_phi'][:, 0], 'r.', label=S.label)
+ax_phi.plot(file_vtu.points[:, 0], file_vtu['gradient_phi'][:, 0], 'r.', label=S.label)
 
 ax_phi.grid(color='k', linestyle='-', linewidth=0.3)
 ax_phi.set_ylabel('$\\phi\'(x)$')

@@ -226,7 +226,7 @@ def solve(Data,
 
         if V_gradient_Φ is not None:
             # Compute gradient of Φ and save to gradient_Φ function
-            gradient_expr = dolfinx.fem.Expression(ufl.grad(Φ), V_gradient_Φ.element.interpolation_points())
+            gradient_expr = dolfinx.fem.Expression(ufl.grad(Φ), V_gradient_Φ.element.interpolation_points)
             gradient_Φ.interpolate(gradient_expr)
             
         # Paraview -----------------------------------------------------------
