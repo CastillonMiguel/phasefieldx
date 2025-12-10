@@ -2,7 +2,7 @@ name: phasefieldx-env
 channels:
   - conda-forge
 dependencies:
-  - fenics-dolfinx==0.9.0
+  - fenics-dolfinx==0.10.0
   - scifem
   - mpi4py
   - numpy
