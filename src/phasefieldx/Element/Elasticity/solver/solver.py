@@ -147,7 +147,7 @@ def solve(Data,
 
     J_u = ufl.derivative(F_u, u)
     J_u_form = dolfinx.fem.form(J_u)
-    problem = dolfinx.fem.petsc.NonlinearProblem(F_u, u, bcs=bc_list_u, J=J_u)
+    problem = dolfinx.fem.petsc.NewtonSolverNonlinearProblem(F_u, u, bcs=bc_list_u, J=J_u)
 
     solver_u = NewtonSolver(problem)
     if rank == 0 and logger:
@@ -237,7 +237,7 @@ def solve(Data,
         # Reaction -----------------------------------------------------------
         if comm.Get_size() == 1: # Only available for single process
             for i in range(0, len(bc_list_u)):
-                R = calculate_reaction_forces(J_u_form, F_u_form, [bc_list_u[i]], u, msh.topology.dim)
+                R = calculate_reaction_forces(J_u_form, F_u_form, [bc_list_u[i]], u, V_u, msh.topology.dim)
                 append_results_to_file(os.path.join(result_folder_name, bcs_list_u_names[i] + ".reaction"), '#step\tRx\tRy\tRz', step, R[0], R[1], R[2])
 
         # Energy -------------------------------------------------------------        

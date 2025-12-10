@@ -214,25 +214,48 @@ def solve(Data,
             # Assemble F(u_{i-1}) - J(u_D - u_{i-1}) and set du|_bc= u_D - u_{i-1}
             with b.localForm() as b_local:
                 b_local.set(0.0)
-            dolfinx.fem.petsc.assemble_vector_block(
-                b,
-                self._F,
-                self._a,
-                bcs=self._bcs,
-                x0=x,
-                alpha=-1.0,
-            )
-            start_pos = 0
-            for s in self._u:
-                num_sub_dofs = (
-                    s.function_space.dofmap.index_map.size_local
-                    * s.function_space.dofmap.index_map_bs
+            try:
+                dolfinx.fem.petsc.assemble_vector_block(
+                    b,
+                    self._F,
+                    self._a,
+                    bcs=self._bcs,
+                    x0=x,
+                    alpha=-1.0,
                 )
-                if s.function_space.dofmap.index_map.size_global == 1:
-                    assert s.function_space.dofmap.index_map_bs == 1
-                    if s.function_space.dofmap.index_map.size_local > 0:
-                        b.array_w[start_pos:start_pos+num_sub_dofs] -= tau
-                start_pos += num_sub_dofs
+                start_pos = 0
+                for s in self._u:
+                    num_sub_dofs = (
+                        s.function_space.dofmap.index_map.size_local
+                        * s.function_space.dofmap.index_map_bs
+                    )
+                    if s.function_space.dofmap.index_map.size_global == 1:
+                        assert s.function_space.dofmap.index_map_bs == 1
+                        if s.function_space.dofmap.index_map.size_local > 0:
+                            b.array_w[start_pos:start_pos+num_sub_dofs] -= tau
+                    start_pos += num_sub_dofs
+            except AttributeError:
+                dolfinx.fem.petsc.assemble_vector(b, self._F)
+                bcs1 = dolfinx.fem.bcs_by_block(
+                    dolfinx.fem.extract_function_spaces(self._a, 1), self._bcs
+                )
+                dolfinx.fem.petsc.apply_lifting(b, self._a, bcs=bcs1, x0=x, alpha=-1.0)
+                b.ghostUpdate(addv=PETSc.InsertMode.ADD, mode=PETSc.ScatterMode.REVERSE)
+                bcs0 = dolfinx.fem.bcs_by_block(
+                    dolfinx.fem.extract_function_spaces(self._F), self._bcs
+                )
+                dolfinx.fem.petsc.set_bc(b, bcs0, x0=x, alpha=-1.0)
+                start_pos = 0
+                for s in self._u:
+                    num_sub_dofs = (
+                        s.function_space.dofmap.index_map.size_local
+                        * s.function_space.dofmap.index_map_bs
+                    )
+                    if s.function_space.dofmap.index_map.size_global == 1:
+                        assert s.function_space.dofmap.index_map_bs == 1
+                        if s.function_space.dofmap.index_map.size_local > 0:
+                            b.array_w[start_pos:start_pos+num_sub_dofs] -= tau
+                    start_pos += num_sub_dofs
             b.ghostUpdate(PETSc.InsertMode.INSERT_VALUES, PETSc.ScatterMode.FORWARD)
     
 
@@ -254,7 +277,7 @@ def solve(Data,
         if rank == 0 and logger:
             logger.info(f"\n\nBoundary condition for phase-field ")
 
-        problem = dolfinx.fem.petsc.NonlinearProblem(Data.Gc*(1.0/(c0*Data.l)*geometric_crack_function_derivative(Φ, case)*δΦ + Data.l * 2/c0*ufl.inner(ufl.grad(Φ), ufl.grad(δΦ)))*ufl.dx, Φ, bcs=bc_list_phi)
+        problem = dolfinx.fem.petsc.NewtonSolverNonlinearProblem(Data.Gc*(1.0/(c0*Data.l)*geometric_crack_function_derivative(Φ, case)*δΦ + Data.l * 2/c0*ufl.inner(ufl.grad(Φ), ufl.grad(δΦ)))*ufl.dx, Φ, bcs=bc_list_phi)
         solver_phi = NewtonSolver(problem)
 
         if rank == 0 and logger:
@@ -405,12 +428,12 @@ def solve(Data,
             if comm.Get_size() == 1: # Only available for single process
                 if bc_list_phi !=[]:
                     for i in range(0, len(bc_list_u)-1):
-                        R = calculate_reaction_forces(J_u_form, F_u_form, [bc_list_u[i]], u, msh.topology.dim)
+                        R = calculate_reaction_forces(J_u_form, F_u_form, [bc_list_u[i]], u, V_u, msh.topology.dim)
                         append_results_to_file(os.path.join(
                             result_folder_name, bcs_list_u_names[i] + ".reaction"), '#step\tRx\tRy\tRz', step, R[0], R[1], R[2])
                 else:
                     for i in range(0, len(bc_list_u)):
-                        R = calculate_reaction_forces(J_u_form, F_u_form, [bc_list_u[i]], u, msh.topology.dim)
+                        R = calculate_reaction_forces(J_u_form, F_u_form, [bc_list_u[i]], u, V_u, msh.topology.dim)
                         append_results_to_file(os.path.join(
                             result_folder_name, bcs_list_u_names[i] + ".reaction"), '#step\tRx\tRy\tRz', step, R[0], R[1], R[2])
             

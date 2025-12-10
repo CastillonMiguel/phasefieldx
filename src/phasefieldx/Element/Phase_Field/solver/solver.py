@@ -16,6 +16,7 @@ from dolfinx.fem.petsc import NonlinearProblem
 from phasefieldx.files import prepare_simulation, append_results_to_file
 from phasefieldx.solvers.newton import NewtonSolver
 from phasefieldx.Logger.library_versions import set_logger, log_library_versions, log_system_info, log_end_analysis, log_model_information
+from phasefieldx.Element.Phase_Field.geometric_crack import geometric_crack_function, geometric_crack_function_derivative, geometric_crack_coefficient
 from phasefieldx.Element.Phase_Field.energy import calculate_crack_surface_energy
 
 def solve(Data,
@@ -28,7 +29,9 @@ def solve(Data,
           ds_bound=None,
           dt=1.0,
           path=None,
-          quadrature_degree=2):
+          quadrature_degree=2,
+          case="AT2",
+          V_gradient_Φ=None):
     """
     Solver for phase-field problems.
 
@@ -112,13 +115,14 @@ def solve(Data,
     # Phase-field -------------------------
     Φ = dolfinx.fem.Function(V_Φ, name="phi")
     δΦ = ufl.TestFunction(V_Φ)
-
     metadata = {"quadrature_degree": quadrature_degree}
     # ds = ufl.Measure('ds', domain=msh, subdomain_data=facet_tag, metadata=metadata)
     dx = ufl.Measure("dx", domain=msh, metadata=metadata)
+    
     # Phase-field ------------------------------------------------------------
-    F_phi = (1 / Data.l * ufl.inner(Φ, δΦ) + Data.l *
-             ufl.inner(ufl.grad(Φ), ufl.grad(δΦ))) * dx
+    c0 = geometric_crack_coefficient(case)
+    F_phi = (1.0/(c0*Data.l)*geometric_crack_function_derivative(Φ, case)*δΦ + Data.l * 2/c0*ufl.inner(ufl.grad(Φ), ufl.grad(δΦ)))*dx
+
 
     x = ufl.SpatialCoordinate(msh)
     if update_loading is not None:
@@ -128,7 +132,7 @@ def solve(Data,
                   ufl.inner(grad_f, ufl.grad(δΦ))) * dx
 
     J_phi = ufl.derivative(F_phi, Φ)
-    problem = dolfinx.fem.petsc.NonlinearProblem(
+    problem = dolfinx.fem.petsc.NewtonSolverNonlinearProblem(
         F_phi, Φ, bcs=bc_list_phi, J=J_phi)
 
     solver_phi = NewtonSolver(problem)
@@ -154,6 +158,9 @@ def solve(Data,
             paraview_solution_folder_name_xdmf, "phi.xdmf"), "w")
         xdmf_phi.write_mesh(msh)
 
+    if V_gradient_Φ is not None:
+        gradient_Φ = dolfinx.fem.Function(V_gradient_Φ, name="gradient_phi")
+    
     if Data.save_solution_vtu:
         paraview_solution_folder_name_vtu = os.path.join(
             result_folder_name, "paraview-solutions_vtu")
@@ -209,19 +216,31 @@ def solve(Data,
                 result_folder_name, "phasefieldx.conv"), '#step\titerations', step, phi_iterations)
 
         # Energy -------------------------------------------------------------
-        gamma, gamma_phi, gamma_gradphi = calculate_crack_surface_energy(Φ, Data.l, comm, "AT2", dx)
+        gamma, gamma_phi, gamma_gradphi = calculate_crack_surface_energy(Φ, Data.l, comm, case, dx)
 
         # Only rank 0 writes energy results
         if rank == 0:
             append_results_to_file(os.path.join(result_folder_name, "total.energy"),
                                    '#step\tgamma\tgamma_phi\tgamma_gradphi', step, gamma, gamma_phi, gamma_gradphi)
+            
 
+        if V_gradient_Φ is not None:
+            # Compute gradient of Φ and save to gradient_Φ function
+            gradient_expr = dolfinx.fem.Expression(ufl.grad(Φ), V_gradient_Φ.element.interpolation_points())
+            gradient_Φ.interpolate(gradient_expr)
+            
         # Paraview -----------------------------------------------------------
         if Data.save_solution_xdmf:
             xdmf_phi.write_function(Φ, step)
+            if V_gradient_Φ is not None:
+                xdmf_phi.write_function(gradient_Φ, step)
 
         if Data.save_solution_vtu:
-            vtk_sol.write_function([Φ], step)
+            if V_gradient_Φ is not None:
+                vtk_sol.write_function([Φ, gradient_Φ], step)
+            else:
+                vtk_sol.write_function([Φ], step)
+                
 
         t += dt
         step += 1

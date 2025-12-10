@@ -116,7 +116,7 @@ def test_phase_field_simulation_ener_variational():
     S = AllResults(Data.results_folder_name)
     alpha = 1/np.sqrt(1+c1*S.dof_files["lambda.dof"]["lambda"]/Data.Gc)
 
-    displacement = S.dof_files["max_u.dof"]["Uy"]*alpha
+    displacement = abs(2*S.energy_files['total.energy']["E"]/(S.reaction_files['bottom.reaction']["Ry"]))*alpha
     psi_t = 0.5 * displacement**2 * (Data.lambda_ + 2 * Data.mu)
     phi_t = 2 * psi_t / (Data.Gc / Data.l + 2 * psi_t)
     sigma_t = displacement * (Data.lambda_ + 2 * Data.mu) * (1 - phi_t)**2

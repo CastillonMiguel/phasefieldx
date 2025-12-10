@@ -185,7 +185,7 @@ def solve(Data,
 
     J_u = ufl.derivative(F_u, u_new)
     J_u_form = dolfinx.fem.form(J_u)
-    U_problem = dolfinx.fem.petsc.NonlinearProblem(
+    U_problem = dolfinx.fem.petsc.NewtonSolverNonlinearProblem(
         F_u, u_new, bcs=bc_list_u, J=J_u)
 
     solver_u = NewtonSolver(U_problem)
@@ -205,7 +205,7 @@ def solve(Data,
         F_phi += Data.Gc*(1.0/(c0*Data.l)*geometric_crack_function_derivative(Φ_new, case)*δΦ + Data.l * 2/c0*ufl.inner(ufl.grad(Φ_new), ufl.grad(δΦ)))*ufl.dx
 
     J_phi = ufl.derivative(F_phi, Φ_new)
-    PHI_problem = dolfinx.fem.petsc.NonlinearProblem(
+    PHI_problem = dolfinx.fem.petsc.NewtonSolverNonlinearProblem(
         F_phi, Φ_new, bcs=bc_list_phi, J=J_phi)
 
     solver_phi = NewtonSolver(PHI_problem)
@@ -375,7 +375,7 @@ def solve(Data,
         # Reaction -----------------------------------------------------------
         if comm.Get_size() == 1: # Only available for single process
             for i in range(0, len(bc_list_u)):
-                R = calculate_reaction_forces(J_u_form, F_u_form, [bc_list_u[i]], u_new, msh.topology.dim)
+                R = calculate_reaction_forces(J_u_form, F_u_form, [bc_list_u[i]], u_new, V_u, msh.topology.dim)
                 append_results_to_file(os.path.join(
                     result_folder_name, bcs_list_u_names[i] + ".reaction"), '#step\tRx\tRy\tRz', step, R[0], R[1], R[2])
 
