@@ -72,6 +72,6 @@ gmsh.finalize()
 
 print(f"Mesh successfully written to {vtu_file}")
 
-pv.start_xvfb()
+
 file_vtu = pv.read(vtu_file)
 file_vtu.plot(cpos='xy', color='white', show_edges=True)
