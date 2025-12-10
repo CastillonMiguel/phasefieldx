@@ -51,12 +51,20 @@ Functions
 """
 
 import os
-import pyvista as pv
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
+try:
+    import matplotlib.pyplot as plt
+    import matplotlib.image as mpimg
+except Exception:
+    plt = None
+    mpimg = None
 
 # Optional imports: only required if user calls functions that need them.
+try:
+    import pyvista as pv
+except Exception:
+    pv = None
+
 try:
     import imageio.v2 as imageio
 except Exception:
