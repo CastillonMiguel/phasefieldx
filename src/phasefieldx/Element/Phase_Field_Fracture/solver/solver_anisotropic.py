@@ -1,6 +1,6 @@
 '''
-Solver: Elasticity
-==================
+Solver: Elasticity (Anisotropic Decomposition)
+==============================================
 
 '''
 
@@ -11,16 +11,18 @@ import time
 import dolfinx
 import ufl
 from mpi4py import MPI
-from dolfinx.fem.petsc import NonlinearProblem
-
 
 from phasefieldx.files import prepare_simulation, append_results_to_file
 from phasefieldx.solvers.newton import NewtonSolver
 from phasefieldx.Logger.library_versions import set_logger, log_library_versions, log_system_info, log_end_analysis, log_model_information
 
 from phasefieldx.Materials.elastic_isotropic import epsilon, sigma, psi
+from phasefieldx.Element.Phase_Field_Fracture.split_energy_stress_tangent_functions import (psi_a, psi_b, sigma_a,
+                                                                                            sigma_b)
 from phasefieldx.Reactions import calculate_reaction_forces
 from phasefieldx.Element.Elasticity.energy import calculate_elastic_energy
+from phasefieldx.Element.Phase_Field_Fracture.energy import compute_elastic_energy_components
+from phasefieldx.Math.projection import project
 
 def solve(Data,
           msh,
@@ -128,13 +130,18 @@ def solve(Data,
     # Displacement ------------------------
     u = dolfinx.fem.Function(V_u, name="u")
     δu = ufl.TestFunction(V_u)
+    
+    V_energies = dolfinx.fem.functionspace(msh, ("Lagrange", 1))
+    PSI_a = dolfinx.fem.Function(V_energies, name="PSI_a")
+    PSI_b = dolfinx.fem.Function(V_energies, name="PSI_b")
+
 
     metadata = {"quadrature_degree": quadrature_degree}
     # ds = ufl.Measure('ds', domain=msh, subdomain_data=facet_tag, metadata=metadata)
     dx = ufl.Measure("dx", domain=msh, metadata=metadata)
 
     # Displacement -----------------------------------------------------------
-    F_u = ufl.inner(sigma(u, Data.lambda_, Data.mu), epsilon(δu)) * dx
+    F_u = ufl.inner(sigma_a(u, Data) + sigma_b(u, Data), epsilon(δu)) * dx
     F_u_form = dolfinx.fem.form(F_u)
 
     # External forces --------------------------------------------------------
@@ -268,18 +275,24 @@ def solve(Data,
 
         # Energy -------------------------------------------------------------        
         E = calculate_elastic_energy(u, Data, comm, dx)
-     
+        
+        psi_a_, psi_b_ = compute_elastic_energy_components(u, Data, comm, dx=dx)
+        
+        project(psi_a(u, Data), PSI_a)
+        project(psi_b(u, Data), PSI_b)
+
+
         # Only rank 0 writes energy results
         if rank == 0:
             append_results_to_file(os.path.join(
-                result_folder_name, "total.energy"), '#step\tE', step, E)
+                result_folder_name, "total.energy"), '#step\tE\tPSI_a\tPSI_b', step, E, psi_a_, psi_b_)
 
         # Paraview -----------------------------------------------------------
         if Data.save_solution_xdmf:
             xdmf_u.write_function(u, step)
 
         if Data.save_solution_vtu:
-            vtk_sol.write_function([u], step)
+            vtk_sol.write_function([u, PSI_a, PSI_b], step)
 
         t += dt
         step += 1
