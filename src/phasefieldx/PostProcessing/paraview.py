@@ -10,7 +10,11 @@ analysis or visualization.
 
 import os
 import numpy as np
-import pyvista as pv
+# Optional imports: only required if user calls functions that need them.
+try:
+    import pyvista as pv
+except Exception:
+    pv = None
 
 
 class ParaviewResult:

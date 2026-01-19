@@ -125,7 +125,10 @@ mesh_comm = mpi4py.MPI.COMM_WORLD            # MPI communicator for parallel com
 # %%
 # The mesh, cell markers, and facet markers are extracted from the 'mesh.msh' file
 # using the `read_from_msh` function.
-msh, cell_markers, facet_markers = dolfinx.io.gmshio.read_from_msh(msh_file, mesh_comm, gmsh_model_rank, gdim)
+mesh_data = dolfinx.io.gmsh.read_from_msh(msh_file, mesh_comm, gmsh_model_rank, gdim)
+msh = mesh_data.mesh
+cell_markers = mesh_data.cell_tags
+facet_markers = mesh_data.facet_tags
 
 fdim = msh.topology.dim - 1 # Dimension of the mesh facets
 
@@ -330,7 +333,7 @@ S.set_color('b')
 # The phase-field result saved in the .vtu file is shown.
 # For this, the file is loaded using PyVista.
 file_vtu = pv.read(os.path.join(Data.results_folder_name, "paraview-solutions_vtu", "phasefieldx_p0_000097.vtu"))
-pv.start_xvfb()
+
 file_vtu.plot(scalars='phi', cpos='xy', show_scalar_bar=True, show_edges=False)
 
 

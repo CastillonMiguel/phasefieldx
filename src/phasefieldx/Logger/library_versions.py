@@ -44,6 +44,12 @@ def set_logger(result_folder_name):
     >>> logger = set_logger('results_folder')
     """
     logger = logging.getLogger('simulation_logger')
+
+    # Remove existing handlers to allow reinitialization
+    if logger.hasHandlers():
+        for handler in logger.handlers:
+            logger.removeHandler(handler)
+            
     logger.setLevel(logging.INFO)
     simulation_file_handler = logging.FileHandler(
         os.path.join(result_folder_name, 'simulation.log'))

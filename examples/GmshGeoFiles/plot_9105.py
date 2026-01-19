@@ -113,6 +113,6 @@ rectangle_mesh(Lx, Ly, ndiv_x, ndiv_y, vtk_file)
 
 print(f"Mesh successfully written to {vtk_file}")
 
-pv.start_xvfb()
+
 file_vtk = pv.read(vtk_file)
 file_vtk.plot(cpos='xy', color='white', show_edges=True)

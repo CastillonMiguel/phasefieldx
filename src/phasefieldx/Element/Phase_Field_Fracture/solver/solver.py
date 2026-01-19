@@ -185,14 +185,30 @@ def solve(Data,
 
     J_u = ufl.derivative(F_u, u_new)
     J_u_form = dolfinx.fem.form(J_u)
-    U_problem = dolfinx.fem.petsc.NonlinearProblem(
-        F_u, u_new, bcs=bc_list_u, J=J_u)
+    petsc_options_u = {
+        "ksp_type": "preonly",
+        "pc_type": "lu",
+        "pc_factor_mat_solver_type": "mumps",
+        "snes_linesearch_type": "none",
+        "snes_max_it": 50000,
+        "snes_rtol": 1e-8,
+        "snes_atol": 1e-9,
+    }
 
-    solver_u = NewtonSolver(U_problem)
+    problem_u = dolfinx.fem.petsc.NonlinearProblem(
+        F_u,
+        u_new,
+        bcs=bc_list_u,
+        J=J_u,
+        petsc_options=petsc_options_u,
+        petsc_options_prefix="elasticity",
+    )
+    snes_u = problem_u.solver
+
     if rank == 0 and logger:
-        logger.info(f" Newton solver parameters for: u  ")
-        logger.info(f" ---------------------------------")
-        solver_u.save_log_info(logger)
+        logger.info(" SNES Settings u:")
+        for key, value in petsc_options_u.items():
+            logger.info(f"   {key}: {value}")
 
     # Phase-field ------------------------------------------------------------
     F_phi = dg(Φ_new, Data.degradation_function) * H * δΦ * ufl.dx
@@ -205,14 +221,33 @@ def solve(Data,
         F_phi += Data.Gc*(1.0/(c0*Data.l)*geometric_crack_function_derivative(Φ_new, case)*δΦ + Data.l * 2/c0*ufl.inner(ufl.grad(Φ_new), ufl.grad(δΦ)))*ufl.dx
 
     J_phi = ufl.derivative(F_phi, Φ_new)
-    PHI_problem = dolfinx.fem.petsc.NonlinearProblem(
+    problem_phi = dolfinx.fem.petsc.NewtonSolverNonlinearProblem(
         F_phi, Φ_new, bcs=bc_list_phi, J=J_phi)
 
-    solver_phi = NewtonSolver(PHI_problem)
+    petsc_options_phi = {
+        "ksp_type": "preonly",
+        "pc_type": "lu",
+        "pc_factor_mat_solver_type": "mumps",
+        "snes_linesearch_type": "none",
+        "snes_max_it": 50000,
+        "snes_rtol": 1e-8,
+        "snes_atol": 1e-9,
+    }
+
+    problem_phi = dolfinx.fem.petsc.NonlinearProblem(
+        F_phi,
+        Φ_new,
+        bcs=bc_list_phi,
+        J=J_phi,
+        petsc_options=petsc_options_phi,
+        petsc_options_prefix="phase_field",
+    )
+    snes_phi = problem_phi.solver
+
     if rank == 0 and logger:
-        logger.info(f" Newton solver parameters for: phi")
-        logger.info(f" ---------------------------------")
-        solver_phi.save_log_info(logger)
+        logger.info(" SNES Settings phi:")
+        for key, value in petsc_options_phi.items():
+            logger.info(f"   {key}: {value}")
 
     # Solve ################################################################
     ########################################################################
@@ -295,18 +330,25 @@ def solve(Data,
             # Displacement --------------------------------------------
             if rank == 0 and logger:
                 logger.info(f">>> Solving phase for dofs: u ")
-            u_iterations, _ = solver_u.solver.solve(u_new)
-            # residuals = solver_u.ksp.getConvergenceHistory()
-            if rank == 0 and logger:
-                logger.info(f" Newton iterations: {u_iterations}")
-            # error_L2_u = eval_error_L2(u_new, u_old, msh)/1
+            problem_u.solve()
+            converged = problem_u.solver.getConvergedReason()
+            u_iterations = problem_u.solver.getIterationNumber()
+            
+            residuals = snes_u.getConvergenceHistory()
+            residual_norm_u = snes_u.getFunctionNorm()
             error_L2_u = eval_error_L2_normalized(u_new, u_old, msh)
 
-            
             if rank == 0 and logger:
-                resisual_u = solver_u.ksp.getResidualNorm()
-                logger.info(f" Residual norm u: {resisual_u}")
-                logger.info(f" L2 error in u   direction:  {error_L2_u}")
+                if converged <= 0:
+                    logger.error(f"Solver did not converge, got {converged}.")
+                    raise RuntimeError(f"Solver did not converge, got {converged}.")
+                else:
+                    logger.info(f" Newton iterations: {u_iterations}")
+                    logger.info(f" Residual norm u: {residual_norm_u}")
+                    logger.info(f" Converged reason {converged}.")
+                    logger.info(f" Residual history u: {residuals}")
+                    logger.info(f" L2 error in u   direction:  {error_L2_u}")
+
             u_old.x.array[:] = u_new.x.array
 
             #  Irreversibility ....
@@ -335,15 +377,24 @@ def solve(Data,
             # Phase-field ---------------------------------------------
             if rank == 0 and logger:
                 logger.info(f">>> Solving phase for dofs: Φ ")
-            phi_iterations, _ = solver_phi.solver.solve(Φ_new)
-            if rank == 0 and logger:
-                logger.info(f" Newton iterations: {phi_iterations}")
-            # error_L2_phi = eval_error_L2(Φ_new, Φ_old, msh)/1
+            problem_phi.solve()
+            converged = problem_phi.solver.getConvergedReason()
+            phi_iterations = problem_phi.solver.getIterationNumber()
+        
+            residuals = snes_phi.getConvergenceHistory()
+            residual_norm_phi = snes_phi.getFunctionNorm()
             error_L2_phi = eval_error_L2_normalized(Φ_new, Φ_old, msh)
             if rank == 0 and logger:
-                residual_Φ = solver_phi.ksp.getResidualNorm()
-                logger.info(f" Residual norm Φ: {residual_Φ}")
-                logger.info(f" L2 error in Φ direction:  {error_L2_phi}")
+                if converged <= 0:
+                    logger.error(f"Solver did not converge, got {converged}.")
+                    raise RuntimeError(f"Solver did not converge, got {converged}.")
+                else:
+                    logger.info(f" Newton iterations: {phi_iterations}")
+                    logger.info(f" Residual norm Φ: {residual_norm_phi}")
+                    logger.info(f" Converged reason {converged}.")
+                    logger.info(f" Residual history Φ: {residuals}")
+                    logger.info(f" L2 error in Φ direction:  {error_L2_phi}")
+
             Φ_old.x.array[:] = Φ_new.x.array
 
         # Irreversibility ....
@@ -375,7 +426,7 @@ def solve(Data,
         # Reaction -----------------------------------------------------------
         if comm.Get_size() == 1: # Only available for single process
             for i in range(0, len(bc_list_u)):
-                R = calculate_reaction_forces(J_u_form, F_u_form, [bc_list_u[i]], u_new, msh.topology.dim)
+                R = calculate_reaction_forces(J_u_form, F_u_form, [bc_list_u[i]], u_new, V_u, msh.topology.dim)
                 append_results_to_file(os.path.join(
                     result_folder_name, bcs_list_u_names[i] + ".reaction"), '#step\tRx\tRy\tRz', step, R[0], R[1], R[2])
 

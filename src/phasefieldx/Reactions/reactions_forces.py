@@ -9,7 +9,7 @@ import dolfinx
 import numpy as np
 import petsc4py
 
-def calculate_reaction_forces(J_form, F_form, bcs, u, dimension):
+def calculate_reaction_forces(J_form, F_form, bcs, u, V, dimension):
     """
     Compute the reaction forces at the constrained degrees of freedom (DOFs).
 
@@ -33,7 +33,7 @@ def calculate_reaction_forces(J_form, F_form, bcs, u, dimension):
     """
     
     # Assemble the residual vector F
-    residual_vector = dolfinx.fem.petsc.create_vector(F_form)
+    residual_vector = dolfinx.fem.petsc.create_vector(V)
     with residual_vector.localForm() as loc_L:
         loc_L.set(0.0)
     dolfinx.fem.petsc.assemble_vector(residual_vector, F_form)

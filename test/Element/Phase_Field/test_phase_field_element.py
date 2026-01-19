@@ -77,7 +77,6 @@ def test_phase_field_simulation(dimension):
           quadrature_degree=2)
 
     # Load results using PyVista
-    # pv.start_xvfb()
     file_vtu = pv.read(os.path.join(Data.results_folder_name,
                        "paraview-solutions_vtu", "phasefieldx_p0_000000.vtu"))
 
