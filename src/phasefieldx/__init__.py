@@ -16,7 +16,6 @@ from .Materials import *
 from .Math import *
 from .PostProcessing import *
 from .Reactions import *
-from .solvers import *
 from .errors_functions import *
 from .files import *
 from .norms import *
@@ -32,7 +31,6 @@ __all__ = [
     'Math',
     'PostProcessing',
     'Reactions',
-    'solvers',
     'errors_functions',
     'files',
     'norms'

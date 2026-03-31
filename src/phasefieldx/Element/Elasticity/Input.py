@@ -24,6 +24,8 @@ class Input:
         Lame's first parameter calculated from E and nu.
     mu : float
         Shear modulus calculated from E and nu.
+    rho: float
+        Density of the material.
     save_solution_xdmf : bool
         Indicates whether to save solutions in XDMF format.
     save_solution_vtu : bool
@@ -46,6 +48,7 @@ class Input:
     def __init__(self,
                  E=210.0,
                  nu=0.3,
+                 rho=1.0,
                  save_solution_xdmf=False,
                  save_solution_vtu=True,
                  results_folder_name="results"):
@@ -56,6 +59,8 @@ class Input:
         self.nu = nu
         self.lambda_ = get_lambda_lame(self.E, self.nu)
         self.mu = get_mu_lame(self.E, self.nu)
+
+        self.rho = rho
 
         self.save_solution_xdmf = save_solution_xdmf
         self.save_solution_vtu = save_solution_vtu
@@ -73,6 +78,7 @@ class Input:
         logger.info(f"  nu: {self.nu}")
         logger.info(f"  lambda: {self.lambda_}")
         logger.info(f"  mu: {self.mu}")
+        logger.info(f"  rho: {self.rho}")
 
     def save_parameters_to_csv(self, filename="parameters.input"):
         """
@@ -86,6 +92,7 @@ class Input:
             "nu": self.nu,
             "lambda": self.lambda_,
             "mu": self.mu,
+            "rho": self.rho,
             "save_solution_xdmf": self.save_solution_xdmf,
             "save_solution_vtu": self.save_solution_vtu,
             "results_folder_name": self.results_folder_name
@@ -106,6 +113,7 @@ class Input:
             f"  E: {self.E}",
             f"  nu: {self.nu}",
             f"  lambda: {self.lambda_}",
-            f"  mu: {self.mu}"
+            f"  mu: {self.mu}",
+            f"  rho: {self.rho}",
         ]
         return "\n".join(parameter_info)

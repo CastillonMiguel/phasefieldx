@@ -14,7 +14,6 @@ import dolfinx
 import ufl
 
 from phasefieldx.files import prepare_simulation, append_results_to_file
-from phasefieldx.solvers.newton import NewtonSolver
 from phasefieldx.Logger.library_versions import set_logger, log_library_versions, log_system_info, log_end_analysis, log_model_information
 from phasefieldx.Element.Allen_Cahn.potential import potential_function, potential_function_derivative, potential_coefficient
 from phasefieldx.Element.Allen_Cahn.energy import calculate_potential_energy
@@ -127,13 +126,30 @@ def solve(Data,
     F_phi = (1.0/(c0*Data.l)*potential_function_derivative(Φ, case)*δΦ + Data.l * 2/c0*ufl.inner(ufl.grad(Φ), ufl.grad(δΦ)))*dx
 
     J_phi = ufl.derivative(F_phi, Φ)
-    problem = dolfinx.fem.petsc.NewtonSolverNonlinearProblem(
-        F_phi, Φ, bcs=bc_list_phi, J=J_phi)
+    petsc_options_phi = {
+        "ksp_type": "preonly",
+        "pc_type": "lu",
+        "pc_factor_mat_solver_type": "mumps",
+        "snes_linesearch_type": "none",
+        "snes_max_it": 50000,
+        "snes_rtol": 1e-8,
+        "snes_atol": 1e-9,
+    }
 
+    problem_phi = dolfinx.fem.petsc.NonlinearProblem(
+        F_phi,
+        Φ,
+        bcs=bc_list_phi,
+        J=J_phi,
+        petsc_options=petsc_options_phi,
+        petsc_options_prefix="phase_field",
+    )
+    snes_phi = problem_phi.solver
 
-    solver_phi = NewtonSolver(problem)
     if rank == 0 and logger:
-        solver_phi.save_log_info(logger)
+        logger.info(" SNES Settings:")
+        for key, value in petsc_options_phi.items():
+            logger.info(f"   {key}: {value}")
 
 
     # Solve ################################################################
@@ -194,12 +210,22 @@ def solve(Data,
         if rank == 0 and logger:
             logger.info(f">>> Solving phase for dofs: Φ ")
         
-        phi_iterations, _ = solver_phi.solver.solve(Φ)
+        problem_phi.solve()
+        converged = problem_phi.solver.getConvergedReason()
+        phi_iterations = problem_phi.solver.getIterationNumber()
         
+        residuals = snes_phi.getConvergenceHistory()
+        residual_norm_phi = snes_phi.getFunctionNorm()
+
         if rank == 0 and logger:
-            logger.info(f" Newton iterations: {phi_iterations}")
-            residual_Φ = solver_phi.ksp.getResidualNorm()
-            logger.info(f" Residual norm Φ: {residual_Φ}")
+            if converged <= 0:
+                logger.error(f"Solver did not converge, got {converged}.")
+                raise RuntimeError(f"Solver did not converge, got {converged}.")
+            else:
+                logger.info(f" Newton iterations: {phi_iterations}")
+                logger.info(f" Residual norm Φ: {residual_norm_phi}")
+                logger.info(f" Converged reason {converged}.")
+                logger.info(f" Residual history Φ: {residuals}")
 
 
         # Save results - Only rank 0 writes text files
@@ -222,7 +248,7 @@ def solve(Data,
             
         if V_gradient_Φ is not None:
             # Compute gradient of Φ and save to gradient_Φ function
-            gradient_expr = dolfinx.fem.Expression(ufl.grad(Φ), V_gradient_Φ.element.interpolation_points())
+            gradient_expr = dolfinx.fem.Expression(ufl.grad(Φ), V_gradient_Φ.element.interpolation_points)
             gradient_Φ.interpolate(gradient_expr)
             
         # Paraview -----------------------------------------------------------
