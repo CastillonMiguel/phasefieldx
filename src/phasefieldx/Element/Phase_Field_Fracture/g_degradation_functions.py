@@ -53,91 +53,119 @@ from math import exp
 
 def quadratic_degradation_function(phi):
     """
-    Evaluate the quadratic degradation function for a given phi.
+    Evaluate the quadratic degradation function.
 
-    Parameters:
-        phi (float): The phi value.
+    Parameters
+    ----------
+    phi : float
+        The phase field variable.
 
-    Returns:
-        float: The degradation function value.
+    Returns
+    -------
+    float
+        The value of the quadratic degradation function.
     """
     return (1.0 - phi) ** 2.0
 
 
 def quadratic_degradation_derivative(phi):
     """
-    Evaluate the derivative of the quadratic degradation function for a given phi.
+    Evaluate the derivative of the quadratic degradation function.
 
-    Parameters:
-        phi (float): The phi value.
+    Parameters
+    ----------
+    phi : float
+        The phase field variable.
 
-    Returns:
-        float: The derivative value.
+    Returns
+    -------
+    float
+        The value of the derivative of the quadratic degradation function.
     """
     return -2.0 * (1.0 - phi)
 
 
 def cubic_degradation_function(phi):
     """
-    Evaluate the Borden degradation function for a given phi.
+    Evaluate the cubic (Borden) degradation function.
 
-    Parameters:
-        phi (float): The phi value.
+    Parameters
+    ----------
+    phi : float
+        The phase field variable.
 
-    Returns:
-        float: The degradation function value.
+    Returns
+    -------
+    float
+        The value of the cubic degradation function.
     """
     return 3.0 * (1.0 - phi)**2 - 2.0 * (1.0 - phi)**3
 
 
 def cubic_degradation_derivative(phi):
     """
-    Evaluate the derivative of the cubic degradation function for a given phi.
+    Evaluate the derivative of the cubic degradation function.
 
-    Parameters:
-        phi (float): The phi value.
+    Parameters
+    ----------
+    phi : float
+        The phase field variable.
 
-    Returns:
-        float: The derivative value.
+    Returns
+    -------
+    float
+        The value of the derivative of the cubic degradation function.
     """
     return -6.0 * phi * (1.0 - phi) 
 
 
 def quartic_degradation_function(phi):
     """
-    Evaluate the quartic degradation function for a given phi.
+    Evaluate the quartic degradation function.
 
-    Parameters:
-        phi (float): The phi value.
+    Parameters
+    ----------
+    phi : float
+        The phase field variable.
 
-    Returns:
-        float: The degradation function value.
+    Returns
+    -------
+    float
+        The value of the quartic degradation function.
     """
     return 4.0 * (1.0 - phi)**3 - 3.0 * (1.0 - phi)**4
 
 
 def quartic_degradation_derivative(phi):
     """
-    Evaluate the derivative of the quartic degradation function for a given phi.
+    Evaluate the derivative of the quartic degradation function.
 
-    Parameters:
-        phi (float): The phi value.
+    Parameters
+    ----------
+    phi : float
+        The phase field variable.
 
-    Returns:
-        float: The derivative value.
+    Returns
+    -------
+    float
+        The value of the derivative of the quartic degradation function.
     """
     return -12.0 * (1.0 - phi) ** 2 + 12.0 * (1.0 - phi)**3
 
 
 def alessi_degradation_function(phi):
     """
-    Evaluate the Alessi degradation function for a given phi.
+    Evaluate the Alessi degradation function.
 
-    Parameters:
-        phi (float): The phi value.
+    Parameters
+    ----------
+    phi : float
+        The phase field variable.
 
-    Returns:
-        float: The degradation function value.
+    Returns
+    -------
+    float
+        The value of the Alessi degradation function.
     """
     k = 100.0
     Q = 1.0 - ((1.0 - phi) * (1.0 - phi))
@@ -146,13 +174,17 @@ def alessi_degradation_function(phi):
 
 def alessi_degradation_derivative(phi):
     """
-    Evaluate the derivative of the Alessi degradation function for a given phi.
+    Evaluate the derivative of the Alessi degradation function.
 
-    Parameters:
-        phi (float): The phi value.
+    Parameters
+    ----------
+    phi : float
+        The phase field variable.
 
-    Returns:
-        float: The derivative value.
+    Returns
+    -------
+    float
+        The value of the derivative of the Alessi degradation function.
     """
     k = 100.0
     return (2.0 * k * (phi - 1.0) * (k * (phi - 1.0) * phi - 1.0)) / \
@@ -161,13 +193,17 @@ def alessi_degradation_derivative(phi):
 
 def sargado_degradation_function(phi):
     """
-    Evaluate the Sargado degradation function for a given phi.
+    Evaluate the Sargado degradation function.
 
-    Parameters:
-        phi (float): The phi value.
+    Parameters
+    ----------
+    phi : float
+        The phase field variable.
 
-    Returns:
-        float: The degradation function value.
+    Returns
+    -------
+    float
+        The value of the Sargado degradation function.
     """
     k = 100.0
     Q = 1.0 - ((1.0 - phi) * (1.0 - phi))
@@ -176,13 +212,17 @@ def sargado_degradation_function(phi):
 
 def sargado_degradation_derivative(phi):
     """
-    Evaluate the derivative of the Sargado degradation function for a given phi.
+    Evaluate the derivative of the Sargado degradation function.
 
-    Parameters:
-        phi (float): The phi value.
+    Parameters
+    ----------
+    phi : float
+        The phase field variable.
 
-    Returns:
-        float: The derivative value.
+    Returns
+    -------
+    float
+        The value of the derivative of the Sargado degradation function.
     """
     k = 100.0
     return -2.0 * k * (phi - 1.0) * k * (k * (phi - 2.0) *
@@ -191,13 +231,17 @@ def sargado_degradation_derivative(phi):
 
 def wu_degradation_function(phi):
     """
-    Evaluate the Sargado degradation function for a given phi.
+    Evaluate the Wu degradation function.
 
-    Parameters:
-        phi (float): The phi value.
+    Parameters
+    ----------
+    phi : float
+        The phase field variable.
 
-    Returns:
-        float: The degradation function value.
+    Returns
+    -------
+    float
+        The value of the Wu degradation function.
     """
     k = 100.0
     Q = 1.0 - ((1.0 - phi) * (1.0 - phi))
@@ -206,13 +250,17 @@ def wu_degradation_function(phi):
 
 def wu_degradation_derivative(phi):
     """
-    Evaluate the derivative of the Sargado degradation function for a given phi.
+    Evaluate the derivative of the Wu degradation function.
 
-    Parameters:
-        phi (float): The phi value.
+    Parameters
+    ----------
+    phi : float
+        The phase field variable.
 
-    Returns:
-        float: The derivative value.
+    Returns
+    -------
+    float
+        The value of the derivative of the Wu degradation function.
     """
     k = 100.0
     return -2.0 * k * (phi - 1.0) * k * (k * (phi - 2.0) *
@@ -223,33 +271,27 @@ def g(phi, degradation_type):
     """
     Evaluate the degradation function for a given phi and degradation type.
 
-    Parameters:
-        phi (float): The phi value.
-        degradation_type (str): The type of degradation function ('quadratic', 'cubic', 'quartic', 'alessi', or 'sargado').
+    Parameters
+    ----------
+    phi : float
+        The phase field variable.
+    degradation_type : str
+        The type of degradation function ('quadratic', 'cubic', 'quartic', 'alessi', or 'sargado').
 
-    Returns:
-        float: The degradation function value.
+    Returns
+    -------
+    float
+        The value of the degradation function.
 
     Examples
     --------
-    Plot the available degradation functions for illustrative purposes.
-
     >>> import numpy as np
     >>> import matplotlib.pyplot as plt
     >>> from phasefieldx.Element.Phase_Field_Fracture.g_degradation_functions import g
-
-    Define the range for the phase field variable phi.
-
     >>> phi = np.linspace(0.0, 1.0, 100)
-
-    Evaluate the degradation functions.
-
     >>> g_quadratic = [g(p, "quadratic") for p in phi]
     >>> g_cubic = [g(p, "cubic") for p in phi]
     >>> g_quartic = [g(p, "quartic") for p in phi]
-
-    Plot the evaluated functions.
-
     >>> plt.figure(figsize=(6, 5))
     >>> plt.plot(phi, g_quadratic, label="Quadratic")
     >>> plt.plot(phi, g_cubic, label="Cubic")
@@ -282,33 +324,27 @@ def dg(phi, degradation_type):
     """
     Evaluate the derivative of the degradation function for a given phi and degradation type.
 
-    Parameters:
-        phi (float): The phi value.
-        degradation_type (str): The type of degradation function ('quadratic', 'cubic', 'quartic', 'alessi', or 'sargado').
+    Parameters
+    ----------
+    phi : float
+        The phase field variable.
+    degradation_type : str
+        The type of degradation function ('quadratic', 'cubic', 'quartic', 'alessi', or 'sargado').
 
-    Returns:
-        float: The derivative value.
+    Returns
+    -------
+    float
+        The value of the derivative of the degradation function.
 
     Examples
     --------
-    Plot the derivatives of the available degradation functions for illustrative purposes.
-
     >>> import numpy as np
     >>> import matplotlib.pyplot as plt
     >>> from phasefieldx.Element.Phase_Field_Fracture.g_degradation_functions import dg
-
-    Define the range for the phase field variable phi.
-
     >>> phi = np.linspace(0.0, 1.0, 100)
-
-    Evaluate the derivatives of the degradation functions.
-
     >>> dg_quadratic = [dg(p, "quadratic") for p in phi]
     >>> dg_cubic = [dg(p, "cubic") for p in phi]
     >>> dg_quartic = [dg(p, "quartic") for p in phi]
-
-    Plot the evaluated derivatives.
-
     >>> plt.figure(figsize=(6, 5))
     >>> plt.plot(phi, dg_quadratic, label="Quadratic")
     >>> plt.plot(phi, dg_cubic, label="Cubic")
