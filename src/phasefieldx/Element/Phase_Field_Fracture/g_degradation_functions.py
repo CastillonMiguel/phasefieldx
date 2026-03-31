@@ -21,13 +21,9 @@ Evaluate the degradation functions and their derivatives.
 >>> g_quadratic = [g(p, "quadratic") for p in phi]
 >>> g_cubic = [g(p, "cubic") for p in phi]
 >>> g_quartic = [g(p, "quartic") for p in phi]
->>> g_alessi = [g(p, "alessi") for p in phi]
->>> g_sargado = [g(p, "sargado") for p in phi]
 >>> dg_quadratic = [dg(p, "quadratic") for p in phi]
 >>> dg_cubic = [dg(p, "cubic") for p in phi]
 >>> dg_quartic = [dg(p, "quartic") for p in phi]
->>> dg_alessi = [dg(p, "alessi") for p in phi]
->>> dg_sargado = [dg(p, "sargado") for p in phi]
 
 Plot the evaluated functions and their derivatives.
 
@@ -233,6 +229,38 @@ def g(phi, degradation_type):
 
     Returns:
         float: The degradation function value.
+
+    Examples
+    --------
+    Plot the available degradation functions for illustrative purposes.
+
+    >>> import numpy as np
+    >>> import matplotlib.pyplot as plt
+    >>> from phasefieldx.Element.Phase_Field_Fracture.g_degradation_functions import g
+
+    Define the range for the phase field variable phi.
+
+    >>> phi = np.linspace(0.0, 1.0, 100)
+
+    Evaluate the degradation functions.
+
+    >>> g_quadratic = [g(p, "quadratic") for p in phi]
+    >>> g_cubic = [g(p, "cubic") for p in phi]
+    >>> g_quartic = [g(p, "quartic") for p in phi]
+
+    Plot the evaluated functions.
+
+    >>> plt.figure(figsize=(6, 5))
+    >>> plt.plot(phi, g_quadratic, label="Quadratic")
+    >>> plt.plot(phi, g_cubic, label="Cubic")
+    >>> plt.plot(phi, g_quartic, label="Quartic")
+    >>> plt.xlabel(r"$\phi$")
+    >>> plt.ylabel(r"$g(\phi)$")
+    >>> plt.title("Phase Field Degradation Functions")
+    >>> plt.legend()
+    >>> plt.grid(True)
+    >>> plt.tight_layout()
+    >>> plt.show()
     """
     if degradation_type == "quadratic":
         return quadratic_degradation_function(phi)
@@ -260,6 +288,38 @@ def dg(phi, degradation_type):
 
     Returns:
         float: The derivative value.
+
+    Examples
+    --------
+    Plot the derivatives of the available degradation functions for illustrative purposes.
+
+    >>> import numpy as np
+    >>> import matplotlib.pyplot as plt
+    >>> from phasefieldx.Element.Phase_Field_Fracture.g_degradation_functions import dg
+
+    Define the range for the phase field variable phi.
+
+    >>> phi = np.linspace(0.0, 1.0, 100)
+
+    Evaluate the derivatives of the degradation functions.
+
+    >>> dg_quadratic = [dg(p, "quadratic") for p in phi]
+    >>> dg_cubic = [dg(p, "cubic") for p in phi]
+    >>> dg_quartic = [dg(p, "quartic") for p in phi]
+
+    Plot the evaluated derivatives.
+
+    >>> plt.figure(figsize=(6, 5))
+    >>> plt.plot(phi, dg_quadratic, label="Quadratic")
+    >>> plt.plot(phi, dg_cubic, label="Cubic")
+    >>> plt.plot(phi, dg_quartic, label="Quartic")
+    >>> plt.xlabel(r"$\phi$")
+    >>> plt.ylabel(r"$g'(\phi)$")
+    >>> plt.title("Derivatives of Degradation Functions")
+    >>> plt.legend()
+    >>> plt.grid(True)
+    >>> plt.tight_layout()
+    >>> plt.show()
     """
     if degradation_type == "quadratic":
         return quadratic_degradation_derivative(phi)
