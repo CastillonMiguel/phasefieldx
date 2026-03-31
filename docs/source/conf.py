@@ -78,6 +78,7 @@ from sphinx_gallery.sorting import FileNameSortKey, ExplicitOrder
 extensions = [
     'sphinx.ext.autodoc',
     'numpydoc',
+    'jupyter_sphinx',
     'sphinx.ext.intersphinx',
     'sphinx.ext.coverage',
     'sphinx.ext.doctest',
