@@ -3,13 +3,12 @@ channels:
   - conda-forge
 dependencies:
   - python=3.10
-  - pyvista
   - scifem
-  - jupyterlab
+  - pandas
+  - sympy
   - numpy
   - vtk
   - scooby>=0.5.1
-  - fenics-dolfinx==0.10.0
   - meshio
   - matplotlib
   - imageio>=2.5.0
@@ -27,9 +26,13 @@ dependencies:
   - rtree
   - pyembree
   - pooch
+  - pyvista  
   - trame
-  - trame-vuetify
   - trame-vtk
+  - trame-vuetify
+  - jupyterlab
+  - jupyter-sphinx
+  - ipywidgets
   - typing-extensions
   - pip:
       - pytest-memprof
