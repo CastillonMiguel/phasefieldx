@@ -28,7 +28,7 @@ class Input:
         Lame's first parameter calculated from E and nu.
     mu : float
         Shear modulus calculated from E and nu.
-    rho: float
+    rho : float
         Density of the material.
     degradation : str
         Type of material degradation (isotropic or anisotropic).

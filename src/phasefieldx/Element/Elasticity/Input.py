@@ -24,7 +24,7 @@ class Input:
         Lame's first parameter calculated from E and nu.
     mu : float
         Shear modulus calculated from E and nu.
-    rho: float
+    rho : float
         Density of the material.
     save_solution_xdmf : bool
         Indicates whether to save solutions in XDMF format.
