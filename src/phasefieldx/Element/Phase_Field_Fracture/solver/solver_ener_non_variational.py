@@ -30,7 +30,6 @@ from phasefieldx.Element.Phase_Field_Fracture.g_degradation_functions import dg,
 from phasefieldx.Element.Phase_Field_Fracture.split_energy_stress_tangent_functions import (psi_a, psi_b, sigma_a,
                                                                                             sigma_b)
 
-from phasefieldx.solvers.newton import NewtonSolver
 from phasefieldx.Element.Phase_Field.geometric_crack import geometric_crack_function, geometric_crack_function_derivative, geometric_crack_coefficient
 from phasefieldx.Element.Phase_Field.energy import calculate_crack_surface_energy
 from phasefieldx.Element.Phase_Field_Fracture.energy import compute_total_energies
