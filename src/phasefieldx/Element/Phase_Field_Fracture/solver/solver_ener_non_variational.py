@@ -33,6 +33,7 @@ from phasefieldx.Element.Phase_Field_Fracture.split_energy_stress_tangent_functi
 from phasefieldx.Element.Phase_Field.geometric_crack import geometric_crack_function, geometric_crack_function_derivative, geometric_crack_coefficient
 from phasefieldx.Element.Phase_Field.energy import calculate_crack_surface_energy
 from phasefieldx.Element.Phase_Field_Fracture.energy import compute_total_energies
+from phasefieldx.Math.functions import macaulay_bracket_negative
 
 from phasefieldx.files import prepare_simulation
 
@@ -53,7 +54,9 @@ def solve(Data,
           bcs_list_u_names=None,
           c1=1.0,
           c2=1.0,
-          threshold_gamma_save=None):
+          threshold_gamma_save=None,
+          case = 'AT2',
+          rho = 0.0):
     """
     Solve the phase-field fracture problem.
 
@@ -179,11 +182,17 @@ def solve(Data,
     #     F_u += λ*π_2*ufl.inner(T_list_u[i][0], δu) * T_list_u[i][1]
 
     # Phase-field ------------------------------------------------------------
-    case = 'AT2'  # AT2 model for geometric crack function
     c0 = geometric_crack_coefficient(case)
 
     F_Φ = dg(Φ, Data.degradation_function) * psi_a(u, Data) * δΦ * ufl.dx
     F_Φ += Data.Gc*(1.0/(c0*Data.l)*geometric_crack_function_derivative(Φ, case)*δΦ + Data.l * 2/c0*ufl.inner(ufl.grad(Φ), ufl.grad(δΦ)))*ufl.dx
+
+    irreversibility = False
+    if irreversibility:
+        Φ_c = dolfinx.fem.Function(V_Φ, name="phi_c")
+        F_phi += rho * macaulay_bracket_negative(Φ-Φ_c) * δΦ * ufl.dx
+    elif rho != 0.0:
+        F_Φ += rho * macaulay_bracket_negative(Φ) * δΦ * ufl.dx
 
     # Scalar field ------------------------------------------------------------
     F_λ = δλ*c1*(1 / (c0 * Data.l) * geometric_crack_function(Φ, case) + Data.l / c0 * ufl.inner(ufl.grad(Φ), ufl.grad(Φ))) * ufl.dx

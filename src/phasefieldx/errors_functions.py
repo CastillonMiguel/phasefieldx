@@ -226,3 +226,29 @@ def eval_error_L2_normalized(field_a, field_b, msh, dx=ufl.dx):
         return 0.0
 
     return error_L2_phi / norm_L2_field_a
+
+
+def eval_error_Linf(field_a, field_b, msh):
+    """
+    Compute the Linf error norm between two fields over a given mesh.
+
+    Parameters
+    ----------
+    field_a : dolfinx.Function
+        The first field for the Linf error norm calculation.
+    field_b : dolfinx.Function
+        The second field for the Linf error norm calculation.
+    msh : dolfinx.Mesh
+        The mesh whose communicator is used for the global reduction.
+
+    Returns
+    -------
+    error_Linf : float
+        The Linf error norm between field_a and field_b, defined as
+        max |field_a - field_b| over all local dof values and reduced globally.
+    """
+    if field_a.x.array.shape != field_b.x.array.shape:
+        raise ValueError("field_a and field_b must have compatible dof arrays.")
+
+    local_max = np.max(np.abs(field_a.x.array - field_b.x.array))
+    return msh.comm.allreduce(local_max, op=mpi4py.MPI.MAX)
