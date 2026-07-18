@@ -12,7 +12,6 @@ import ufl
 from mpi4py import MPI
 
 from phasefieldx.files import prepare_simulation, append_results_to_file
-from phasefieldx.solvers.newton import NewtonSolver
 from phasefieldx.Logger.library_versions import set_logger, log_library_versions, log_system_info, log_end_analysis, log_model_information
 from phasefieldx.Element.Phase_Field.geometric_crack import geometric_crack_function, geometric_crack_function_derivative, geometric_crack_coefficient
 from phasefieldx.Element.Phase_Field.energy import calculate_crack_surface_energy
@@ -130,9 +129,6 @@ def solve(Data,
                   ufl.inner(grad_f, ufl.grad(δΦ))) * dx
 
     J_phi = ufl.derivative(F_phi, Φ)
-    problem_phi = dolfinx.fem.petsc.NewtonSolverNonlinearProblem(
-        F_phi, Φ, bcs=bc_list_phi, J=J_phi)
-
     petsc_options_phi = {
         "ksp_type": "preonly",
         "pc_type": "lu",

@@ -28,6 +28,8 @@ class Input:
         Lame's first parameter calculated from E and nu.
     mu : float
         Shear modulus calculated from E and nu.
+    rho : float
+        Density of the material.
     degradation : str
         Type of material degradation (isotropic or anisotropic).
     split_energy : str
@@ -68,6 +70,7 @@ class Input:
                  nu=0.3,
                  Gc=0.0027,
                  l=0.015,
+                 rho=1.0,
                  degradation="isotropic",
                  split_energy="no",
                  degradation_function="quadratic",
@@ -88,6 +91,7 @@ class Input:
         self.l = l
         self.lambda_ = get_lambda_lame(self.E, self.nu)
         self.mu = get_mu_lame(self.E, self.nu)
+        self.rho = rho
         self.degradation = degradation
         self.split_energy = split_energy
         self.degradation_function = degradation_function
@@ -116,6 +120,7 @@ class Input:
         logger.info(f"  k: {self.k}")
         logger.info(f"  lambda: {self.lambda_}")
         logger.info(f"  mu: {self.mu}")
+        logger.info(f"  rho: {self.rho}")
         logger.info("Phase-field fracture model:")
         logger.info(f"  degradation: {self.degradation}")
         logger.info(f"  split_energy: {self.split_energy}")
@@ -139,6 +144,7 @@ class Input:
             "k": self.k,
             "lambda": self.lambda_,
             "mu": self.mu,
+            "rho": self.rho,
             "degradation": self.degradation,
             "split_energy": self.split_energy,
             "degradation_function": self.degradation_function,
@@ -170,6 +176,7 @@ class Input:
             f"  k: {self.k}",
             f"  lambda: {self.lambda_}",
             f"  mu: {self.mu}",
+            f"  rho: {self.rho}",
             "Phase-field fracture model:",
             f"  degradation: {self.degradation}",
             f"  split_energy: {self.split_energy}",

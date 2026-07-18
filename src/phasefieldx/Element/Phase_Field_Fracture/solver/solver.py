@@ -17,7 +17,6 @@ from mpi4py import MPI
 import numpy as np
 
 from phasefieldx.files import prepare_simulation, append_results_to_file
-from phasefieldx.solvers.newton import NewtonSolver
 from phasefieldx.Logger.library_versions import set_logger, log_system_info, log_library_versions, log_end_analysis, log_model_information
 
 
@@ -37,7 +36,6 @@ from phasefieldx.Element.Phase_Field_Fracture.energy import compute_total_energi
 from phasefieldx.Math.projection import project
 from phasefieldx.errors_functions import eval_error_L2, eval_error_L2_normalized
 from phasefieldx.files import prepare_simulation
-from phasefieldx.solvers.newton import NewtonSolver
 
 
 def solve(Data,

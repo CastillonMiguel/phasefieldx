@@ -1,6 +1,6 @@
 # phasefieldx/__init__.py
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 __author__ = "Miguel Castillón"
 __email__ = "miguel.research@pm.me"
 __license__ = "MIT"
@@ -16,7 +16,6 @@ from .Materials import *
 from .Math import *
 from .PostProcessing import *
 from .Reactions import *
-from .solvers import *
 from .errors_functions import *
 from .files import *
 from .norms import *
@@ -32,7 +31,6 @@ __all__ = [
     'Math',
     'PostProcessing',
     'Reactions',
-    'solvers',
     'errors_functions',
     'files',
     'norms'

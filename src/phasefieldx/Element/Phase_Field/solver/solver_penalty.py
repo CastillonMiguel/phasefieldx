@@ -1,9 +1,8 @@
-'''
-Solver: Allen-Cahn
-==================
+r"""
+Solver: Phase-field (penalty method)
+====================================
 
-
-'''
+"""
 
 # Libraries ############################################################
 ########################################################################
@@ -11,29 +10,33 @@ import os
 import time
 import dolfinx
 import ufl
+from mpi4py import MPI
+from dolfinx.fem.petsc import NonlinearProblem
+
 
 from phasefieldx.files import prepare_simulation, append_results_to_file
 from phasefieldx.Logger.library_versions import set_logger, log_library_versions, log_system_info, log_end_analysis, log_model_information
-from phasefieldx.Element.Allen_Cahn.potential import potential_function, potential_function_derivative, potential_coefficient
-from phasefieldx.Element.Allen_Cahn.energy import calculate_potential_energy
+from phasefieldx.Element.Phase_Field.geometric_crack import geometric_crack_function, geometric_crack_function_derivative, geometric_crack_coefficient
+from phasefieldx.Element.Phase_Field.energy import calculate_crack_surface_energy
 
+from phasefieldx.Math.functions import macaulay_bracket_negative
 
 def solve(Data,
           msh,
           final_time,
-          V_Φ,
+          V_phi,
           bc_list_phi=[],
           update_boundary_conditions=None,
           update_loading=None,
-          initial_condition=None,
           ds_bound=None,
           dt=1.0,
           path=None,
           quadrature_degree=2,
-          case='DOUBLE',
+          rho=10.0,
+          case="AT1",
           V_gradient_Φ=None):
     """
-    Solver for the Allen-Cahn equation.
+    Solver for phase-field problems.
 
     Parameters
     ----------
@@ -44,21 +47,21 @@ def solve(Data,
     final_time : float
         Final pseudo time for the simulation.
     V_phi : dolfinx.fem.FunctionSpace
-        Function space for the phase-field variable phi.
+        Function space for the phase field variable phi.
     bc_list_phi : list of dolfinx.fem.DirichletBC, optional
         List of Dirichlet boundary conditions for phi (default is []).
     update_boundary_conditions : function, optional
         Function to update boundary conditions based on time (default is None).
     update_loading : function, optional
-        Function to update external loading conditions based on time (default is None).
-    initial_condition : dolfinx.fem.Function, optional
-        Initial condition for phi (default is None).
+        Function to update external loading conditions based on time and spatial coordinates (default is None).
     ds_bound : numpy.ndarray, optional
         Array containing boundary descriptions for reaction forces (default is None).
     dt : float, optional
         Time step size (default is 1.0).
     path : str, optional
         Path to store simulation results (default is current working directory).
+    quadrature_degree : int, optional
+        Quadrature degree for numerical integration (default is 2).
 
     Returns
     -------
@@ -66,32 +69,29 @@ def solve(Data,
 
     Notes
     -----
-    This function initializes and solves the Allen-Cahn equation for the phase-field variable phi,
-    which represents a free energy minimization problem. It uses a Newton-type solver to update phi
-    over the specified time period. Simulation progress is logged, and results are saved using
-    Paraview-compatible formats.
+    This function initializes and solves the phase-field problem for the given phase-field variable phi,
+    updating it over the specified time period using a Newton-type solver. It logs simulation progress,
+    saves results, and manages output using Paraview-compatible formats.
 
     Examples
     --------
-    # Initialize Data, msh, V_phi, and optionally update functions
+    # Initialize Data, msh, V_phi, bc_list_phi, and optionally update functions
     solve(Data, msh, 10.0, V_phi, bc_list_phi, update_boundary_conditions, update_loading)
 
-    # This will simulate the free energy minimization problem using Allen-Cahn equation,
-    # saving results in the specified directory.
+    # This will simulate the phase-field evolution in time, saving results in the current directory.
     """
-    M = Data.mobility
 
     # Get MPI communicator info
     comm = msh.comm
     rank = comm.Get_rank()
-
+    
     if path is None:
         path = os.getcwd()
-   
+
     # Common - Only rank 0 handles file operations
     ######################################################################
     result_folder_name = Data.results_folder_name
-
+   
     if rank == 0:
         prepare_simulation(path, result_folder_name)
         logger = set_logger(result_folder_name)
@@ -111,46 +111,29 @@ def solve(Data,
     if rank == 0:
         dolfinx.cpp.log.set_output_file(
             os.path.join(result_folder_name, "dolfinx.log"))
-
+      
     # Formulation ##########################################################
     ########################################################################
 
     # Phase-field -------------------------
-    Φ0 = dolfinx.fem.Function(V_Φ, name="phi")
-    Φ = dolfinx.fem.Function(V_Φ, name="phi")
-    δΦ = ufl.TestFunction(V_Φ)
-
+    Φ = dolfinx.fem.Function(V_phi, name="phi")
+    δΦ = ufl.TestFunction(V_phi)
     metadata = {"quadrature_degree": quadrature_degree}
+    # ds = ufl.Measure('ds', domain=msh, subdomain_data=facet_tag, metadata=metadata)
     dx = ufl.Measure("dx", domain=msh, metadata=metadata)
 
+    # Phase-field ------------------------------------------------------------    
+    c0 = geometric_crack_coefficient(case)
+    F_phi = (1.0/(c0*Data.l)*geometric_crack_function_derivative(Φ, case)*δΦ + Data.l * 2/c0*ufl.inner(ufl.grad(Φ), ufl.grad(δΦ)))*dx
+    F_phi += rho * macaulay_bracket_negative(Φ)*δΦ*dx
+
     x = ufl.SpatialCoordinate(msh)
-    if initial_condition is not None:
-        Φ.interpolate(initial_condition)
-        Φ0.interpolate(initial_condition)
-
-    # f = 0.25 * (1 - Φ**2)**2
-    # dfdc = ufl.diff(f, Φ)
-
-
-    # Phase-field ------------------------------------------------------------
-    c0 = potential_coefficient(case)
-    
-    F_phi = 1/dt*ufl.inner(Φ, δΦ) * ufl.dx
-    F_phi -= 1/dt*ufl.inner(Φ0, δΦ) * ufl.dx
-
-    # F_phi += dt * (ufl.inner(dfdc, δΦ) * ufl.dx + Data.l * ufl.inner(ufl.grad(Φ), ufl.grad(δΦ)) * ufl.dx)
-
-    F_phi += M*(1.0/(c0*Data.l)*potential_function_derivative(Φ, case)*δΦ + Data.l * 2/c0*ufl.inner(ufl.grad(Φ), ufl.grad(δΦ)))*ufl.dx
-    # F_phi += (ufl.inner(dfdc, δΦ) + Data.l * 2/c0*ufl.inner(ufl.grad(Φ), ufl.grad(δΦ)))*ufl.dx
-    
-    # x = ufl.SpatialCoordinate(msh)
-    # if update_loading != None:
-    #     f, grad_f = update_loading(x, 0)
-    #     #F_phi-= Data.Gc*(1/Data.l*ufl.inner(f, delta_phi) + Data.l * ufl.inner(ufl.grad(f), ufl.grad(delta_phi))) * ufl.dx
-    #     F_phi -= Data.Gc*(1/Data.l*ufl.inner(f, delta_phi) + Data.l * ufl.inner(grad_f, ufl.grad(delta_phi))) * ufl.dx
+    if update_loading is not None:
+        f, grad_f = update_loading(x, 0)
+        F_phi -= (1 / Data.l * ufl.inner(f, δΦ) + Data.l * ufl.inner(grad_f, ufl.grad(δΦ))) * dx
 
     J_phi = ufl.derivative(F_phi, Φ)
-    petsc_options_phi = {
+    petsc_options_u = {
         "ksp_type": "preonly",
         "pc_type": "lu",
         "pc_factor_mat_solver_type": "mumps",
@@ -165,55 +148,46 @@ def solve(Data,
         Φ,
         bcs=bc_list_phi,
         J=J_phi,
-        petsc_options=petsc_options_phi,
-        petsc_options_prefix="phase_field",
+        petsc_options=petsc_options_u,
+        petsc_options_prefix="phasefield_",
     )
     snes_phi = problem_phi.solver
 
     if rank == 0 and logger:
         logger.info(" SNES Settings:")
-        for key, value in petsc_options_phi.items():
+        for key, value in petsc_options_u.items():
             logger.info(f"   {key}: {value}")
+
 
     # Solve ################################################################
     ########################################################################
     start = time.perf_counter()
-    if rank == 0 and logger:
-        logger.info(f" start time: {start}")
+    logger.info(f" start time: {start}")
 
-    # Paraview files - DOLFINx handles parallel I/O automatically
+    # Paraview ------------------------
     if Data.save_solution_xdmf:
         paraview_solution_folder_name_xdmf = os.path.join(
             result_folder_name, "paraview-solutions_xdmf")
-        # Create directory only on rank 0
-        if rank == 0:
-            os.makedirs(paraview_solution_folder_name_xdmf, exist_ok=True)
-        comm.Barrier()  # Wait for directory creation
-        
         xdmf_phi = dolfinx.io.XDMFFile(msh.comm, os.path.join(
             paraview_solution_folder_name_xdmf, "phi.xdmf"), "w")
         xdmf_phi.write_mesh(msh)
 
-    if V_gradient_Φ is not None:
-        gradient_Φ = dolfinx.fem.Function(V_gradient_Φ, name="gradient_phi")
-    
+        xdmf_u = dolfinx.io.XDMFFile(msh.comm, os.path.join(
+            paraview_solution_folder_name_xdmf, "u.xdmf"), "w")
+        xdmf_u.write_mesh(msh)
+
     if Data.save_solution_vtu:
         paraview_solution_folder_name_vtu = os.path.join(
             result_folder_name, "paraview-solutions_vtu")
-        # Create directory only on rank 0
-        if rank == 0:
-            os.makedirs(paraview_solution_folder_name_vtu, exist_ok=True)
-        
-        comm.Barrier()  # Wait for directory creation
-        
         vtk_sol = dolfinx.io.VTKFile(msh.comm, os.path.join(
             paraview_solution_folder_name_vtu, "phasefieldx.pvd"), "w")
 
-    if rank == 0 and logger:
-        logger.info(f" S t a r t i n g    A n a l y s i s ")
-        logger.info(f" ---------------------------------- ")
-        logger.info(f" ---------------------------------- ")
-
+    if V_gradient_Φ is not None:
+        gradient_Φ = dolfinx.fem.Function(V_gradient_Φ, name="gradient_phi")
+        
+    logger.info(f" S t a r t i n g    A n a l y s i s ")
+    logger.info(f" ---------------------------------- ")
+    logger.info(f" ---------------------------------- ")
 
     t = 0
     step = 0
@@ -237,10 +211,10 @@ def solve(Data,
         problem_phi.solve()
         converged = problem_phi.solver.getConvergedReason()
         phi_iterations = problem_phi.solver.getIterationNumber()
-        
+
         residuals = snes_phi.getConvergenceHistory()
         residual_norm_phi = snes_phi.getFunctionNorm()
-
+        
         if rank == 0 and logger:
             if converged <= 0:
                 logger.error(f"Solver did not converge, got {converged}.")
@@ -250,10 +224,7 @@ def solve(Data,
                 logger.info(f" Residual norm Φ: {residual_norm_phi}")
                 logger.info(f" Converged reason {converged}.")
                 logger.info(f" Residual history Φ: {residuals}")
-
-        # Update phi0
-        Φ0.x.array[:] = Φ.x.array
-
+            
         # Save results - Only rank 0 writes text files
         ######################################################################
         if rank == 0:
@@ -265,18 +236,16 @@ def solve(Data,
                 result_folder_name, "phasefieldx.conv"), '#step\titerations', step, phi_iterations)
 
         # Energy -------------------------------------------------------------
-
-        
-        # # Energy -------------------------------------------------------------
-        gamma, gamma_phi, gamma_gradphi = calculate_potential_energy(Φ, Data.l, comm, case, dx)
+        gamma, gamma_phi, gamma_gradphi = calculate_crack_surface_energy(Φ, Data.l, comm, case, dx)
+        penalty_energy = dolfinx.fem.assemble_scalar(dolfinx.fem.form(rho/2.0 * macaulay_bracket_negative(Φ)**2 * dx))
 
         # Only rank 0 writes energy results
         if rank == 0:
             append_results_to_file(os.path.join(result_folder_name, "total.energy"),
-                                   '#step\tgamma\tgamma_phi\tgamma_gradphi', step, gamma, gamma_phi, gamma_gradphi)
-
+                                   '#step\tgamma\tgamma_phi\tgamma_gradphi\tpenalty', step, gamma, gamma_phi, gamma_gradphi, penalty_energy)
+            
+        # Compute gradient of Φ and save to gradient_Φ function
         if V_gradient_Φ is not None:
-            # Compute gradient of Φ and save to gradient_Φ function
             gradient_expr = dolfinx.fem.Expression(ufl.grad(Φ), V_gradient_Φ.element.interpolation_points)
             gradient_Φ.interpolate(gradient_expr)
             

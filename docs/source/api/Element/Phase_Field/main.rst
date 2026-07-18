@@ -18,7 +18,11 @@ Solver
    :undoc-members:
    :show-inheritance:
 
-
+.. automodule:: phasefieldx.Element.Phase_Field.solver.solver_penalty
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   
 Energy
 ------
 

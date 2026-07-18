@@ -11,11 +11,8 @@ import time
 import dolfinx
 import ufl
 from mpi4py import MPI
-from dolfinx.fem.petsc import NonlinearProblem
-
 
 from phasefieldx.files import prepare_simulation, append_results_to_file
-from phasefieldx.solvers.newton import NewtonSolver
 from phasefieldx.Logger.library_versions import set_logger, log_library_versions, log_system_info, log_end_analysis, log_model_information
 
 from phasefieldx.Materials.elastic_isotropic import epsilon, sigma, psi

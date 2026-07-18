@@ -1,7 +1,6 @@
 enum-tools
 jupyter_sphinx
 lxml
-mpi4py
 mypy
 mypy-extensions
 numpydoc
@@ -13,7 +12,7 @@ sphinx
 sphinx-autobuild
 sphinx-copybutton
 sphinx-math-dollar
-sphinx-design
+sphinx_design
 sphinx-gallery
 sphinx-notfound-page
 sphinx-toolbox
@@ -21,6 +20,5 @@ sphinxcontrib-asciinema
 sphinxcontrib-websupport
 sphinxcontrib-bibtex
 sphinxcontrib-tikz
-sympy
-pandas
+pyvista[jupyter]
 gmsh

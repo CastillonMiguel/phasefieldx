@@ -13,7 +13,7 @@ Input Class
 $g(\phi)$ Degradation functions
 -------------------------------
 
-.. automodule:: phasefieldx.Element.g_degradation_functions
+.. automodule:: phasefieldx.Element.Phase_Field_Fracture.g_degradation_functions
    :members:
    :undoc-members:
    :show-inheritance:
@@ -22,7 +22,7 @@ $g(\phi)$ Degradation functions
 Energy Split
 ------------
 
-.. automodule:: phasefieldx.Element.split_energy_stress_tangent_functions
+.. automodule:: phasefieldx.Element.Phase_Field_Fracture.split_energy_stress_tangent_functions
    :members:
    :undoc-members:
    :show-inheritance:
@@ -31,7 +31,7 @@ Energy Split
 $f(\bar{\alpha})$ Fatigue Degradation functions
 -----------------------------------------------
 
-.. automodule:: phasefieldx.Element.fatigue_degradation_functions
+.. automodule:: phasefieldx.Element.Phase_Field_Fracture.fatigue_degradation_functions
    :members:
    :undoc-members:
    :show-inheritance:
