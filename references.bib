@@ -1,150 +1,886 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Actual paper reference 
+% PHASEFIELDX
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 @article{code_phasefieldx,
-  author = {Castillón, M.}, 
-  title = {PhaseFieldX: an open-source framework for advanced phase-field simulations}, 
-  journal = {Journal of Open Source Software},
-  volume = {10}, 
-  number = {108}, 
-  pages = {7307}, 
-  year = {2025}, 
-  doi = {https://doi.org/10.21105/joss.07307}
+  title     = {PhaseFieldX: An Open-Source Framework for Advanced Phase-Field Simulations},
+  author    = {Castillón, M.},
+  doi       = {10.21105/joss.07307},
+  url       = {https://doi.org/10.21105/joss.07307},
+  year      = {2025},
+  publisher = {The Open Journal},
+  volume    = {10},
+  number    = {108},
+  pages     = {7307},
+  journal   = {Journal of Open Source Software}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Scientific publications using PhaseFieldX
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+@article{phase_field_Castillon,
+  title    = {A phase-field approach to fatigue analysis: Bridging theory and simulation},
+  journal  = {International Journal of Fatigue},
+  volume   = {205},
+  pages    = {109397},
+  year     = {2026},
+  issn     = {0142-1123},
+  doi      = {10.1016/j.ijfatigue.2025.109397},
+  url      = {https://www.sciencedirect.com/science/article/pii/S0142112325005948},
+  author   = {Castillón, M. and Romero, I. and Segurado, J.},
+  keywords = {Phase-field fracture, Fatigue, Crack-growth control, Crack propagation, Paris’ law}
+}
+
+@article{phase_field_castillon_dgcm2026,
+  title   = {A correction method for crack area overestimation in phase-field fracture},
+  journal = {Computational Mechanics},
+  author  = {Castillón, M. and Segurado, J. and Romero, I.},
+  year    = {2026},
+  issn    = {1432-0924},
+  doi     = {10.1007/s00466-026-02834-2},
+  url     = {https://doi.org/10.1007/s00466-026-02834-2},
+}
+
+@misc{phase_field_lvpp_Castillon,
+  title         = {Proximal Galerkin for Phase Field Fracture},
+  author        = {Castillón, M. and Khara, B. and Dokken, J. S. and Surowiec, T. M. and Keith, B. and Bazilevs, Y.},
+  year          = {2026},
+  eprint        = {2604.26210},
+  archiveprefix = {arXiv},
+  primaryclass  = {math.NA},
+  url           = {https://arxiv.org/abs/2604.26210}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LEFM 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+@book{lefm_Anderson2005,
+  title     = {Fracture Mechanics: Fundamentals and Applications, Third Edition},
+  author    = {Anderson, T.L.},
+  isbn      = {9780849316562},
+  lccn      = {2004062881},
+  url       = {https://books.google.es/books?id=MxrtsC-ZooQC},
+  year      = {2005},
+  publisher = {Taylor \& Francis}
+}
+
+@book{lefm_Tada,
+  author    = {Tada, H.},
+  title     = {The Stress Analysis of Cracks Handbook, Third Edition},
+  publisher = {ASME Press},
+  year      = {2000}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Phase-Field Models 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+@article{phase_field_Miehe2010,
+  title   = {A phase field model for rate-independent crack propagation: Robust algorithmic implementation based on operator splits},
+  author  = {Miehe, C. and Hofacker, M. and Welschinger, F.},
+  journal = {Computer Methods in Applied Mechanics and Engineering},
+  volume  = {199},
+  number  = {45},
+  pages   = {2765-2778},
+  year    = {2010},
+  issn    = {0045-7825},
+  doi     = {10.1016/j.cma.2010.04.011},
+  url     = {https://www.sciencedirect.com/science/article/pii/S0045782510001283}
+}
+
+@article{phase_field_Miehe_lh_relation,
+  author   = {Miehe, C. and Welschinger, F. and Hofacker, M.},
+  title    = {Thermodynamically consistent phase-field models of fracture: Variational principles and multi-field FE implementations},
+  journal  = {International Journal for Numerical Methods in Engineering},
+  volume   = {83},
+  number   = {10},
+  pages    = {1273-1311},
+  keywords = {fracture, crack propagation, phase-fields, gradient-type damage, incremental variational principles, finite elements, coupled multi-field problems},
+  doi      = {10.1002/nme.2861},
+  url      = {https://onlinelibrary.wiley.com/doi/abs/10.1002/nme.2861},
+  year     = {2010}
+}
+
+@article{phase_field_spectral_decomposition_projection,
+  title = {Comparison of two algorithms for the computation of fourth-order isotropic tensor functions},
+  journal = {Computers \& Structures},
+  volume = {66},
+  number = {1},
+  pages = {37-43},
+  year = {1998},
+  issn = {0045-7949},
+  doi = {10.1016/S0045-7949(97)00073-4},
+  url = {https://www.sciencedirect.com/science/article/pii/S0045794997000734},
+  author = {Miehe, C.},
+  keywords = {tensor functions, isotropic elasticity, exponential map, isotropic elastoplasticity},
+}
+
+@article{phase_field_FrancfortMarigo1998,
+  title   = {Revisiting brittle fracture as an energy minimization problem},
+  author  = {Francfort, G.A. and Marigo, J.-J.},
+  journal = {Journal of the Mechanics and Physics of Solids},
+  volume  = {46},
+  number  = {8},
+  pages   = {1319-1342},
+  year    = {1998},
+  issn    = {0022-5096},
+  doi     = {10.1016/S0022-5096(98)00034-9},
+  url     = {https://www.sciencedirect.com/science/article/pii/S0022509698000349}
+}
+
+@article{phase_field_Bourdin2000,
+  author  = {Bourdin, B. and Francfort, G.A. and Marigo, J.-J.},
+  title   = {Numerical experiments in revisited brittle fracture},
+  journal = {Journal of the Mechanics and Physics of Solids},
+  volume  = {48},
+  number  = {4},
+  pages   = {797--826},
+  year    = {2000},
+  doi     = {10.1016/S0022-5096(99)00028-9}
+}
+
+@article{phase_field_Bourdin2008,
+  author  = {Bourdin, B. and Francfort, G.A. and Marigo, J.-J.},
+  title   = {The Variational Approach to Fracture},
+  journal = {Journal of Elasticity},
+  year    = {2008},
+  volume  = {91},
+  number  = {1},
+  pages   = {5--148},
+  doi     = {10.1007/s10659-007-9107-3},
+  url     = {https://doi.org/10.1007/s10659-007-9107-3},
+  issn    = {1573-2681}
+}
+
+@article{phase_field_Amor2009,
+  title    = {Regularized formulation of the variational brittle fracture with unilateral contact: Numerical experiments},
+  author   = {Amor, H. and Marigo, J.-J. and Maurini, C.},
+  journal  = {Journal of the Mechanics and Physics of Solids},
+  volume   = {57},
+  number   = {8},
+  pages    = {1209-1229},
+  year     = {2009},
+  issn     = {0022-5096},
+  doi      = {10.1016/j.jmps.2009.04.011},
+  url      = {https://www.sciencedirect.com/science/article/pii/S0022509609000659},
+  keywords = {Fracture, Energy methods, Free-discontinuity problems, Contact mechanics, Finite elements}
+}
+
+@article{phase_field_Ambati2015,
+  title   = {A review on phase-field models of brittle fracture and a new fast hybrid formulation},
+  author  = {Ambati, M. and Gerasimov, T. and De Lorenzis, L.},
+  journal = {Computational Mechanics},
+  year    = {2015},
+  month   = 2,
+  day     = {01},
+  volume  = {55},
+  number  = {2},
+  pages   = {383-405},
+  issn    = {1432-0924},
+  doi     = {10.1007/s00466-014-1109-y},
+  url     = {https://doi.org/10.1007/s00466-014-1109-y}
+}
+
+@article{phase_field_Carrara2020,
+  title    = {A framework to model the fatigue behavior of brittle materials based on a variational phase-field approach},
+  author   = {Carrara, P. and Ambati, M. and Alessi, R. and De Lorenzis, L.},
+  journal  = {Computer Methods in Applied Mechanics and Engineering},
+  volume   = {361},
+  pages    = {112731},
+  year     = {2020},
+  issn     = {0045-7825},
+  doi      = {10.1016/j.cma.2019.112731},
+  url      = {https://www.sciencedirect.com/science/article/pii/S0045782519306218},
+  keywords = {Brittle fracture, Fatigue, Modeling, Paris law, Phase-field models, Wöhler curve}
+}
+
+@article{phase_field_Gerasimov,
+  title    = {On penalization in variational phase-field models of brittle fracture},
+  journal  = {Computer Methods in Applied Mechanics and Engineering},
+  volume   = {354},
+  pages    = {990-1026},
+  year     = {2019},
+  issn     = {0045-7825},
+  doi      = {10.1016/j.cma.2019.05.038},
+  url      = {https://www.sciencedirect.com/science/article/pii/S0045782519303081},
+  author   = {Gerasimov, T. and De Lorenzis, L.},
+  keywords = {Brittle fracture, Phase-field formulation, Irreversibility condition, Penalty constant, Explicit lower bound}
+}
+
+@article{phase_field_Farrell,
+  author   = {Farrell, P. and Maurini, C.},
+  title    = {Linear and nonlinear solvers for variational phase-field models of brittle fracture},
+  journal  = {International Journal for Numerical Methods in Engineering},
+  volume   = {109},
+  number   = {5},
+  pages    = {648-667},
+  keywords = {fracture, damage, variational methods, phase-field, nonlinear Gauss–Seidel, Newton's method},
+  doi      = {10.1002/nme.5300},
+  url      = {https://onlinelibrary.wiley.com/doi/abs/10.1002/nme.5300},
+  year     = {2017}
+}
+
+@article{phase_field_effective_Gc_factor_2,
+  title    = {Thermodynamically consistent linear-gradient damage model in Abaqus},
+  author   = {Molnár, G. and Doitrand, A. and Jaccon, A. and Prabel, B. and Gravouil, A.},
+  journal  = {Engineering Fracture Mechanics},
+  volume   = {266},
+  pages    = {108390},
+  year     = {2022},
+  issn     = {0013-7944},
+  doi      = {10.1016/j.engfracmech.2022.108390},
+  url      = {https://www.sciencedirect.com/science/article/pii/S001379442200145X},
+  keywords = {AT1 phase-field model, Abaqus, UMAT, Spectral energy decomposition, Damage gradient},
+}
+
+@incollection{phase_field_modeling_of_fracture,
+  title     = {Chapter One - Phase-field modeling of fracture},
+  author    = {Wu, J.-Y. and Nguyen, V.P. and Nguyen, C.T. and Sutula, D. and Sinaie, S. and Bordas, S.P.A.},
+  editor    = {Bordas, S.P.A. and Balint, D.S.},
+  booktitle = {Advances in Applied Mechanics},
+  publisher = {Elsevier},
+  volume    = {53},
+  pages     = {1--183},
+  year      = {2020},
+  issn      = {0065-2156},
+  doi       = {10.1016/bs.aams.2019.08.001},
+  url       = {https://www.sciencedirect.com/science/article/pii/S0065215619300134},
+  keywords  = {Computational failure mechanics, Fracture, Damage, Phase-field models, Variational approach to fracture, Cohesive zone model, Cracking}
+}
+
+@article{phase_field_degradation_functions,
+  title    = {On degradation functions in phase field fracture models},
+  journal  = {Computational Materials Science},
+  volume   = {108},
+  pages    = {374-384},
+  year     = {2015},
+  note     = {Selected Articles from Phase-field Method 2014 International Seminar},
+  issn     = {0927-0256},
+  doi      = {10.1016/j.commatsci.2015.05.034},
+  url      = {https://www.sciencedirect.com/science/article/pii/S0927025615003602},
+  author   = {Kuhn, C. and Schlüter, A. and Müller, R.},
+  keywords = {Brittle fracture, Phase field modeling, Finite elements, Crack nucleation}
+}
+
+@article{phase_field_degradation_function_cubic,
+  title     = {Phase-Field Model of Mode III Dynamic Fracture},
+  author    = {Karma, A. and Kessler, D.A. and Levine, H.},
+  journal   = {Phys. Rev. Lett.},
+  volume    = {87},
+  issue     = {4},
+  pages     = {045501},
+  numpages  = {4},
+  year      = {2001},
+  month     = 7,
+  publisher = {American Physical Society},
+  doi       = {10.1103/PhysRevLett.87.045501},
+  url       = {https://link.aps.org/doi/10.1103/PhysRevLett.87.045501}
+}
+
+@article{phase_field_shear_boundary,
+  title    = {A phase-field description of dynamic brittle fracture},
+  journal  = {Computer Methods in Applied Mechanics and Engineering},
+  volume   = {217-220},
+  pages    = {77-95},
+  year     = {2012},
+  issn     = {0045-7825},
+  doi      = {10.1016/j.cma.2012.01.008},
+  url      = {https://www.sciencedirect.com/science/article/pii/S0045782512000199},
+  author   = {Borden, M.J. and Verhoosel, C.V. and Scott, M.A. and Hughes, T.J.R. and Landis, C.M.},
+  keywords = {Phase field, Fracture mechanics, Isogeometric analysis, Adaptive refinement, T-splines}
+}
+
+@article{phase_field_one_element_molnar,
+  title    = {2D and 3D Abaqus implementation of a robust staggered phase-field solution for modeling brittle fracture},
+  journal  = {Finite Elements in Analysis and Design},
+  volume   = {130},
+  pages    = {27-38},
+  year     = {2017},
+  issn     = {0168-874X},
+  doi      = {10.1016/j.finel.2017.03.002},
+  url      = {https://www.sciencedirect.com/science/article/pii/S0168874X16304954},
+  author   = {Molnár, G. and Gravouil, A.},
+  keywords = {Brittle fracture, Crack propagation, Abaqus UEL, Phase-field, Staggered solution, Finite element method},
+  abstract = {In order to model brittle fracture, we have implemented a two and three dimensional phase-field method in the commercial finite element code Abaqus/Standard. The method is based on the rate-independent variational principle of diffuse fracture. The phase-field is a scalar variable between 0 and 1 which connects broken and unbroken regions. If its value reaches one the material is fully broken, thus both its stiffness and stress are reduced to zero. The elastic displacement and the fracture problem are decoupled and solved separately as a staggered solution. The approach does not need predefined cracks and it can simulate curvilinear fracture paths, branching and even crack coalescence. Several examples are provided to explain the advantages and disadvantages of the method. The provided source codes and the tutorials make it easy for practicing engineers and scientists to model diffuse crack propagation in a familiar computational environment.}
+}
+
+@article{phase_field_one_element_hirshikesh,
+  author   = {Hirshikesh, H. and Natarajan, S. and Annabattula, R. K.},
+  title    = {A FEniCS implementation of the phase field method for quasi-static brittle fracture},
+  journal  = {Frontiers of Structural and Civil Engineering},
+  year     = {2019},
+  volume   = {13},
+  number   = {2},
+  pages    = {380--396},
+  abstract = {In the recent years, the phase field method for simulating fracture problems has received considerable attention. This is due to the salient features of the method: 1) it can be incorporated into any conventional finite element software; 2) has a scalar damage variable is used to represent the discontinuous surface implicitly and 3) the crack initiation and subsequent propagation and branching are treated with less complexity. Within this framework, the linear momentum equations are coupled with the diffusion type equation, which describes the evolution of the damage variable. The coupled nonlinear system of partial differential equations are solved in a ‘staggered’ approach. The present work discusses the implementation of the phase field method for brittle fracture within the open-source finite element software, FEniCS. The FEniCS provides a framework for the automated solutions of the partial differential equations. The details of the implementation which forms the core of the analysis are presented. The implementation is validated by solving a few benchmark problems and comparing the results with the open literature.},
+  issn     = {2095-2449},
+  doi      = {10.1007/s11709-018-0471-9},
+  url      = {https://doi.org/10.1007/s11709-018-0471-9}
+}
+
+@article{phase_field_staggered_tol_infinity,
+  title    = {Regularized formulation of the variational brittle fracture with unilateral contact: Numerical experiments},
+  journal  = {Journal of the Mechanics and Physics of Solids},
+  volume   = {57},
+  number   = {8},
+  pages    = {1209-1229},
+  year     = {2009},
+  issn     = {0022-5096},
+  doi      = {10.1016/j.jmps.2009.04.011},
+  url      = {https://www.sciencedirect.com/science/article/pii/S0022509609000659},
+  author   = {Amor, H. and Marigo, J.-J. and Maurini, C.},
+  keywords = {Fracture, Energy methods, Free-discontinuity problems, Contact mechanics, Finite elements},
+  abstract = {This paper presents a modified regularized formulation of the Ambrosio–Tortorelli type to introduce the crack non-interpenetration condition in the variational approach to fracture mechanics proposed by Francfort and Marigo [1998. Revisiting brittle fracture as an energy minimization problem. J. Mech. Phys. Solids 46 (8), 1319–1342]. We focus on the linear elastic case where the contact condition appears as a local unilateral constraint on the displacement jump at the crack surfaces. The regularized model is obtained by splitting the strain energy in a spherical and a deviatoric parts and accounting for the sign of the local volume change. The numerical implementation is based on a standard finite element discretization and on the adaptation of an alternate minimization algorithm used in previous works. The new regularization avoids crack interpenetration and predicts asymmetric results in traction and in compression. Even though we do not exhibit any gamma-convergence proof toward the desired limit behavior, we illustrate through several numerical case studies the pertinence of the new model in comparison to other approaches.}
+}
+
+@article{phase_field_staggered_tol_residual,
+  author   = {Seleš, K. and Aldakheel, F. and Tonković, Z. and Sorić, J. and Wriggers, P.},
+  title    = {A general phase-field model for fatigue failure in brittle and ductile solids},
+  journal  = {Computational Mechanics},
+  year     = {2021},
+  volume   = {67},
+  number   = {5},
+  pages    = {1431--1452},
+  doi      = {10.1007/s00466-021-01996-5},
+  url      = {https://doi.org/10.1007/s00466-021-01996-5},
+  abstract = {In this work, the phase-field approach to fracture is extended to model fatigue failure in high- and low-cycle regime. The fracture energy degradation due to the repeated externally applied loads is introduced as a function of a local energy accumulation variable, which takes the structural loading history into account. To this end, a novel definition of the energy accumulation variable is proposed, allowing the fracture analysis at monotonic loading without the interference of the fatigue extension, thus making the framework generalised. Moreover, this definition includes the mean load influence of implicitly. The elastoplastic material model with the combined nonlinear isotropic and nonlinear kinematic hardening is introduced to account for cyclic plasticity. The ability of the proposed phenomenological approach to naturally recover main features of fatigue, including Paris law and Wöhler curve under different load ratios is presented through numerical examples and compared with experimental data from the author’s previous work. Physical interpretation of additional fatigue material parameter is explored through the parametric study.},
+  issn     = {1432-0924}
+}
+
+@article{phase_field_staggered_tol_residual_abaqus,
+  title    = {A residual control staggered solution scheme for the phase-field modeling of brittle fracture},
+  journal  = {Engineering Fracture Mechanics},
+  volume   = {205},
+  pages    = {370-386},
+  year     = {2019},
+  issn     = {0013-7944},
+  doi      = {10.1016/j.engfracmech.2018.09.027},
+  url      = {https://www.sciencedirect.com/science/article/pii/S0013794418305605},
+  author   = {Seleš, K. and Lesičar, T. and Tonković, Z. and Sorić, J.},
+  keywords = {Brittle fracture, Phase-field modeling, Abaqus, Staggered algorithm, Stopping criterion}
+}
+
+@article{phase_field_abaqus_implementation,
+  title    = {A simple and robust Abaqus implementation of the phase field fracture method},
+  author   = {Navidtehrani, Y. and Betegón, C. and Martínez-Pañeda, E.},
+  journal  = {Applications in Engineering Science},
+  volume   = {6},
+  pages    = {100050},
+  year     = {2021},
+  issn     = {2666-4968},
+  doi      = {10.1016/j.apples.2021.100050},
+  url      = {https://www.sciencedirect.com/science/article/pii/S2666496821000169},
+  keywords = {Phase field fracture, Abaqus, Fracture, Finite element analysis, User subroutines}
+}
+
+@article{phase_field_fenics_hirshikesh,
+  title   = {A {FEniCS} implementation of the phase field method for quasi-static brittle fracture},
+  author  = {Hirshikesh, H. and Natarajan, S. and Annabattula, R. K.},
+  journal = {Frontiers of Structural and Civil Engineering},
+  year    = {2019},
+  volume  = {13},
+  number  = {2},
+  pages   = {380--396},
+  issn    = {2095-2449},
+  doi     = {10.1007/s11709-018-0471-9},
+  url     = {https://doi.org/10.1007/s11709-018-0471-9}
+}
+
+@article{phase_field_anisotropic_fajardo,
+  title    = {A variational phase-field model for anisotropic fracture accounting for multiple cohesive lengths},
+  author   = {Fajardo Lacave, A. M. and Vicentini, F. and Welschinger, F. and De Lorenzis, L.},
+  journal  = {Journal of the Mechanics and Physics of Solids},
+  volume   = {212},
+  pages    = {106585},
+  year     = {2026},
+  issn     = {0022-5096},
+  doi      = {10.1016/j.jmps.2026.106585},
+  url      = {https://www.sciencedirect.com/science/article/pii/S0022509626000852},
+  keywords = {Phase-field fracture, Anisotropy, Cohesive models, Crack nucleation, Crack propagation},
+  abstract = {We propose a novel variational phase-field model for fracture in anisotropic materials. The model is specifically designed to allow for a more flexible calibration of crack nucleation than existing anisotropic fracture formulations, while avoiding the introduction of multiple damage variables. In addition to the classical components of anisotropic phase-field models based on a single damage variable-namely, anisotropic elasticity and the extension of the fracture energy density via a second-order structural tensor-the proposed approach introduces fracture anisotropy through a cohesive degradation function with potentially distinct cohesive lengths along the principal material directions. For this reason, we refer to it as multi-cohesive model. This feature enables independent control of the critical stresses governing crack nucleation in each material direction. We analyze the homogeneous solution and its second-order stability, and we compare the resulting strength surfaces with those of two representative anisotropic phase-field models available in the literature. Finally, numerical simulations in two and three dimensions demonstrate the capability of the proposed model to independently control crack nucleation and propagation in anisotropic fracture problems of increasing complexity.}
+}
+
+@article{phase_field_steinke,
+  title    = {Energetically motivated crack orientation vector for phase-field fracture with a directional split},
+  author   = {Steinke, C. and Storm, J. and Kaliske, M.},
+  journal  = {International Journal of Fracture},
+  year     = {2022},
+  month    = {sep},
+  volume   = {237},
+  number   = {1},
+  pages    = {15--46},
+  doi      = {10.1007/s10704-022-00633-3},
+  url      = {https://doi.org/10.1007/s10704-022-00633-3},
+  issn     = {1573-2673},
+  abstract = {The realistic approximation of structural behavior in a post fracture state by the phase-field method requires information about the spatial orientation of the crack surface at the material point level. For the directional phase-field split, this orientation is specified by the crack orientation vector, that is defined perpendicular to the crack surface. An alternative approach to the determination of the orientation based on standard fracture mechanical arguments, i.e. in alignment with the direction of the largest principle tensile strain or stress, is investigated by considering the amount of dissipated strain energy density during crack evolution. In contrast to the application of gradient methods, the analytical approach enables the determination of all local maxima of strain energy density dissipation and, in consequence, the identification of the global maximum, that is assumed to govern the orientation of an evolving crack. Furthermore, the evaluation of the local maxima provides a novel aspect in the discussion of the phenomenon of crack branching. As the directional split differentiates into crack driving contributions of tension and shear stresses on the crack surface, a consistent relation to Mode I and Mode II fracture is available and a mode dependent fracture toughness can be considered. Consequently, the realistic simulation of rock-like fracture is demonstrated. In addition, a numerical investigation of $\Gamma$-convergence for an AT-2 type crack surface density is presented in a two-dimensional setup. For the directional split, also the issues internal locking as well as lateral phase-field evolution are addressed.}
+}
+
+@article{phase_field_steinke2,
+  title    = {A phase-field crack model based on directional stress decomposition},
+  author   = {Steinke, C. and Kaliske, M.},
+  journal  = {Computational Mechanics},
+  volume   = {63},
+  number   = {5},
+  pages    = {1019--1046},
+  year     = {2019},
+  month    = {May},
+  doi      = {10.1007/s00466-018-1635-0},
+  url      = {https://doi.org/10.1007/s00466-018-1635-0},
+  issn     = {1432-0924},
+  abstract = {Phase-field crack approximation relies on the proper definition of the crack driving strain energy density to govern the crack evolution and a realistic model for the modified stresses on the crack surface. A novel approach, the directional split, is introduced, analyzed and compared to the two commonly used formulations, which are the spectral split and the volumetric–deviatoric split. The directional split is based on the decomposition of the stress tensor with respect to the crack orientation, specified by a local crack coordinate system, into crack driving and persistent components. Accordingly, a modified stress strain relation is proposed to model fundamental crack characteristics properly, and a thermodynamically consistent crack driving strain energy density is postulated. The split is applied to numerical examples of initially cracked specimens and compared to results obtained by the two standard approaches.}
+} 
+
+@article{phase_field_non_dimensional,
+  title = {Phase-field modeling of fracture with physics-informed deep learning},
+  author = {Manav, M. and Molinaro, R. and Mishra, S. and {De Lorenzis}, L.},
+  journal = {Computer Methods in Applied Mechanics and Engineering},
+  volume = {429},
+  pages = {117104},
+  year = {2024},
+  issn = {0045-7825},
+  doi = {10.1016/j.cma.2024.117104},
+  url = {https://www.sciencedirect.com/science/article/pii/S0045782524003608},
+  keywords = {Phase-field fracture, Physics-informed machine learning, Deep Ritz method, Non-convex optimization, Crack nucleation, Crack propagation},
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Introduction
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+@article{introduction_comparative_xfem_mixed_phasefield,
+  author  = {Cervera, M. and Barbat, G. B. and Chiumenti, M. and Wu, J.-Y.},
+  title   = {A Comparative Review of XFEM, Mixed FEM and Phase-Field Models for Quasi-brittle Cracking},
+  journal = {Archives of Computational Methods in Engineering},
+  year    = {2022},
+  volume  = {29},
+  number  = {2},
+  pages   = {1009--1083},
+  doi     = {10.1007/s11831-021-09604-8},
+  url     = {https://doi.org/10.1007/s11831-021-09604-8},
+  issn    = {1886-1784}
+}
+
+@article{introduction_remeshing,
+  author  = {Branco, R. and Antunes, F.V. and Costa, J.D.},
+  title   = {A review on 3D-FE adaptive remeshing techniques for crack growth modelling},
+  journal = {Engineering Fracture Mechanics},
+  volume  = {141},
+  pages   = {170--195},
+  year    = {2015},
+  doi     = {10.1016/j.engfracmech.2015.05.023}
+}
+
+@article{introduction_mumford_shah,
+  author  = {Mumford, D. and Shah, J.},
+  title   = {Optimal approximations by piecewise smooth functions and associated variational problems},
+  journal = {Communications on Pure and Applied Mathematics},
+  volume  = {42},
+  number  = {5},
+  pages   = {577-685},
+  doi     = {10.1002/cpa.3160420503},
+  url     = {https://onlinelibrary.wiley.com/doi/abs/10.1002/cpa.3160420503},
+  year    = {1989}
+}
+
+@article{introduction_ambrosio_tortorelli,
+  author  = {Ambrosio, L. and Tortorelli, V.M.},
+  title   = {Approximation of functional depending on jumps by elliptic functional via t-convergence},
+  journal = {Communications on Pure and Applied Mathematics},
+  volume  = {43},
+  number  = {8},
+  pages   = {999-1036},
+  doi     = {10.1002/cpa.3160430805},
+  url     = {https://onlinelibrary.wiley.com/doi/abs/10.1002/cpa.3160430805},
+  year    = {1990}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LVPP / PG
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+@article{lvpp_Keith,
+  author  = {Keith, B. and Surowiec, T.M.},
+  title   = {Proximal Galerkin: A Structure-Preserving Finite Element Method for Pointwise Bound Constraints},
+  journal = {Foundations of Computational Mathematics},
+  year    = {2024},
+  date    = {2024-11-20},
+  issn    = {1615-3383},
+  doi     = {10.1007/s10208-024-09681-8},
+  url     = {https://doi.org/10.1007/s10208-024-09681-8}
+}
+
+@article{lvpp_Dokken,
+  title    = {The latent variable proximal point algorithm for variational problems with inequality constraints},
+  journal  = {Computer Methods in Applied Mechanics and Engineering},
+  volume   = {445},
+  pages    = {118181},
+  year     = {2025},
+  issn     = {0045-7825},
+  doi      = {10.1016/j.cma.2025.118181},
+  url      = {https://www.sciencedirect.com/science/article/pii/S0045782525004530},
+  author   = {Dokken, J.S. and Farrell, P.E. and Keith, B. and Papadopoulos, I.P.A. and Surowiec, T.M.},
+  keywords = {Latent variable proximal point, Proximal Galerkin, Variational inequality, Pointwise constraints, Nonlinear PDEs, Inequality constraints}
+}
+
+@article{lvpp_chen_teboulle,
+  title={Convergence analysis of a proximal-like minimization algorithm using Bregman functions},
+  author={Chen, G. and Teboulle, M.},
+  journal={SIAM Journal on Optimization},
+  volume={3},
+  number={3},
+  pages={538--543},
+  year={1993},
+  publisher={SIAM},
+  doi={10.1137/0803026}
+}
+
+@article{lvpp_teboulle,
+  author  = {Teboulle, M.},
+  title   = {A simplified view of first order methods for optimization},
+  journal = {Mathematical Programming},
+  volume  = {170},
+  number  = {1},
+  pages   = {67--96},
+  year    = {2018},
+  doi     = {10.1007/s10107-018-1284-2}
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Code 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 @misc{code_BarattaEtal2023,
-  author    = {Baratta, I.A. and Dean, J.P. and Dokken, J.S. and Habera, M. and Hale, J.S. and Richardson, C.N. and Rognes, M.E. and Scroggs, M.W. and Sime, N. and Wells, G.N.},
-  title     = {DOLFINx: the next generation FEniCS problem solving environment},
-  doi       = {https://doi.org/10.5281/zenodo.10447666},
-  year      = {2023}
+  author = {Baratta, I.A. and Dean, J.P. and Dokken, J.S. and Habera, M. and Hale, J.S. and Richardson, C.N. and Rognes, M.E. and Scroggs, M.W. and Sime, N. and Wells, G.N.},
+  title  = {DOLFINx: the next generation FEniCS problem solving environment},
+  doi    = {10.5281/zenodo.10447666},
+  year   = {2023}
+}
+
+@article{code_arbitrary_order_Scroggs,
+  title   = {Construction of arbitrary order finite element degree-of-freedom maps on polygonal and polyhedral cell meshes},
+  author  = {Scroggs, M.W. and Dokken, J.S. and Richardson, C.N. and Wells, G.N.},
+  journal = {ACM Transactions on Mathematical Software},
+  year    = {2022},
+  volume  = {48},
+  number  = {2},
+  doi     = {10.1145/3524456},
+  pages   = {{18:1--18:23}}
+}
+
+@article{code_basix,
+  title   = {Basix: a runtime finite element basis evaluation library},
+  author  = {Scroggs, M.W. and Baratta, I.A. and Richardson, C.N. and Wells, G.N.},
+  journal = {Journal of Open Source Software},
+  year    = {2022},
+  volume  = {7},
+  number  = {73},
+  doi     = {10.21105/joss.03982},
+  pages   = {3982}
+}
+
+@article{code_ufl,
+  title   = {Unified Form Language: A domain-specific language for weak formulations of partial differential equations},
+  author  = {Alnaes, M.S. and Logg, A. and {\O}lgaard, K.B. and Rognes, M.E. and Wells, G.N.},
+  journal = {{ACM} Transactions on Mathematical Software},
+  year    = {2014},
+  volume  = {40},
+  doi     = {10.1145/2566630}
+}
+
+@article{code_fenicsx_constitutive_models,
+  title    = {Integrating custom constitutive models into FEniCSx: A versatile approach and case studies},
+  journal  = {Advances in Engineering Software},
+  volume   = {206},
+  pages    = {103922},
+  year     = {2025},
+  issn     = {0965-9978},
+  doi      = {10.1016/j.advengsoft.2025.103922},
+  url      = {https://www.sciencedirect.com/science/article/pii/S0965997825000602},
+  author   = {Rosenbusch, S.M. and Diercks, P. and Kindrachuk, V. and Unger, J.F.},
+  keywords = {Finite element method, Constitutive models, FEniCSx, UMAT, Rust, Python, C++},
+  abstract = {The development and integration of user-defined constitutive relationships into finite element (FE) tools using standardized interfaces play a pivotal role in advancing the capabilities of FE solvers for structural mechanics applications. While commercial FE solvers like Abaqus and Ansys have designed their interfaces to provide custom stresses, tangents, and updated history variables, the open-source solver FEniCSx remains efficient only when the constitutive update has an analytical representation. This restricts the application of FEniCSx for non-linear structural mechanics. Since FEniCSx has become a powerful and popular open-source tool for solving partial differential equations, particularly due to its automatic computation of Hessians, we aim to develop a generalized interface to enhance its capability for constitutive modeling. This approach will address complex constitutive equations that require iterative solutions at the quadrature point level. Specific implementation challenges, such as using return-mapping procedures, can then be managed commonly. The provided interface for custom constitutive models offers a versatile way to implement them in various languages, including C++, Python, Rust, and Fortran. Finally, with UMATs for viscoplastic models as an example, we demonstrate how existing user subroutines can be incorporated into the interface and utilized within the FEniCSx framework.}
+}
+
+@misc{code_dolfinx_mpc,
+  author       = {Dokken, J.S.},
+  title        = {DOLFINx-MPC},
+  year         = {2025},
+  howpublished = {Software, version 0.10.0, released 2025-10-20},
 }
 
 @article{code_scikit_image,
-  author = {van der Walt, S. and Schönberger, J.L. and Nunez-Iglesias, J. and Boulogne, F. and Warner, J.D. and Yager, N. and Gouillart, E. and Yu, T. and the scikit-image contributors},
-  title = {scikit-image: image processing in Python},
-  year = {2014},
-  volume = {2},
-  pages = {e453},
+  author  = {van der Walt, S. and Schönberger, J.L. and Nunez-Iglesias, J. and Boulogne, F. and Warner, J.D. and Yager, N. and Gouillart, E. and Yu, T. and the scikit-image contributors},
+  title   = {scikit-image: image processing in Python},
+  year    = {2014},
+  volume  = {2},
+  pages   = {e453},
   journal = {PeerJ},
-  doi = {https://doi.org/10.7717/peerj.453}
+  doi     = {10.7717/peerj.453}
 }
 
 @article{code_skeleton_algorithm,
-  author = {Zhang, T.Y. and Suen, C.Y.},
-  title = {A fast parallel algorithm for thinning digital patterns},
-  year = {1984},
-  volume = {27},
-  number = {3},
-  pages = {236--239},
-  doi = {https://doi.org/10.1145/357994.358023},
+  author  = {Zhang, T.Y. and Suen, C.Y.},
+  title   = {A fast parallel algorithm for thinning digital patterns},
+  year    = {1984},
+  volume  = {27},
+  number  = {3},
+  pages   = {236--239},
+  doi     = {10.1145/357994.358023},
   journal = {Communications of the ACM}
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% LEFM 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Phase-Field Models 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-@article{Castillon2025_arxiv,
-title = {A phase-field approach to fatigue analysis: Bridging theory and simulation},
-journal = {International Journal of Fatigue},
-volume = {205},
-pages = {109397},
-year = {2026},
-issn = {0142-1123},
-doi = {https://doi.org/10.1016/j.ijfatigue.2025.109397},
-url = {https://www.sciencedirect.com/science/article/pii/S0142112325005948},
-author    = {Castillón, M. and Romero, I. and Segurado, J.},
-keywords = {Phase-field fracture, Fatigue, Crack-growth control, Crack propagation, Paris’ law},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Examples 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+@article{example_l_shaped_panel_2,
+  author  = {Muixí, A. and Marco, O. and Rodríguez-Ferran, A. and Fernández-Méndez, S.},
+  title   = {A combined XFEM phase-field computational model for crack growth without remeshing},
+  journal = {Computational Mechanics},
+  year    = {2021},
+  volume  = {67},
+  number  = {1},
+  pages   = {231--249},
+  doi     = {10.1007/s00466-020-01929-8},
+  issn    = {1432-0924}
 }
 
-@article{phase_field_Miehe2010,
-  author    = {Miehe, C. and Hofacker, M. and Welschinger, F.},
-  title     = {A phase field model for rate-independent crack propagation: robust algorithmic implementation based on operator splits},
-  journal   = {Computer Methods in Applied Mechanics and Engineering},
-  volume    = {199},
-  number    = {45-48},
-  pages     = {2765--2778},
-  year      = {2010},
-  doi       = {https://doi.org/10.1016/j.cma.2010.04.011}
+@article{introduction_maximum_tangential_stress_criterion,
+  author  = {Wang, C. and Pereira, K. and Wang, D. and Zinovev, A. and Terentyev, D. and {Abdel Wahab}, M.},
+  title   = {Fretting fatigue crack propagation under out-of-phase loading conditions using extended maximum tangential stress criterion},
+  journal = {Tribology International},
+  volume  = {187},
+  pages   = {108738},
+  year    = {2023},
+  doi     = {10.1016/j.triboint.2023.108738}
 }
 
-@article{phase_field_FrancfortMarigo1998,
-  author    = {Francfort, G.A. and Marigo, J.-J.},
-  title     = {Revisiting brittle fracture as an energy minimization problem},
-  journal   = {Journal of the Mechanics and Physics of Solids},
-  volume    = {46},
-  number    = {8},
-  pages     = {1319--1342},
-  year      = {1998},
-  doi       = {https://doi.org/10.1016/S0022-5096(98)00034-9}
+@article{introduction_maximum_energy_release_rate_criterion,
+  author  = {Hou, C. and Jin, X. and Fan, X. and Xu, R. and Wang, Z.},
+  title   = {A generalized maximum energy release rate criterion for mixed mode fracture analysis of brittle and quasi-brittle materials},
+  journal = {Theoretical and Applied Fracture Mechanics},
+  volume  = {100},
+  pages   = {78--85},
+  year    = {2019},
+  doi     = {10.1016/j.tafmec.2018.12.015}
 }
 
-@article{phase_field_Bourdin2000,
-  author = {Bourdin, B. and Francfort, G.A. and Marigo, J.-J.},
-  title = {Numerical experiments in revisited brittle fracture},
-  journal = {Journal of the Mechanics and Physics of Solids},
-  volume = {48},
-  number = {4},
-  pages = {797--826},
-  year = {2000},
-  doi = {https://doi.org/10.1016/S0022-5096(99)00028-9}
+@article{introduction_x_fem,
+  author  = {Huynh, H.D. and Nguyen, M.N. and Cusatis, G. and Tanaka, S. and Bui, T.Q.},
+  title   = {A polygonal XFEM with new numerical integration for linear elastic fracture mechanics},
+  journal = {Engineering Fracture Mechanics},
+  volume  = {213},
+  pages   = {241--263},
+  year    = {2019},
+  doi     = {10.1016/j.engfracmech.2019.04.002}
 }
 
-@article{phase_field_Amor2009,
-  author    = {Amor, H. and Marigo, J.-J. and Maurini, C.},
-  title     = {Regularized formulation of the variational brittle fracture with unilateral contact: numerical experiments},
-  journal   = {Journal of the Mechanics and Physics of Solids},
-  volume    = {57},
-  number    = {8},
-  pages     = {1209--1229},
-  year      = {2009},
-  doi       = {https://doi.org/10.1016/j.jmps.2009.04.011}
+@article{phase_field_fatigue_Heinzmann,
+  author  = {Heinzmann, J. and Carrara, P. and Ambati, M. and Mirzaei, A.M. and De Lorenzis, L.},
+  title   = {An adaptive acceleration scheme for phase-field fatigue computations},
+  journal = {Computational Mechanics},
+  year    = {2024},
+  date    = {2024-10-12},
+  issn    = {1432-0924},
+  doi     = {10.1007/s00466-024-02551-8},
+  url     = {https://doi.org/10.1007/s00466-024-02551-8}
 }
 
-@article{phase_field_Carrara2020,
-  title     = {A framework to model the fatigue behavior of brittle materials based on a variational phase-field approach},
-  author    = {Carrara, P. and Ambati, M. and Alessi, R. and De Lorenzis, L.},
-  journal   = {Computer Methods in Applied Mechanics and Engineering},
-  volume    = {361},
-  pages     = {112731},
-  year      = {2020},
-  issn      = {0045-7825},
-  doi       = {10.1016/j.cma.2019.112731},
-  url       = {https://www.sciencedirect.com/science/article/pii/S0045782519306218},
-  keywords  = {Brittle fracture, Fatigue, Modeling, Paris law, Phase-field models, Wöhler curve},
+@article{phase_field_fatigue_Kristensen,
+  title    = {Accelerated high-cycle phase field fatigue predictions},
+  journal  = {European Journal of Mechanics - A/Solids},
+  volume   = {100},
+  pages    = {104991},
+  year     = {2023},
+  issn     = {0997-7538},
+  doi      = {10.1016/j.euromechsol.2023.104991},
+  url      = {https://www.sciencedirect.com/science/article/pii/S0997753823000839},
+  author   = {Kristensen, P. K. and Golahmar, A. and Martínez-Pañeda, E. and Niordson, C. F.},
+  keywords = {Fatigue, Phase field fracture, Fracture mechanics, Finite element analysis}
+}
+
+@article{phase_field_fatigue_Golahmar,
+  title    = {A phase field model for high-cycle fatigue: Total-life analysis},
+  journal  = {International Journal of Fatigue},
+  volume   = {170},
+  pages    = {107558},
+  year     = {2023},
+  issn     = {0142-1123},
+  doi      = {10.1016/j.ijfatigue.2023.107558},
+  url      = {https://www.sciencedirect.com/science/article/pii/S0142112323000592},
+  author   = {Golahmar, A. and Niordson, C. F. and Martínez-Pañeda, E.},
+  keywords = {Phase field, Finite element method, Fatigue, S–N curves, Total-life analysis}
+}
+
+@article{phase_field_fatigue_Schreiber,
+  author  = {Schreiber, C. and Kuhn, C. and Müller, R. and Zohdi, T.},
+  title   = {A phase field modeling approach of cyclic fatigue crack growth},
+  journal = {International Journal of Fracture},
+  year    = {2020},
+  volume  = {225},
+  number  = {1},
+  pages   = {89--100},
+  doi     = {10.1007/s10704-020-00468-w},
+  url     = {https://doi.org/10.1007/s10704-020-00468-w},
+  issn    = {1573-2673}
+}
+
+@article{phase_field_fatigue_Seles,
+  author  = {Seleš, K. and Aldakheel, F. and Tonković, Z. and Sorić, J. and Wriggers, P.},
+  title   = {A general phase-field model for fatigue failure in brittle and ductile solids},
+  journal = {Computational Mechanics},
+  year    = {2021},
+  volume  = {67},
+  number  = {5},
+  pages   = {1431--1452},
+  doi     = {10.1007/s00466-021-01996-5},
+  url     = {https://doi.org/10.1007/s00466-021-01996-5},
+  issn    = {1432-0924}
+}
+
+@article{phase_field_fatigue_Mesgarnejad,
+  title    = {Phase-field models for fatigue crack growth},
+  journal  = {Theoretical and Applied Fracture Mechanics},
+  volume   = {103},
+  pages    = {102282},
+  year     = {2019},
+  issn     = {0167-8442},
+  doi      = {10.1016/j.tafmec.2019.102282},
+  url      = {https://www.sciencedirect.com/science/article/pii/S0167844218306712},
+  author   = {Mesgarnejad, A. and Imanian, A. and Karma, A.},
+  keywords = {Phase-field models, Fatigue crack growth, Paris law}
+}
+
+@article{phase_field_snap_pedro,
+  author  = {Aranda, P. and Segurado, J.},
+  title   = {A crack-length control technique for phase-field fracture in {{FFT}} homogenization},
+  journal = {International Journal for Numerical Methods in Engineering},
+  volume  = {126},
+  number  = {2},
+  pages   = {e7664},
+  doi     = {10.1002/nme.7664},
+  url     = {https://onlinelibrary.wiley.com/doi/abs/10.1002/nme.7664},
+  year    = {2025}
+}
+
+@article{phase_field_snap_Ritukesh,
+  author  = {Bharali, R. and Goswami, S. and Anitescu, C. and Rabczuk, T.},
+  title   = {A robust monolithic solver for phase-field fracture integrated with fracture energy based arc-length method and under-relaxation},
+  journal = {Computer Methods in Applied Mechanics and Engineering},
+  volume  = {394},
+  pages   = {114927},
+  year    = {2022},
+  doi     = {10.1016/j.cma.2022.114927}
+}
+
+@article{phase_field_snap_Zambrano,
+  author  = {Zambrano, J. and Toro, S. and Sánchez, P.J. and Duda, F.P. and Méndez, C.G. and Huespe, A.E.},
+  title   = {An arc-length control technique for solving quasi-static fracture problems with phase field models and a staggered scheme},
+  journal = {Computational Mechanics},
+  year    = {2024},
+  volume  = {73},
+  number  = {4},
+  pages   = {751--772},
+  doi     = {10.1007/s00466-023-02388-7}
+}
+
+@article{phase_field_skeleton,
+  author  = {Greco, L. and Patton, A. and Negri, M. and Marengo, A. and Perego, U. and Reali, A.},
+  title   = {Higher order phase-field modeling of brittle fracture via isogeometric analysis},
+  journal = {Engineering with Computers},
+  year    = {2024},
+  volume  = {40},
+  number  = {6},
+  pages   = {3541--3560},
+  doi     = {10.1007/s00366-024-01949-5}
 }
 
 @incollection{phase_field_modelling_of_fracture,
-    title = {Chapter One - Phase-field modeling of fracture},
-    author = {Wu, Jian-Ying and Nguyen, Vinh Phu and Nguyen, Chi Thanh and Sutula, Danas and Sinaie, Sina and Bordas, Stéphane P.A.},
-    editor = {Bordas, Stéphane P.A. and Balint, Daniel S.},
-    booktitle = {Advances in Applied Mechanics},
-    publisher = {Elsevier},
-    volume = {53},
-    pages = {1--183},
-    year = {2020},
-    isbn = {0065-2156},
-    doi = {10.1016/bs.aams.2019.08.001},
-    url = {https://www.sciencedirect.com/science/article/pii/S0065215619300134},
-    keywords = {Computational failure mechanics, Fracture, Damage, Phase-field models, Variational approach to fracture, Cohesive zone model, Cracking}
+  author = {Wu, Jian-Ying and Nguyen, Vinh Phu and Nguyen, Chi Thanh and Sutula, Danas and Sinaie, Sina and Bordas, Stéphane P.A.},
+  title = {Chapter One - Phase-field modeling of fracture},
+  editor = {Bordas, Stéphane P.A. and Balint, Daniel S.},
+  booktitle = {Advances in Applied Mechanics},
+  publisher = {Elsevier},
+  volume = {53},
+  pages = {1--183},
+  year = {2020},
+  doi = {10.1016/bs.aams.2019.08.001}
 }
 
-@article{phase_field_degradation_function_sargado,
-  title = {High-accuracy phase-field models for brittle fracture based on a new family of degradation functions},
+@phdthesis{example_Wagner2018_phd_thesis,
+  author  = {Wagner, D.},
+  title   = {A finite element-based adaptive energy response function method for curvilinear progressive fracture},
+  school  = {The University of Texas at San Antonio},
+  year    = {2018},
+  address = {United States -- Texas},
+  pages   = {181}
+}
+
+@article{example_Wagner2019_article,
+  title    = {A finite element-based adaptive energy response function method for 2D curvilinear progressive fracture},
+  journal  = {International Journal of Fatigue},
+  volume   = {127},
+  pages    = {229-245},
+  year     = {2019},
+  issn     = {0142-1123},
+  doi      = {10.1016/j.ijfatigue.2019.05.036},
+  url      = {https://www.sciencedirect.com/science/article/pii/S0142112319302300},
+  author   = {Wagner, D. and Garcia, M.J. and Montoya, A. and Millwater, H.},
+  keywords = {Curvilinear progressive fracture, Hypercomplex finite element method, ZFEM, Multicomplex, Multidual}
+}
+
+@article{example_franc3d,
+  title   = {FRANC3D, 3D fracture analysis code},
+  author  = {Ingrafea, T. and others},
+  journal = {The Cornell University Fracture Group, Cornell University, Ithaca, NY},
+  year    = {1996}
+}
+
+@article{example_boundary_conditions,
+  title    = {Three-dimensional fatigue crack propagation simulation using extended finite element methods for steel grades S355 and S690 considering mean stress effects},
+  journal  = {Engineering Structures},
+  volume   = {227},
+  pages    = {111414},
+  year     = {2021},
+  issn     = {0141-0296},
+  doi      = {10.1016/j.engstruct.2020.111414},
+  url      = {https://www.sciencedirect.com/science/article/pii/S0141029620340153},
+  author   = {Xin, H. and Correia, J.A.F.O. and Veljkovic, M.},
+  keywords = {Fatigue crack propagation, Phantom nodes-based extended finite element method, Virtual Crack Closure Technique, Mean stress effects}
+}
+
+@article{example_Paris_material,
+  author   = {Pataky, G.J. and Sehitoglu, H. and Maier, H.J.},
+  title    = {High temperature fatigue crack growth of Haynes 230},
+  journal  = {Materials Characterization},
+  volume   = {75},
+  pages    = {69-78},
+  year     = {2013},
+  issn     = {1044-5803},
+  doi      = {10.1016/j.matchar.2012.09.012},
+  url      = {https://www.sciencedirect.com/science/article/pii/S1044580312002665},
+  keywords = {Fatigue crack growth, Digital image correlation, Nickel-based superalloy, Crack closure, Slip irreversibility}
+}
+
+@article{example_Gc,
+  author   = {Alshoaibi, A.M.},
+  title    = {Fatigue Crack Growth Analysis under Constant Amplitude Loading Using Finite Element Method},
+  journal  = {Materials},
+  year     = {2022},
+  volume   = {15},
+  number   = {8},
+  issn     = {1996-1944},
+  doi      = {10.3390/ma15082937},
+  keywords = {fatigue analysis, equivalent stress intensity factor, linear elastic fracture mechanics, ANSYS, constant amplitude loading}
+}
+
+@article{phase_field_Wu,
+  title = {A unified phase-field theory for the mechanics of damage and quasi-brittle failure},
   journal = {Journal of the Mechanics and Physics of Solids},
-  volume = {111},
-  pages = {458-489},
-  year = {2018},
+  volume = {103},
+  pages = {72-99},
+  year = {2017},
   issn = {0022-5096},
-  doi = {https://doi.org/10.1016/j.jmps.2017.10.015},
-  url = {https://www.sciencedirect.com/science/article/pii/S0022509617303812},
-  author = {Sargado, J.M. and Keilegavlen, E. and Berre, I. and Nordbotten, J.M.},
-  keywords = {Fracture, Phase-field, Degradation function, Damage}
+  doi = {10.1016/j.jmps.2017.03.015},
+  url = {https://www.sciencedirect.com/science/article/pii/S0022509616308341},
+  author = {Wu, J.-Y.},
+  keywords = {Phase-field theory, Quasi-brittle failure, Damage, Fracture, Cohesive crack, Concrete},
 }

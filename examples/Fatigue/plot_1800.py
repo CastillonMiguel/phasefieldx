@@ -4,7 +4,7 @@ r"""
 Fatigue: Single edge notched tension test
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In this study, a phase-field fatigue simulation is analyzed. The theoretical foundation of this model is presented in (:ref:`theory_phase_field_fracture`). Specifically, a cyclic displacement is applied to a single-edge notched tension test, following the approach described by [Carrara]_. The simulation adopts an isotropic formulation.
+In this study, a phase-field fatigue simulation is analyzed. The theoretical foundation of this model is presented in (:ref:`theory_phase_field_fracture`). Specifically, a cyclic displacement is applied to a single-edge notched tension test, following the approach described by :footcite:t:`phase_field_Carrara2020`. The simulation adopts an isotropic formulation.
 
 The model consists of a square plate with a notch located midway along the left edge, extending horizontally toward the center, as illustrated in the figure below. The bottom edge of the plate is fixed in all directions, while the top edge is free to slide vertically. A cyclic vertical displacement is applied to the top edge. The geometry and boundary conditions are clearly shown in the accompanying figure. The model is discretized using triangular finite elements, with refined mesh resolution (element size $h$) in regions where crack evolution is anticipated. The element size $h$ must be sufficiently small to minimize mesh dependency.
 
@@ -48,8 +48,7 @@ The material properties, length scale parameter, and fatigue parameter are summa
 
 .. image:: ../../../../examples/Fatigue/1800_Fatigue_Single_Edge_Notched_Tension_Test/animation.gif
 
-
-.. [Carrara] A framework to model the fatigue behavior of brittle materials based on a variational phase-field approach. P. Carrara, M. Ambati, R. Alessi, L. De Lorenzis. https://doi.org/10.1016/j.cma.2019.112731.
+.. footbibliography::
 
 """
 

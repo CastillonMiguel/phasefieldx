@@ -4,7 +4,7 @@ r"""
 Single edge notched tension test
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-A well-known benchmark simulation in fracture mechanics is performed, relying on the simulation conducted by [Miehe]_. This simulation considers an anisotropic formulation with spectral energy decomposition, although we have also repeated the simulations with the isotropic formulation.
+A well-known benchmark simulation in fracture mechanics is performed, relying on the simulation conducted by :footcite:t:`phase_field_Miehe2010`. This simulation considers an anisotropic formulation with spectral energy decomposition, although we have also repeated the simulations with the isotropic formulation.
 
 The model consists of a square plate with a notch located halfway up, extending from the left to the center, as shown in the figure below. The bottom part is fixed in all directions, while the upper part can slide vertically. A vertical displacement is applied at the top. The geometry and boundary conditions are depicted in the figure. We discretize the model with triangular elements, refining the areas (element size h) where crack evolution is expected. The element size $h$ must be sufficiently small to avoid mesh dependencies.
 
@@ -41,7 +41,7 @@ The Young's modulus, Poisson's ratio, and the critical energy release rate are g
 | l  | 0.015   | mm     |
 +----+---------+--------+
 
-.. [Miehe] A phase field model for rate-independent crack propagation: Robust algorithmic implementation based on operator splits, https://doi.org/10.1016/j.cma.2010.04.011.
+.. footbibliography::
 
 """
 

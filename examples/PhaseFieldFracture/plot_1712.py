@@ -4,7 +4,7 @@ r"""
 Single edge notched shear test
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-A well-known benchmark simulation in fracture mechanics is performed, based on the work by [Miehe]_.
+A well-known benchmark simulation in fracture mechanics is performed, based on the work by :footcite:t:`phase_field_Miehe2010`.
 
 The model consists of a square plate with a notch located halfway up, extending from the left side to the center, as shown in the figure below. The bottom part is fixed in all directions, while the top part can slide horizontally. A horizontal displacement is applied at the top. The geometry and boundary conditions are depicted in the figure. We discretize the model by refining the areas where crack evolution is expected, ensuring that the element size $h$ is sufficiently small to avoid mesh dependency.
 
@@ -42,7 +42,7 @@ The Young's modulus, Poisson's ratio, and the critical energy release rate are g
 | l  | 0.015   | mm     |
 +----+---------+--------+
 
-.. [Miehe] A phase field model for rate-independent crack propagation: Robust algorithmic implementation based on operator splits, https://doi.org/10.1016/j.cma.2010.04.011.
+.. footbibliography::
 
 """
 

@@ -76,7 +76,7 @@ request through the project repository.
 
 
 .. grid:: 1
-    :gutter: 1
+    :gutter: 2
 
     .. grid-item-card:: 
         :shadow: lg
@@ -129,6 +129,58 @@ request through the project repository.
                     💻<br>GitHub Repo
                 </a>
                 <a href="https://phasefieldfatigue.readthedocs.io" target="_blank" class="pub-button btn-docs">
+                    📚<br>Documentation
+                </a>
+            </div>
+
+    .. grid-item-card::
+        :shadow: lg
+        :class-card: third-pub-card
+
+        .. raw:: html
+
+            <div style="text-align: center; margin: 20px 0;">
+                <h2 class="pub-title" style="font-size: 26px;">
+                    A Correction Method for Crack Area Overestimation in Phase-Field Fracture
+                </h2>
+            </div>
+
+        ^^^
+        .. raw:: html
+
+            <div style="padding: 30px 0; margin: 20px 0;">
+                <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                    <div style="text-align: center;">
+                        <img
+                        src="../../_static/logo_dgcm.png"
+                        width="540px"
+                        style="border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);"
+                        alt="DGCM Logo"
+                        />
+                    </div>
+                </div>
+            </div>
+            
+        **Authors:** M. Castillón, J. Segurado, I. Romero,   
+        **Year:** 2026  
+        **Journal:** Computational Mechanics
+        **DOI:** `10.1007/s00466-026-02834-2 <https://doi.org/10.1007/s00466-026-02834-2>`_
+
+        Phase-field fracture models are known to overestimate the crack area, a discrepancy that affects the accuracy of fracture predictions. This issue stems from the diffuse crack representation and numerical artifacts, such as strain localization, where the phase-field variable artificially saturates across finite elements. Existing correction strategies, including mesh-dependent factors and skeletonization algorithms, have limitations. Mesh-based corrections are often unreliable for unstructured meshes, while skeletonization can be complex and inaccurate for intricate crack topologies, especially in three dimensions. This paper introduces a correction framework to address this overestimation. Our approach is founded on the principle of energy equipartition, where the energy contributions from the phase-field and its gradient are equal as the length-scale parameter approaches zero. Since numerical artifacts primarily affect the phase-field term while leaving the gradient term largely unperturbed, we propose that the crack area can be approximated as twice the gradient-dependent energy. This method is inherently mesh-independent and readily applicable to the entire domain, including 3D simulations. The proposed methodology is validated against benchmarks with analytical solutions and compared with established methods like skeletonization to demonstrate its accuracy. It is then applied to complex geometries with curvilinear crack paths and evaluated in a three-dimensional simulation.
+        +++
+
+        **🔗 Related Resources**
+
+        .. raw:: html
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 15px 0;">
+                <a href="https://doi.org/10.1007/s00466-026-02834-2" target="_blank" class="pub-button btn-journal">
+                    📄<br>Journal Paper
+                </a>
+                <a href="https://github.com/CastillonMiguel/A-Correction-Method-for-Crack-Area-Overestimation-in-Phase-Field-Fracture" target="_blank" class="pub-button btn-github">
+                    💻<br>GitHub Repo
+                </a>
+                <a href="https://doublegradientcorrectionmethod.readthedocs.io" target="_blank" class="pub-button btn-docs">
                     📚<br>Documentation
                 </a>
             </div>

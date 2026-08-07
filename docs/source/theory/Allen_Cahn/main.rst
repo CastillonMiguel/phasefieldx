@@ -55,12 +55,6 @@ So, the weak form of the phase-field problem in the absence of external potentia
 
 One dimension solution
 ----------------------
-
-Consider a broken bar with length $L$, as depicted in fig |fig:bar_allen|, featuring a crack positioned at its center.w
-
-.. |fig:bar_allen| image:: images/bar_graph.png
-
-
 For the one-dimensional scenario, the functional reads:
 
 .. math::
