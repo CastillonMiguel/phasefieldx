@@ -20,16 +20,16 @@ The crack surface density functional is defined as:
 .. math::
    :label: eq_csdf_at2_functional
 
-   W_{\text{AT2}}[\phi] = \int_\Omega \gamma_{\text{AT2}}(\phi, \nabla\phi) \, \mathrm{d}\boldsymbol{x} = \int_\Omega \frac{1}{2} \left( \frac{1}{l} \phi^2 + l |\nabla \phi|^2 \right) \mathrm{d}\boldsymbol{x},
+   \Gamma(\phi)_{\text{AT2}}[\phi] = \int_\Omega \gamma_{\text{AT2}}(\phi, \nabla\phi) \, \mathrm{d}\boldsymbol{x} = \int_\Omega \frac{1}{2} \left( \frac{1}{l} \phi^2 + l |\nabla \phi|^2 \right) \mathrm{d}\boldsymbol{x},
 
 where $l$ is the length-scale parameter controlling the diffuse crack width.
 
-The equilibrium state is given by the minimizer of this functional ($\delta W_{\text{AT2}} = 0$). Computing the Gateaux derivative with respect to an admissible variation $\delta\phi$:
+The equilibrium state is given by the minimizer of this functional ($\delta \Gamma_{\text{AT2}} = 0$). Computing the Gateaux derivative with respect to an admissible variation $\delta\phi$:
 
 .. math::
    :label: eq_csdf_at2_gateaux
 
-   \delta_\phi W_{\text{AT2}} = \int_\Omega \left( \frac{1}{l} \phi \, \delta\phi + l \nabla\phi \cdot \nabla \delta\phi \right) \mathrm{d}\boldsymbol{x} = 0.
+   \Gamma'(\phi)_{\text{AT2}} = \int_\Omega \left( \frac{1}{l} \phi \, \delta\phi + l \nabla\phi \cdot \nabla \delta\phi \right) \mathrm{d}\boldsymbol{x} = 0.
 
 This yields the weak form of the AT2 phase-field problem:
 

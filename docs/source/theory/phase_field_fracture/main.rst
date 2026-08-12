@@ -92,7 +92,7 @@ solved as a coupled system of partial differential equations on a fixed mesh.
 
    .. grid-item::
 
-      .. figure:: screenshot.png
+      .. figure:: images/screenshot.png
          :align: center
          :width: 100%
 
