@@ -20,5 +20,6 @@ sphinxcontrib-asciinema
 sphinxcontrib-websupport
 sphinxcontrib-bibtex
 sphinxcontrib-tikz
+sphinxcontrib-youtube
 pyvista[jupyter]
 gmsh

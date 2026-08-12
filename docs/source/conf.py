@@ -99,7 +99,15 @@ extensions = [
     'sphinx_design',
     'sphinxcontrib.tikz',
     'sphinxcontrib.bibtex',
+    "sphinxcontrib.youtube",
 ]
+
+latex_elements = {
+    "preamble": r"""
+\usepackage{xcolor}
+\usetikzlibrary{positioning,calc,shadows,shapes.geometric}
+"""
+}
 
 bibtex_bibfiles = ['../../references.bib']
 
