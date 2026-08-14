@@ -22,7 +22,7 @@ For this reason, this documentation is divided into two parts:
 Problems of Application
 =======================
 
-1. **Phase-Field Fracture** (:ref:`theory_phase_field_fracture`): Combines concepts from elasticity and phase-field regularization to study the initiation, propagation, branching, and merging of fractures without explicit crack tracking.
+1. **Phase-Field Fracture/Fatigue** Phase-Field Fracture/Fatigue (:ref:theory_phase_field_fracture, :ref:theory_phase_field_fatigue): Integrates continuum elasticity with phase-field regularization to model the initiation, propagation, branching, coalescence, and fatigue-driven evolution of cracks without the need for explicit crack tracking.
 
 2. **Phase-Field Topology Optimization** *(Upcoming)*
 

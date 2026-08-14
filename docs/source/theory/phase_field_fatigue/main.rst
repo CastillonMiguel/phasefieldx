@@ -1,3 +1,5 @@
+.. _theory_phase_field_fatigue:
+
 PHASE-FIELD FATIGUE
 ===================
 
