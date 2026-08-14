@@ -70,7 +70,7 @@ import os
 # Import from phasefieldx package
 # -------------------------------
 from phasefieldx.Element.Phase_Field_Fracture.Input import Input
-from phasefieldx.Element.Phase_Field_Fracture.solver.solver import solve
+from phasefieldx.Element.Phase_Field_Fracture.solver.solver_history import solve
 from phasefieldx.Boundary.boundary_conditions import bc_xy, bc_y, get_ds_bound_from_marker
 from phasefieldx.PostProcessing.ReferenceResult import AllResults
 

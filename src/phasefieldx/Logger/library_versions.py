@@ -19,6 +19,40 @@ import time
 import basix
 import platform
 
+def log_header(logger):
+    """
+    Log the PhaseFieldX header, logo, and package information.
+
+    Parameters
+    ----------
+    logger : logging.Logger
+        The logger object to be used for logging the PhaseFieldX
+        header, logo, and package information.
+
+    Returns
+    -------
+    None
+
+    Notes
+    -----
+    This function logs a formatted PhaseFieldX header together with
+    the package name, version, author, license, and project website.
+    The logo is inspired by the PhaseFieldX graphical identity.
+    """
+    logger.info("")
+    logger.info("")
+    logger.info("    ╔══════════════════════════════════════════════════════════════════════════╗")
+    logger.info("    ║                                                                          ║")
+    logger.info("    ║                              PhaseFieldX                                 ║")
+    logger.info("    ║                              ───────────                                 ║")
+    logger.info("    ║                                                                          ║")
+    logger.info(f"    ║       Version : {phasefieldx.__version__:<56} ║")
+    logger.info(f"    ║       License : {phasefieldx.__license__:<56} ║")
+    logger.info(f"    ║       Website : {phasefieldx.__url__:<56} ║")
+    logger.info("    ║                                                                          ║")
+    logger.info("    ╚══════════════════════════════════════════════════════════════════════════╝")
+    logger.info("")
+
 
 def set_logger(result_folder_name):
     """
@@ -77,6 +111,7 @@ def log_library_versions(logger):
     This function logs the versions of important libraries including Python, DolfinX,
     ufl, basix, numpy, and logging.
     """
+    logger.info("")
     logger.info(f"Python version: {sys.version_info.major}.{sys.version_info.minor}")
     logger.info("=========== Library Versions ===========")
     logger.info(f"PhaseFieldX : {phasefieldx.__version__}")
@@ -86,6 +121,7 @@ def log_library_versions(logger):
     logger.info(f"numpy : {np.__version__}")
     logger.info(f"logging : {logging.__version__}")
     logger.info("=======================================")
+    logger.info("")
 
 
 def log_system_info(logger):
@@ -106,6 +142,7 @@ def log_system_info(logger):
     This function logs various system information including operating system,
     architecture, user name, processor, machine type, and Python version.
     """
+    logger.info("")
     logger.info("=========== Platform ==================")
     logger.info(f"Operating System Information: {platform.platform()}")
     logger.info(f"Architecture : {platform.architecture()}")
@@ -114,17 +151,21 @@ def log_system_info(logger):
     logger.info(f"Machine type : {platform.machine()}")
     logger.info(f"Python version : {platform.python_version()}")
     logger.info("=======================================")
+    logger.info("")
 
 
 def log_end_analysis(logger, totaltime=0.0):
+    logger.info("")
     logger.info(f"\n\n\n ====================================================")
     logger.info(f"\n\n End of computations")
     logger.info(f" Analysis finished correctly.")
     logger.info(f" total simulation time: {totaltime}")
     logger.info(f"Analysis finished on {time.strftime('%a %b %d %H:%M:%S %Y', time.localtime())}")
+    logger.info("")
 
 
 def log_model_information(msh, logger):
+    logger.info("")
     logger.info("========== Mesh Information ===========")
-    msh.geometry.dim
     logger.info(f"Dimension: {msh.geometry.dim}")
+    logger.info("")

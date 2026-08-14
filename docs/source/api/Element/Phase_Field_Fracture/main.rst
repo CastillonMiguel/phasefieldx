@@ -40,7 +40,7 @@ $f(\bar{\alpha})$ Fatigue Degradation functions
 Solvers
 -------
 
-.. automodule:: phasefieldx.Element.Phase_Field_Fracture.solver.solver
+.. automodule:: phasefieldx.Element.Phase_Field_Fracture.solver.solver_history
    :members:
    :undoc-members:
    :show-inheritance:

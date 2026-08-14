@@ -4,8 +4,11 @@ __version__ = "0.3.1"
 __author__ = "Miguel Castillón"
 __email__ = "miguel.research@pm.me"
 __license__ = "MIT"
+__title__ = "phasefieldx"
 __description__ = "PhaseFieldX: An Open-Source Framework for Advanced Phase-Field Simulations"
 __url__ = "https://github.com/CastillonMiguel/phasefieldx"
+__documentation__ = "https://phasefieldx.readthedocs.io"
+__copyright__ = "Copyright (c) 2023 Miguel Castillón"
 
 # Import submodules to be included in the package namespace
 from .Boundary import *

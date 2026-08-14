@@ -60,7 +60,7 @@ import os
 # Import from phasefieldx package
 # -------------------------------
 from phasefieldx.Element.Phase_Field_Fracture.Input import Input
-from phasefieldx.Element.Phase_Field_Fracture.solver.solver import solve
+from phasefieldx.Element.Phase_Field_Fracture.solver.solver_history import solve
 from phasefieldx.Boundary.boundary_conditions import bc_xy, bc_y, get_ds_bound_from_marker
 from phasefieldx.PostProcessing.ReferenceResult import AllResults
 
@@ -115,6 +115,7 @@ Data = Input(E=20.8,     # young modulus
 # on how to create the mesh, refer to the :ref:`ref_examples_91` examples.
 # The following lines 
 msh_file = os.path.join("mesh", "three_point_bending_test.msh") # Path to the mesh file
+msh_file = os.path.join("../GmshGeoFiles/9103_ThreePointBendingTest/three_point_bending_test.msh")    # Path to the mesh file
 gdim = 2                                     # Geometric dimension of the mesh
 gmsh_model_rank = 0                          # Rank of the Gmsh model in a parallel setting
 mesh_comm = mpi4py.MPI.COMM_WORLD            # MPI communicator for parallel computation
