@@ -47,6 +47,7 @@ Through a systematic exploration of these interconnected domains, this documenta
    :hidden:
 
    phase_field_fracture/main
+   phase_field_fatigue/main
    elasticity/main
    phase_field/main
    energy_pff/main
