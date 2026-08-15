@@ -3,7 +3,7 @@
 Energy-Controlled PFF Solvers
 =============================
 
-This section describes energy-controlled phase-field fracture (PFF) solvers presented in :footcite:t:`Castillon2025_arxiv`. 
+This section describes energy-controlled phase-field fracture (PFF) solvers presented in :footcite:t:`phase_field_Castillon`. 
 
 .. note::
     Please view the examples related to phase-field fracture :ref:`ref_examples_phase_field_fracture_energy_controlled`.
