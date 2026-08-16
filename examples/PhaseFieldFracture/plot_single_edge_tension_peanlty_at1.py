@@ -1,30 +1,29 @@
 r"""
-.. _ref_1712:
+.. _ref_single_edge_tension_penalty_at1:
 
-Single edge notched shear test
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Single edge notched tension test (AT1)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-A well-known benchmark simulation in fracture mechanics is performed, based on the work by :footcite:t:`phase_field_Miehe2010`.
+A well-known benchmark simulation in fracture mechanics is performed, relying on the simulation conducted by :footcite:t:`phase_field_Miehe2010`. This simulation considers an anisotropic formulation with spectral energy decomposition, although we have also repeated the simulations with the isotropic formulation. In this case, the AT1 regularization method, considering the penalty approach, is used.
 
-The model consists of a square plate with a notch located halfway up, extending from the left side to the center, as shown in the figure below. The bottom part is fixed in all directions, while the top part can slide horizontally. A horizontal displacement is applied at the top. The geometry and boundary conditions are depicted in the figure. We discretize the model by refining the areas where crack evolution is expected, ensuring that the element size $h$ is sufficiently small to avoid mesh dependency.
+The model consists of a square plate with a notch located halfway up, extending from the left to the center, as shown in the figure below. The bottom part is fixed in all directions, while the upper part can slide vertically. A vertical displacement is applied at the top. The geometry and boundary conditions are depicted in the figure. We discretize the model with triangular elements, refining the areas (element size h) where crack evolution is expected. The element size $h$ must be sufficiently small to avoid mesh dependencies.
 
 .. code-block::
 
-   #            u
-   #            =>=>=>=>=>=>
-   #            *----------*
-   #            |          |
+   #           u/\/\/\/\/\/\       
+   #            ||||||||||||  
+   #            *----------*  
+   #            |          | 
    #            | a=0.5    |
    #            |---       |
    #            |          |
-   #            |          |
+   #            |          | 
    #            *----------*
    #            /_\/_\/_\/_\       
    #     |Y    /////////////
    #     |
    #      ---X
    #  Z /
-
 
 The Young's modulus, Poisson's ratio, and the critical energy release rate are given in the table :ref:`Properties <table_properties_label>`. Young's modulus $E$ and Poisson's ratio $\nu$ can be represented with the Lamé parameters as: $\lambda=\frac{E\nu}{(1+\nu)(1-2\nu)}$; $\mu=\frac{E}{2(1+\nu)}$.
 
@@ -62,7 +61,7 @@ import os
 # Import from phasefieldx package
 # -------------------------------
 from phasefieldx.Element.Phase_Field_Fracture.Input import Input
-from phasefieldx.Element.Phase_Field_Fracture.solver.solver_history import solve
+from phasefieldx.Element.Phase_Field_Fracture.solver.solver_penalty import solve
 from phasefieldx.Boundary.boundary_conditions import bc_xy, bc_y, get_ds_bound_from_marker
 from phasefieldx.PostProcessing.ReferenceResult import AllResults
 
@@ -78,8 +77,7 @@ from phasefieldx.PostProcessing.ReferenceResult import AllResults
 # - `Gc`: Critical energy release rate, set to 0.005 $kN/mm$.
 # - `l`: Length scale parameter, set to 0.1 $mm$.
 # - `degradation`: Specifies the degradation type. Options are "isotropic" or "anisotropic".
-# - `split_energy`: Controls how the energy is split; options include "no" (default), "spectral," or "deviatoric." 
-#   In this case an anisotropic formulation with volumetric-deviatric decomposition is considered.
+# - `split_energy`: Controls how the energy is split; options include "no" (default), "spectral," or "deviatoric."
 # - `degradation_function`: Specifies the degradation function; here, it is "quadratic."
 # - `irreversibility`: Determines the irreversibility criterion; in this case, set to "miehe."
 # - `fatigue`: Enables fatigue simulation when set to `True`.
@@ -93,12 +91,12 @@ from phasefieldx.PostProcessing.ReferenceResult import AllResults
 #   In this case, results are saved as `.vtu` files.
 # - `results_folder_name`: Name of the folder for saving results. If it exists,
 #   it will be replaced with a new empty folder.
-Data = Input(E=210.0,    # young modulus
-             nu=0.3,     # poisson
+Data = Input(E=210.0,   # young modulus
+             nu=0.3,    # poisson
              Gc=0.0027,  # critical energy release rate
-             l=0.015,     # lenght scale parameter
-             degradation="anisotropic",  # "isotropic" "anisotropic"
-             split_energy="spectral",    # "spectral" "deviatoric"
+             l=0.015,   # lenght scale parameter
+             degradation="isotropic",  # "isotropic" "anisotropic"
+             split_energy="no",       # "spectral" "deviatoric"
              degradation_function="quadratic",
              irreversibility="miehe",  # "miehe"
              fatigue=False,
@@ -107,17 +105,17 @@ Data = Input(E=210.0,    # young modulus
              k=0.0,
              save_solution_xdmf=False,
              save_solution_vtu=True,
-             results_folder_name="1712_Single_Edge_Notched_Shear_Test")
+             results_folder_name="results_single_edge_tension_penalty_at1")
 
 
 ###############################################################################
 # Mesh Definition
 # ---------------
 # The mesh is generated using Gmsh and saved as a 'mesh.msh' file. For more details 
-# on how to create the mesh, refer to the :ref:`ref_9102` examples.
-# The following lines 
+# on how to create the mesh, refer to the :ref:`ref_examples_91` examples.
 
-msh_file = os.path.join("../GmshGeoFiles/9102_SingleNotchedShearTest/mesh.msh")    # Path to the mesh file
+msh_file = os.path.join("mesh", "mesh.msh")  # Path to the mesh file
+msh_file = os.path.join("../GmshGeoFiles/9101_SingleNotchedTensionTest/mesh.msh")    # Path to the mesh file
 gdim = 2                                     # Geometric dimension of the mesh
 gmsh_model_rank = 0                          # Rank of the Gmsh model in a parallel setting
 mesh_comm = mpi4py.MPI.COMM_WORLD            # MPI communicator for parallel computation
@@ -138,19 +136,8 @@ fdim = msh.topology.dim - 1 # Dimension of the mesh facets
 #
 # - `bottom_facet_marker`: Refers to the bottom part of the specimen.
 # - `top_facet_marker`: Refers to the top part of the specimen.
-# - `right_facet_marker`: Refers to the right side of the specimen.
-# - `left_facet_marker`: Refers to the left side of the specimen.
-def bottom(x):
-    return np.isclose(x[1], -0.5)
-
-def top(x):
-    return np.isclose(x[1], 0.5)
-
-def left(x):
-    return np.isclose(x[0], -0.5)
-
-def right(x):
-    return np.isclose(x[0], 0.5)
+bottom_facet_marker = facet_markers.find(8)
+top_facet_marker = facet_markers.find(9)
 
 # %%
 # The `get_ds_bound_from_marker` function creates measures for applying boundary conditions
@@ -158,37 +145,30 @@ def right(x):
 #
 # - `bottom_facet_marker` → Stored in `ds_bottom`
 # - `top_facet_marker` → Stored in `ds_top`
-
-bottom_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, bottom)
-top_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, top)
-left_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, left)
-right_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, right)
-
-
-
-# %%
-# The `get_ds_bound_from_marker` function creates measures for applying boundary conditions
-# on specific facets. These measures are generated for:
-#
-# - `bottom_facet_marker` → Stored in `ds_bottom`
-# - `top_facet_marker` → Stored in `ds_top`
-# - `right_facet_marker` → Stored in `ds_right`
-# - `left_facet_marker` → Stored in `ds_left`
 ds_bottom = get_ds_bound_from_marker(bottom_facet_marker, msh, fdim)
 ds_top = get_ds_bound_from_marker(top_facet_marker, msh, fdim)
-ds_right = get_ds_bound_from_marker(right_facet_marker, msh, fdim)
-ds_left = get_ds_bound_from_marker(left_facet_marker, msh, fdim)
 
+# %%
+# `ds_list` is an array that organizes boundary condition measures alongside descriptive names.
+# Each entry in `ds_list` consists of two elements:
+#
+# - A measure (e.g., `ds_bottom`)
+# - A corresponding name (e.g., `"bottom"`)
+# This structure simplifies the process of saving results by associating each boundary condition
+# measure with a clear label. For instance:
+#
+# - `ds_bottom` is labeled as `"bottom"`.
+# - `ds_top` is labeled as `"top"`.
 ds_list = np.array([
                    [ds_top, "top"],
                    [ds_bottom, "bottom"],
-                   [ds_left, "left"],
-                   [ds_right, "right"],
                    ])
 
 
 ###############################################################################
-# Function Space definition
+# Function Space Definition
+# -------------------------
+# Define function spaces for displacement and phase-field using Lagrange elements.
 V_u = dolfinx.fem.functionspace(msh, ("Lagrange", 1, (msh.geometry.dim, )))
 V_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1))
 
@@ -196,25 +176,22 @@ V_phi = dolfinx.fem.functionspace(msh, ("Lagrange", 1))
 ###############################################################################
 # Boundary Conditions
 # -------------------
-# The boundary conditions are applied as follows:
+# Dirichlet boundary conditions are defined as follows:
 #
-# - The bottom nodes are fixed in both the x and y directions, ensuring the
-#   bottom edge remains completely fixed.
-# - The top nodes are allowed to slide horizontally, with the x displacement
-#   being unconstrained, and the vertical displacement fixed.
-# - The left and right boundaries are also constrained in the vertical direction 
-#   (y displacement), allowing horizontal sliding only.
+# - `bc_bottom`: Constrains both x and y displacements to 0 on the bottom boundary, 
+#   ensuring that the bottom edge remains fixed.
+# - `bc_top`: Constrains the x displacement, while the vertical displacement on the 
+#   top boundary is updated dynamically in the quasi-static solver to impose the desired 
+#   vertical displacement.
 bc_bottom = bc_xy(bottom_facet_marker, V_u, fdim)
-bc_top = bc_xy(top_facet_marker, V_u, fdim)
-bc_left = bc_y(left_facet_marker, V_u, fdim)
-bc_right = bc_y(right_facet_marker, V_u, fdim)
+bc_top = bc_y(top_facet_marker, V_u, fdim)
 
 # %%
 # The bcs_list_u variable is a list that stores all boundary conditions for the displacement
 # field $\boldsymbol u$. This list facilitates easy management of multiple boundary
 # conditions and can be expanded if additional conditions are needed.
-bcs_list_u = [bc_top, bc_bottom, bc_left, bc_right]
-bcs_list_u_names = ["top", "bottom", "left", "right"]
+bcs_list_u = [bc_top, bc_bottom]
+bcs_list_u_names = ["top", "bottom"]
 
 ###############################################################################
 # Function: `update_boundary_conditions`
@@ -226,42 +203,45 @@ bcs_list_u_names = ["top", "bottom", "left", "right"]
 # Parameters:
 #
 # - `bcs`: A list of boundary conditions, where each element corresponds to a 
-#   boundary condition applied to a specific facet of the mesh.
+# boundary condition applied to a specific facet of the mesh.
 # - `time`: A scalar representing the current time step in the analysis.
 #
 # Function Details:
 #
-# - The displacement value `val` is computed as a function of `time`:
-# - `val = dt0 * time`, where `dt0` is a small time step factor (`10^-4`), 
-#   representing a gradual displacement applied along the x-axis. This displacement 
-#   increases linearly over time.
-# - The calculated value is assigned to the x-component of the displacement field 
-#   for the boundary condition specified in `bcs_list_u[0]` by modifying 
-#   `bcs_list_u[0].g.value[0]`.
+# - The displacement value `val` is computed based on the current `time`:
+# - For `time <= 50`, `val` increases linearly as `val = dt0 * time`, where `dt0` 
+#   is a small time step factor (`10^-4`), simulating gradual displacement along the y-axis.
+# - For `time > 50`, `val` increases more gradually as `val = 50 * dt0 + (dt0 / 10) * (time - 50)`, 
+#   which represents a slower displacement rate after the initial period.
+#
+# - This calculated value is assigned to the y-component of the displacement field 
+#   on the top boundary by modifying `bcs[0].g.value[1]`, where `bcs[0]` represents the 
+#   top boundary condition.
 #
 # Return Value:
 #
-# - A tuple `(val, 0, 0)` is returned, representing the incremental displacement vector:
-# - The first element (`val`) is the calculated x-displacement.
-# - The second element (0) indicates no update for the y-displacement.
-# - The third element (0) indicates no update for the z-displacement, applicable in 2D simulations.
+# - A tuple `(0, val, 0)` is returned, representing the incremental displacement vector:
+# - The first element (0) corresponds to no update for the x-displacement.
+# - The second element (`val`) is the calculated y-displacement.
+# - The third element (0) corresponds to no update for the z-displacement, applicable in 2D simulations.
 #
 # Purpose:
 #
 # - This function facilitates quasi-static analysis by applying controlled, time-dependent 
-#   boundary displacements. It is essential for simulations that involve gradual loading or unloading,
-#   with a continuous linear displacement evolution along the x-direction over time.
+#   boundary displacements. It is essential for simulations that involve gradual loading or unloading, 
+#   with a slower displacement evolution after an initial phase.
 def update_boundary_conditions(bcs, time):
-    dt0 = 10**-5
-    val = time * dt0
-    bcs_list_u[0].g.value[0] = petsc4py.PETSc.ScalarType(val)
-    return val, 0, 0
+    dt0 = 10**-4
+    val = dt0 * time
+    bcs[0].g.value[...] = petsc4py.PETSc.ScalarType(val)
+    return 0, val, 0
 
 
 T_list_u = None
 update_loading = None
 f = None
 T = dolfinx.fem.Constant(msh, petsc4py.PETSc.ScalarType((0.0, 0.0)))
+
 
 ###############################################################################
 # Boundary Conditions for phase field
@@ -282,13 +262,12 @@ bcs_list_phi = []
 # **Parameters:**
 #
 # - `dt`: The time step for the simulation, set to 1.0.
-# - `final_time`: The total simulation time, set to 150.0, which determines how 
+# - `final_time`: The total simulation time, set to 200.0, which determines how 
 #   long the problem will be solved.
 # - `path`: Optional parameter for specifying the folder where results will be saved; 
 #   here it is set to `None`, meaning results will be saved to the default location.
 #
 # **Function Call:**
-#
 # The `solve` function is invoked with the following arguments:
 #
 # - `Data`: Contains the simulation parameters and configurations.
@@ -310,7 +289,7 @@ bcs_list_phi = []
 # conditions and loading parameters.
 
 dt = 1.0
-final_time = 1800.0
+final_time = 65.0
 
 # %%
 # Uncomment the following lines to run the solver with the specified parameters.
@@ -331,8 +310,12 @@ final_time = 1800.0
 #       path=None,
 #       bcs_list_u_names=bcs_list_u_names,
 #       min_stagger_iter=2,
-#       max_stagger_iter=2,
-#       stagger_error_tol=1e-8)
+#       max_stagger_iter=1e9,
+#       stagger_error_tol=1e-8,
+#       case = 'AT1',
+#       rho=1e5,
+#       irreversibility=True,
+#       stagger_conv_criterion="Residual")
 
 
 ###############################################################################
@@ -347,12 +330,14 @@ S = AllResults(Data.results_folder_name)
 S.set_label('Simulation')
 S.set_color('b')
 
+
 ###############################################################################
 # Plot: phase-field $\phi$
 # ------------------------
 # The phase-field result saved in the .vtu file is shown.
 # For this, the file is loaded using PyVista.
-file_vtu = pv.read(os.path.join(Data.results_folder_name, "paraview-solutions_vtu", "phasefieldx_p0_001247.vtu"))
+file_vtu = pv.read(os.path.join(Data.results_folder_name, "paraview-solutions_vtu", "phasefieldx_p0_000060.vtu"))
+
 file_vtu.plot(scalars='phi', cpos='xy', show_scalar_bar=True, show_edges=False)
 
 
@@ -360,15 +345,15 @@ file_vtu.plot(scalars='phi', cpos='xy', show_scalar_bar=True, show_edges=False)
 # Plot: displacement $\boldsymbol u$
 # ----------------------------------
 # The displacements results saved in the .vtu file are shown.
+# For this, the file is loaded using PyVista.
 file_vtu.plot(scalars='u', cpos='xy', show_scalar_bar=True, show_edges=False)
-
 
 
 ###############################################################################
 # Plot: Displacement vs Fracture Energy
 # -------------------------------------
 # The vertical displacement is saved in S.dof_files["top.dof"]["Uy"].
-displacement = S.dof_files["top.dof"]["Ux"]
+displacement = S.dof_files["top.dof"]["Uy"]
 
 fig, energyW = plt.subplots()
 
@@ -381,17 +366,29 @@ energyW.set_xlabel('displacement - u $[mm]$')
 energyW.set_ylabel('Energy')
 energyW.legend()
 
+
+###############################################################################
+# Plot: Displacement vs Gamma
+# ---------------------------
+fig, gamma = plt.subplots()
+
+gamma.plot(displacement, S.energy_files['total.energy']["gamma"], 'b-', linewidth=2.0, label=r'$\Gamma$')
+gamma.plot(displacement, S.energy_files['total.energy']["gamma_phi"], 'y-', linewidth=2.0, label=r'$\Gamma_{\phi}$')
+gamma.plot(displacement, S.energy_files['total.energy']["gamma_gradphi"], 'g-', linewidth=2.0, label=r'$\Gamma_{\nabla \phi}$')
+
+gamma.grid(color='k', linestyle='-', linewidth=0.3)
+gamma.set_xlabel('displacement - u $[mm]$')
+gamma.set_ylabel(r'$\Gamma$')
+gamma.legend()
+
+
 ###############################################################################
 # Plot: Force vs Vertical Displacement
 # ------------------------------------
-Miehe = np.loadtxt(os.path.join("reference_solutions", "miehe_solution_shear.csv"))
-
 fig, ax_reaction = plt.subplots()
 
-ax_reaction.plot(Miehe[:, 0], Miehe[:, 1], 'g-', linewidth=2.0, label='Miehe')
-# ax_reaction.plot(displacement, -S.reaction_files['bottom.reaction']["Rx"], 'b.', linewidth=2.0, label=S.label)
-# ax_reaction.plot(displacement, -S.reaction_files['bottom.reaction']["Ry"], 'r.', linewidth=2.0, label=S.label)
-ax_reaction.plot(displacement, (S.reaction_files['bottom.reaction']["Rx"]**2 + S.reaction_files['bottom.reaction']["Ry"]**2)**0.5, 'k.', linewidth=2.0, label=S.label)
+ax_reaction.plot(displacement, -S.reaction_files['bottom.reaction']["Ry"], 'k.', linewidth=2.0, label=S.label)
+
 ax_reaction.grid(color='k', linestyle='-', linewidth=0.3)
 ax_reaction.set_xlabel('displacement - u $[mm]$')
 ax_reaction.set_ylabel('reaction force - F $[kN]$')

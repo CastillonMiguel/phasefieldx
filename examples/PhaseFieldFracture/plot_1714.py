@@ -114,7 +114,6 @@ Data = Input(E=20.8,     # young modulus
 # The mesh is generated using Gmsh and saved as a 'mesh.msh' file. For more details 
 # on how to create the mesh, refer to the :ref:`ref_examples_91` examples.
 # The following lines 
-msh_file = os.path.join("mesh", "three_point_bending_test.msh") # Path to the mesh file
 msh_file = os.path.join("../GmshGeoFiles/9103_ThreePointBendingTest/three_point_bending_test.msh")    # Path to the mesh file
 gdim = 2                                     # Geometric dimension of the mesh
 gmsh_model_rank = 0                          # Rank of the Gmsh model in a parallel setting
