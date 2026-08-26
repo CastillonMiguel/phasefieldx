@@ -64,16 +64,26 @@ Publications Using phasefieldx
         }
     </style>
     
-This section collects peer-reviewed scientific publications that have used
-the *phasefieldx* software in their research. The listed works demonstrate
-the application of *phasefieldx* to phase-field modeling, fracture mechanics,
-and related computational mechanics problems, and serve as references for
-users interested in validated and published use cases of the framework.
+This section collects scientific publications and academic works related to
+*PhaseFieldX*. The listed contributions include peer-reviewed journal
+articles, doctoral theses, and other scholarly outputs that have employed
+or contributed to the development of *PhaseFieldX*.
+These works demonstrate the application of *PhaseFieldX* to phase-field
+modeling, fracture mechanics, fatigue analysis, and related computational
+mechanics problems, and serve as references for users interested in
+validated research and published use cases of the framework.
 
 If you have used *phasefieldx* in your research and would like your publication
 to be included, please consider contacting the developers or submitting a
 request through the project repository.
 
+.. contents::
+   :local:
+   :depth: 2
+
+
+Peer-Reviewed Journal Articles
+------------------------------
 
 .. grid:: 1
     :gutter: 2
@@ -229,3 +239,75 @@ request through the project repository.
                     📚<br>Documentation
                 </a>
             </div>
+
+
+Doctoral Theses
+---------------
+
+.. grid-item-card::
+    :shadow: lg
+    :class-card: thesis-card
+
+    .. raw:: html
+
+        <div style="text-align: center; margin: 20px 0;">
+            <h2 class="pub-title" style="font-size: 26px;">
+                Numerical Methods and Algorithms for Phase-Field Fracture Modeling
+            </h2>
+        </div>
+
+    ^^^
+
+    **Author:** M. Castillón  
+    **Year:** 2026  
+    **Institution:** Universidad Politécnica de Madrid (UPM), Madrid, Spain  
+    **Degree:** PhD Thesis  
+    **DOI:** `10.20868/UPM.thesis.96840 <https://doi.org/10.20868/UPM.thesis.96840>`_
+
+    This doctoral thesis presents novel numerical methods and algorithms for
+    phase-field fracture modeling, with particular emphasis on fatigue crack
+    propagation, crack area measurement, and robust constrained optimization
+    techniques.
+
+    The computational challenge of fatigue—where conventional phase-field
+    approaches often require cycle-by-cycle simulations over thousands of
+    loading cycles—is addressed through a framework that enables fatigue
+    analysis using only monotonic loading. A specialized energy-controlled
+    solver robustly traces the complete crack equilibrium path, including
+    snap-back instabilities, allowing the numerical extraction of the
+    compliance rate with respect to crack area. By combining these results
+    with Linear Elastic Fracture Mechanics (LEFM) and Paris' law, fatigue
+    life can be predicted with dramatically reduced computational cost.
+
+    To improve the accuracy of geometric quantities obtained from
+    phase-field simulations, the thesis introduces the Double Gradient
+    Correction Method (DGCM). Based on the principle of energy
+    equipartition, DGCM provides a mesh-independent estimate of crack area
+    by exploiting the gradient contribution of the phase-field energy,
+    remaining applicable to complex crack topologies and three-dimensional
+    problems.
+
+    The thesis also presents the Latent Variable Proximal Point (LVPP)
+    algorithm, a robust framework for solving constrained phase-field
+    problems. By reformulating inequality-constrained models through an
+    auxiliary latent variable, LVPP transforms the original problem into a
+    sequence of unconstrained saddle-point systems suitable for efficient
+    Proximal Galerkin discretizations. The approach avoids the parameter
+    sensitivity and convergence difficulties commonly associated with
+    penalty-based methods.
+
+    All methodologies developed in this thesis are implemented in
+    *PhaseFieldX*, ensuring reproducibility and providing an open-source
+    platform for future developments in computational fracture mechanics.
+
+    +++
+
+    **🔗 Related Resources**
+
+    .. raw:: html
+
+        <div style="display: grid; grid-template-columns: 1fr; gap: 10px; margin: 15px 0;">
+            <a href="https://oa.upm.es/96840/" target="_blank" class="pub-button btn-journal">
+                📖<br>PhD Thesis
+            </a>
+        </div>
