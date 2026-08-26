@@ -1,7 +1,7 @@
-.. _theory_allen_cahn:
+.. _theory_topology_optimization:
 
-Allen Cahn
-==========
+Topology Optimization
+======================
 
 .. note::
 

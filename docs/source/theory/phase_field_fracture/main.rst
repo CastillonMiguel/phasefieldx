@@ -16,6 +16,15 @@ versatile computational tool. By regularizing the sharp crack interface into a d
 band, PFF eliminates the need for explicit tracking of the crack path, offering a flexible
 framework to simulate complex failure scenarios.
 
+Following the work presented in :footcite:t:`phd_thesis_Castillon` in the context of the 
+Phase-Field Fracture (PFF) method, this section provides a comprehensive overview of the 
+theoretical foundations, numerical strategies, and practical considerations for implementing 
+PFF in computational simulations. The discussion is structured around the key components 
+of the PFF framework, including the effective elastic strain energy, fracture surface energy,
+degradation functions, and irreversibility constraints. Each component is examined in detail, 
+highlighting its role in the overall formulation and its impact on the accuracy and efficiency
+of simulations.
+
 .. _sec_pff_background:
 
 PFF background

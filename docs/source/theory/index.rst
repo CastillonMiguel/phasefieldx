@@ -38,7 +38,10 @@ Because phase-field applications like fracture or topology optimization combine 
 
 2. **Elasticity Problem** (:ref:`theory_elasticity`): Covers linear elastic stress analysis, strain measures, and energy densities under mechanical deformation.
 
-3. **Allen-Cahn Equation** (:ref:`theory_allen_cahn`): Introduces phase-field order-parameter dynamics and gradient-energy functionals.
+3. **Allen-Cahn** (:ref:`theory_allen_cahn`): Models the evolution of non-conserved phase fields through energy minimization and interface motion.
+
+4. **Cahn-Hilliard** (:ref:`theory_cahn_hilliard`): Models the diffusion-driven evolution of conserved phase fields, enabling the simulation of phase separation and microstructure evolution.
+
 
 Through a systematic exploration of these interconnected domains, this documentation provides in-depth explanations and practical guidance for understanding and applying phase-field theoretical principles.
 
@@ -53,4 +56,6 @@ Through a systematic exploration of these interconnected domains, this documenta
    energy_pff/main
    crack_measurement/main
    Allen_Cahn/main
+   Cahn_Hilliard/main.rst
+   Topology/main.rst
    errors/main
