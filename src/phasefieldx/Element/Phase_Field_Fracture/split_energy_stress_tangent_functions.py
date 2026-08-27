@@ -9,7 +9,7 @@ In the Isotropic constitutive free energy functional,
 
 .. math::
 
-   E(u,\phi)=\int \left[g(\phi)+k\right] \psi(\boldsymbol \epsilon(\boldsymbol u)) dV,
+   E(u,\phi)=\int \left[g(\phi)\right] \psi(\boldsymbol \epsilon(\boldsymbol u)) dV,
 
 
 the degradation function $g(\phi)$ degrades all the energy $\psi(\boldsymbol \epsilon(\boldsymbol u))$. In the case of the anisotropic constitutive free energy functional,
@@ -20,8 +20,9 @@ the degradation function $g(\phi)$ degrades all the energy $\psi(\boldsymbol \ep
 
 the energy $\psi(\boldsymbol \epsilon(\boldsymbol u))$ is split in two components, $\psi=\psi_a+\psi_b$, in which the component $\psi_a$ attains to the energy relative to tensions, so the degradation function only applied to it, avoiding the creation of crack due to compression effort.
 
-There are several methods to carry out the energy slip. PhaseFieldX code implements the Spectral [Miehe]_ and volumetric-deviatoric [Amor]_ decomposition.
+There are several methods to carry out the energy slip. PhaseFieldX code implements the Spectral :footcite:t:`phase_field_Miehe2010` and volumetric-deviatoric :footcite:t:`phase_field_Amor2009` decomposition.
 
+.. footbibliography::
 
 """
 

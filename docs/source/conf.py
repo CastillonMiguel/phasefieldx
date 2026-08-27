@@ -76,30 +76,38 @@ warnings.filterwarnings(
 from sphinx_gallery.sorting import FileNameSortKey, ExplicitOrder
 
 extensions = [
-    'sphinx.ext.autodoc',
     'numpydoc',
     'jupyter_sphinx',
+    'IPython.sphinxext.ipython_console_highlighting',
+    'IPython.sphinxext.ipython_directive',
+    'sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
     'sphinx.ext.coverage',
     'sphinx.ext.doctest',
     'sphinx.ext.autosummary',
     'sphinx.ext.graphviz',
     'sphinx.ext.ifconfig',
-    'IPython.sphinxext.ipython_console_highlighting',
-    'IPython.sphinxext.ipython_directive',
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
     'sphinx.ext.todo',
     'sphinx.ext.autosectionlabel',
+    'sphinx_design',
     'sphinx_copybutton',
     'sphinx_math_dollar',
     'sphinx_gallery.gen_gallery',
     'pyvista.ext.plot_directive',  #'matplotlib.sphinxext.plot_directive',
     'pyvista.ext.viewer_directive',
-    'sphinx_design',
     'sphinxcontrib.tikz',
     'sphinxcontrib.bibtex',
+    "sphinxcontrib.youtube",
 ]
+
+latex_elements = {
+    "preamble": r"""
+\usepackage{xcolor}
+\usetikzlibrary{positioning,calc,shadows,shapes.geometric}
+"""
+}
 
 bibtex_bibfiles = ['../../references.bib']
 

@@ -5,10 +5,10 @@
 // -----------------------------------------------------------------------------
 
 //Use the following line to generate the mesh (.inp (abaqus))
-//gmsh SingleEdgeShear.geo  -3 -o mesh.msh
+//gmsh file.geo  -2 -o mesh.msh
 
-h     =0.1;   //mesh size
-hcrack=0.005;  //mesh size near crack
+h      = 0.02;  //mesh size
+hcrack = 0.004; //mesh size near crack
 
 // ------------------------------------------------------
 // ------------------------------------------------------
@@ -19,7 +19,7 @@ hcrack=0.005;  //mesh size near crack
 
 // ------------------------------------------------------
 // A1)Points Definitions: 
-//
+//              
 //         P4*----------*P3
 //           |          |
 //         P5*  \       |
@@ -27,7 +27,7 @@ hcrack=0.005;  //mesh size near crack
 //         P6*  /       |
 //           |          |
 //         P1*----------*P2
-//
+//             
 //    |Y
 //    |
 //    ---X   Dimensions:   1 x 1 x 0.01
@@ -96,7 +96,7 @@ Curve Loop(5) = {1,2,3,4,5,6,7};  //C5: through lines L1,L2,...,L7
 //         
 
 Plane Surface(6) = {5};  //  Curve loop 5 C5 --> Surface S6
-
+Recombine Surface {6};
 
 
 // ------------------------------------------------------
@@ -115,12 +115,12 @@ Plane Surface(6) = {5};  //  Curve loop 5 C5 --> Surface S6
 //        |                | 
 //        |                |
 //        |                |
-//        *  \  -----------|
-//              |          |   (Field[6])
-//        *  /  |          |
-//        |     |hcrack F6 |
-//        |     |          |
-//        |     |          |
+//        *     -----------|
+//             | hcrack F6 |  (Field[6])
+//        *     -----------| 
+//        |                |
+//        |                |
+//        |                |
 //        *----------------*
 
 Field[6]      =    Box;
@@ -128,68 +128,72 @@ Field[6].VIn  = hcrack;
 Field[6].VOut =      h;
 
 Field[6].XMin = -0.05;
-Field[6].XMax =  0.5;
-Field[6].YMin = -0.5;
+Field[6].XMax =   0.5;
+Field[6].YMin = -0.50;
 Field[6].YMax =  0.05;
 
 
 // ------------------------------------------------------
-// B1) Mesh size Box2
+// B2) Mesh size Box2
 //
-//        *----------------* 
-//        |                | 
+//        *----------------*  
+//        |                |
 //        |                |
 //        |   -------------|
-//        *  \|            |
-//            | hcrack*10  |   (Field[7])
-//        *  /|   F7       |
-//        |   |            |
-//        |   |            |
-//        |   |            |
+//        |  |             |
+//        *  |  hcrack*10  |
+//        *  |   F7        | (Field[7])
+//        |  |             |
+//        |   -------------|
+//        |                |
+//        |                |
 //        *----------------*
 
 Field[7]      =       Box;
 Field[7].VIn  = hcrack*10;
 Field[7].VOut =         h;
 
-Field[7].XMin =      -0.1;
+Field[7].XMin =      -0.15;
 Field[7].XMax =       0.5;
 Field[7].YMin =      -0.5;
-Field[7].YMax =       0.1;
+Field[7].YMax =       0.2;
 
 
 // ------------------------------------------------------
 // B3) Mesh min(Box1,Box2)
 //
-//        *----------------* 
-//        |                | 
+//        *----------------*  
 //        |                |
 //        |   -------------|
-//        |   | hcrack *10 |
-//        *  \|  ----------|
-//            |  |         |   (Field[8])
-//        *  /|F8|   F8    |
-//        |   |  |  hcrack |
-//        |   |  |         |
-//        |   |  |         |
+//        |  |  hcrack*10  |
+//        *  |   ----------|
+//        |  |  | hcrack F8| Field[8]
+//        *  |   ----------| 
+//        |  |           F8|
+//        |   -------------|
+//        |                |
 //        *----------------*
 
 Field[8] = Min;
 Field[8].FieldsList = {6,7};
-Background Field = 8;
+Background Field    = 8;
+
 
 
 // ------------------------------------------------------
 // B4)Extrude Mesh
 
-//     {X, Y,    Z}    Surface
-Extrude{0, 0, 0.01}{Surface{6}; Layers{1};Recombine;}
-
 
 // ------------------------------------------------------
 // B5)Mesh Algorithm
+// Geometry.Tolerance = 1e-12;
+// Mesh.SaveAll = 1;
+
 Geometry.Tolerance = 1e-12;
-Mesh.SaveAll = 1;
+Mesh.Algorithm = 8;                    // Frontal-Delaunay for quads
+Mesh.RecombineAll = 1;                 // Recombine all surfaces
+Mesh.SubdivisionAlgorithm = 1;         // All quads subdivision
+Mesh.RecombinationAlgorithm = 1;       // Simple recombination
 
 // ------------------------------------------------------
 // Physical groups definition
@@ -205,5 +209,9 @@ Mesh.SaveAll = 1;
 //             "bottom"
 //
 
-Physical Surface("bottom", 45) = {19};
-Physical Surface("top", 46) = {27};
+//+
+Physical Curve("bottom", 8) = {1};
+//+
+Physical Curve("top", 9) = {3};
+//+
+Physical Surface("specimen", 10) = {6};

@@ -21,7 +21,7 @@ import scifem
 import ufl
 
 from phasefieldx.files import prepare_simulation, append_results_to_file
-from phasefieldx.Logger.library_versions import set_logger, log_system_info, log_library_versions, log_end_analysis, log_model_information
+from phasefieldx.Logger.library_versions import set_logger, log_system_info, log_library_versions, log_end_analysis, log_model_information, log_header
 
 from phasefieldx.Materials.elastic_isotropic import epsilon
 from phasefieldx.Reactions import calculate_reaction_forces
@@ -119,6 +119,7 @@ def solve(Data,
     if rank == 0:
         prepare_simulation(path, result_folder_name)
         logger = set_logger(result_folder_name)
+        log_header(logger)
         log_system_info(logger)  # log system information
         log_library_versions(logger)  # log Library versions
         Data.save_log_info(logger)  # log Simulation input data

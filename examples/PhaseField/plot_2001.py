@@ -4,7 +4,7 @@ r"""
 Representation of a Cracked Plate
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In this example, we solve a boundary value problem for a cracked plate using the phase-field model (:ref:`theory_phase_field`). The crack is represented by the phase field variable, following the approach presented by [Miehe]_. We apply a boundary condition of $\phi = 1$, representing the broken part of the material, and simulate the crack representation with different length scale values.
+In this example, we solve a boundary value problem for a cracked plate using the phase-field model (:ref:`theory_phase_field`). The crack is represented by the phase field variable, following the approach presented by :footcite:t:`phase_field_Miehe2010`. We apply a boundary condition of $\phi = 1$, representing the broken part of the material, and simulate the crack representation with different length scale values.
 
 To exploit symmetry, only half of the plate is simulated, and we reflect the results to show the full solution. This allows us to reduce computational cost while capturing the entire domain's behavior.
 
@@ -21,7 +21,7 @@ To exploit symmetry, only half of the plate is simulated, and we reflect the res
    #     |
    #     *---X
 
-.. [Miehe] A phase field model for rate-independent crack propagation: Robust algorithmic implementation based on operator splits, https://doi.org/10.1016/j.cma.2010.04.011.
+.. footbibliography::
 
 """
 

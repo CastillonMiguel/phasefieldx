@@ -1,28 +1,61 @@
 Theory
 ******
 
-Welcome to the theory section of this documentation, where we delve into the fundamental concepts underlying phase-field models. This section provides a comprehensive overview of the theoretical frameworks essential for understanding phase-field approaches.
+Welcome to the Theory section of the documentation. Here, we introduce the fundamental concepts and mathematical frameworks that underpin the models implemented in PhaseFieldX.
 
-Phase-field fracture studies encompass a multidisciplinary approach, integrating principles from elasticity theory, phase-field modeling, and fracture mechanics. We explore four key problem domains that form the foundation of our understanding:
+The following video presents the motivation behind phase-field methods and provides an overview of some of their most common applications, including fracture mechanics, solidification and melting processes, and topology optimization.
 
-1. **Elasticity Problem** (:ref:`theory_elasticity`): This problem focuses on the analysis of material behavior under mechanical deformation within the framework of elasticity theory. Understanding the elastic properties of materials is crucial for characterizing their response to external forces and predicting the onset of fracture.
+.. youtube:: q06rGJNSjAw
+  :align: center
 
-2. **Phase-Field Problem** (:ref:`theory_phase_field`): The phase-field method is a powerful computational technique used to model and simulate phase transitions and microstructural evolution in materials. In the context of fracture, the phase-field approach enables the representation of crack initiation, propagation, and interaction in a continuous manner, eliminating the need for explicit crack tracking.
+The main focus of the package is the **phase-field fracture problem**, which combines concepts from elasticity theory, variational methods, and phase-field modeling to describe crack initiation and propagation in a diffuse manner.
 
-3. **Phase-Field Fracture Problem** (:ref:`theory_phase_field_fracture`): Building on the concepts from elasticity and phase-field problems, the phase-field fracture problem combines these principles to study the initiation and propagation of fractures within heterogeneous materials. By incorporating phase-field techniques into fracture mechanics, this approach provides a versatile framework for simulating complex fracture phenomena observed in real-world materials.
+However, phase-field fracture is not an isolated theory. It is built upon several well-established ingredients that can be studied independently. Understanding these fundamental components is essential before approaching the complete coupled formulation. A clear understanding of the underlying theories facilitates the analysis of the governing equations, the implementation of numerical algorithms, and the identification of potential modeling or coding errors.
 
-4. **Allen-Cahn** (:ref:`theory_allen_cahn`)
-   
-Through a systematic exploration of these interconnected problem domains, we aim to provide insights into the underlying mechanisms governing fracture behavior. This documentation is structured to offer in-depth explanations and practical guidance for understanding and applying the theoretical principles discussed in the subsequent sections.
+For this reason, this documentation is divided into two parts:
+
+1. The **Problems of Application**, which represent the final coupled formulations of interest.
+
+2. The **Fundamental Building Blocks**, which introduce the individual theories and concepts from which the phase-field models frameworks are constructed.
+
+
+Problems of Application
+=======================
+
+1. **Phase-Field Fracture/Fatigue** Phase-Field Fracture/Fatigue (:ref:`theory_phase_field_fracture`, :ref:`theory_phase_field_fatigue`): Integrates continuum elasticity with phase-field regularization to model the initiation, propagation, branching, coalescence, and fatigue-driven evolution of cracks without the need for explicit crack tracking.
+
+2. **Phase-Field Topology Optimization** *(Upcoming)* (:ref:`theory_topology_optimization`)
+
+3. **Phase-Field Solidification** *(Upcoming)* (:ref:`theory_solidification`)
+
+
+Fundamental Building Blocks
+===========================
+
+Because phase-field applications like fracture or topology optimization combine several physical and mathematical ingredients, it is helpful to study each component independently. A clear understanding of the underlying building blocks simplifies analyzing the governing equations, implementing numerical algorithms, and detecting formulation or coding errors.
+
+1. **Phase-Field Problem** (:ref:`theory_phase_field`): Introduces the variational regularization of discontinuities and the crack surface density functional (CSDF).
+
+2. **Elasticity Problem** (:ref:`theory_elasticity`): Covers linear elastic stress analysis, strain measures, and energy densities under mechanical deformation.
+
+3. **Allen-Cahn** (:ref:`theory_allen_cahn`): Models the evolution of non-conserved phase fields through energy minimization and interface motion.
+
+4. **Cahn-Hilliard** (:ref:`theory_cahn_hilliard`): Models the diffusion-driven evolution of conserved phase fields, enabling the simulation of phase separation and microstructure evolution.
+
+
+Through a systematic exploration of these interconnected domains, this documentation provides in-depth explanations and practical guidance for understanding and applying phase-field theoretical principles.
 
 
 .. toctree::
    :hidden:
 
+   phase_field_fracture/main
+   phase_field_fatigue/main
    elasticity/main
    phase_field/main
-   phase_field_fracture/main
    energy_pff/main
    crack_measurement/main
    Allen_Cahn/main
+   Cahn_Hilliard/main.rst
+   Topology/main.rst
    errors/main

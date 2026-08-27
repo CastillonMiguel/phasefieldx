@@ -13,7 +13,7 @@ import dolfinx
 import ufl
 
 from phasefieldx.files import prepare_simulation, append_results_to_file
-from phasefieldx.Logger.library_versions import set_logger, log_library_versions, log_system_info, log_end_analysis, log_model_information
+from phasefieldx.Logger.library_versions import set_logger, log_library_versions, log_system_info, log_end_analysis, log_model_information, log_header
 from phasefieldx.Element.Allen_Cahn.potential import potential_function, potential_function_derivative, potential_coefficient
 from phasefieldx.Element.Allen_Cahn.energy import calculate_potential_energy
 
@@ -95,6 +95,7 @@ def solve(Data,
     if rank == 0:
         prepare_simulation(path, result_folder_name)
         logger = set_logger(result_folder_name)
+        log_header(logger)
         log_system_info(logger)  # log system information
         log_library_versions(logger)  # log Library versions
         Data.save_log_info(logger)  # log Simulation input data
@@ -116,9 +117,10 @@ def solve(Data,
     ########################################################################
 
     # Phase-field -------------------------
-    Φ0 = dolfinx.fem.Function(V_Φ, name="phi")
     Φ = dolfinx.fem.Function(V_Φ, name="phi")
     δΦ = ufl.TestFunction(V_Φ)
+
+    Φ0 = dolfinx.fem.Function(V_Φ, name="phi")
 
     metadata = {"quadrature_degree": quadrature_degree}
     dx = ufl.Measure("dx", domain=msh, metadata=metadata)
@@ -127,27 +129,16 @@ def solve(Data,
     if initial_condition is not None:
         Φ.interpolate(initial_condition)
         Φ0.interpolate(initial_condition)
-
-    # f = 0.25 * (1 - Φ**2)**2
-    # dfdc = ufl.diff(f, Φ)
-
+        Φ.x.array[:] = Φ0.x.array
 
     # Phase-field ------------------------------------------------------------
     c0 = potential_coefficient(case)
     
-    F_phi = 1/dt*ufl.inner(Φ, δΦ) * ufl.dx
-    F_phi -= 1/dt*ufl.inner(Φ0, δΦ) * ufl.dx
-
-    # F_phi += dt * (ufl.inner(dfdc, δΦ) * ufl.dx + Data.l * ufl.inner(ufl.grad(Φ), ufl.grad(δΦ)) * ufl.dx)
-
-    F_phi += M*(1.0/(c0*Data.l)*potential_function_derivative(Φ, case)*δΦ + Data.l * 2/c0*ufl.inner(ufl.grad(Φ), ufl.grad(δΦ)))*ufl.dx
-    # F_phi += (ufl.inner(dfdc, δΦ) + Data.l * 2/c0*ufl.inner(ufl.grad(Φ), ufl.grad(δΦ)))*ufl.dx
+    F_phi = M*(1.0/(c0*Data.l)*potential_function_derivative(Φ, case)*δΦ + Data.l * 2/c0*ufl.inner(ufl.grad(Φ), ufl.grad(δΦ)))*dx
+    F_phi += 1.0/dt*ufl.inner(Φ, δΦ) * dx 
+    F_phi -= 1.0/dt*ufl.inner(Φ0, δΦ) * dx
     
     # x = ufl.SpatialCoordinate(msh)
-    # if update_loading != None:
-    #     f, grad_f = update_loading(x, 0)
-    #     #F_phi-= Data.Gc*(1/Data.l*ufl.inner(f, delta_phi) + Data.l * ufl.inner(ufl.grad(f), ufl.grad(delta_phi))) * ufl.dx
-    #     F_phi -= Data.Gc*(1/Data.l*ufl.inner(f, delta_phi) + Data.l * ufl.inner(grad_f, ufl.grad(delta_phi))) * ufl.dx
 
     J_phi = ufl.derivative(F_phi, Φ)
     petsc_options_phi = {
@@ -215,7 +206,7 @@ def solve(Data,
         logger.info(f" ---------------------------------- ")
 
 
-    t = 0
+    t = 0.0
     step = 0
     while t < final_time:
         if rank == 0 and logger:
@@ -233,7 +224,6 @@ def solve(Data,
         # Phase-field solution - all processes participate
         if rank == 0 and logger:
             logger.info(f">>> Solving phase for dofs: Φ ")
-        
         problem_phi.solve()
         converged = problem_phi.solver.getConvergedReason()
         phi_iterations = problem_phi.solver.getIterationNumber()

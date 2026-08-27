@@ -3,7 +3,7 @@
 
 .geo File: Symmetry ASTM Standard E-399-72
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-This example illustrates the process of generating a mesh for an ASTM Standard E-399-72 specimen, as described in \cite{TADA}, considering only the symmetric half of the geometry.
+This example illustrates the process of generating a mesh for an ASTM Standard E-399-72 specimen, as described in :footcite:t:`lefm_Tada`, considering only the symmetric half of the geometry.
 Note that Phasefieldx can import external meshes in the .msh format. This can be achieved by using Gmsh.
 
 Files with the .geo format define both the geometry and the mesh parameters, such as element types and sizes.
@@ -28,7 +28,7 @@ Here, `-3` specifies that the mesh is 3-dimensional, and `-o mesh.msh` tells Gms
 
 Alternatively, you can generate the mesh using the Gmsh Python API, which allows for programmatic mesh generation within Python scripts.
 
-.. [TADA] The Stress Analysis of Cracks Handbook, Third Edition. Tada, Hiroshi; Paris, Paul C.  https://doi.org/10.1115/1.801535
+.. footbibliography::
 
 """
 

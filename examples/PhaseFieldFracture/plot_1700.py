@@ -41,7 +41,7 @@ The Young's modulus, Poisson's ratio, and the critical energy release rate are g
    | l  | 0.1     | mm     |
    +----+---------+--------+
 
-In this case, due to the discretization, it is possible to obtain an analytical solution for the isotropic model by solving $\phi$ from the given equations. The term $|\nabla \phi|^2$ vanishes due to the discretization as explained by Molnar [MOLNAR201727]_ and Miehe [Miehe1]_ in the appendix.
+In this case, due to the discretization, it is possible to obtain an analytical solution for the isotropic model by solving $\phi$ from the given equations. The term $|\nabla \phi|^2$ vanishes due to the discretization as explained by Molnar :footcite:t:`phase_field_one_element_molnar` and Miehe :footcite:t:`phase_field_Miehe2010`.
 
 .. math::
    \phi = \frac{2 \psi_a}{\frac{G_c}{l}+2\psi_a}=\frac{2 H}{\frac{G_c}{l}+2H}
@@ -49,10 +49,8 @@ In this case, due to the discretization, it is possible to obtain an analytical 
 .. math::
     \sigma_y = \sigma(1-\phi)^2
 
+.. footbibliography::
 
-.. [MOLNAR201727] 2D and 3D Abaqus implementation of a robust staggered phase-field solution for modeling brittle fracture,  https://doi.org/10.1016/j.finel.2017.03.002
-
-.. [Miehe1] A phase field model for rate-independent crack propagation: Robust algorithmic implementation based on operator splits, https://doi.org/10.1016/j.cma.2010.04.011.
 """
 
 ###############################################################################
@@ -71,7 +69,7 @@ import os
 # Import from phasefieldx package
 # -------------------------------
 from phasefieldx.Element.Phase_Field_Fracture.Input import Input
-from phasefieldx.Element.Phase_Field_Fracture.solver.solver import solve
+from phasefieldx.Element.Phase_Field_Fracture.solver.solver_history import solve
 from phasefieldx.Boundary.boundary_conditions import bc_xy, bc_y, get_ds_bound_from_marker
 from phasefieldx.PostProcessing.ReferenceResult import AllResults
 
@@ -348,7 +346,6 @@ file_vtu.plot(scalars='phi', cpos='xy', show_scalar_bar=True, show_edges=False)
 # ----------------------------------
 # The displacements results saved in the .vtu file are shown.
 # For this, the file is loaded using PyVista.
-file_vtu = pv.read(os.path.join(Data.results_folder_name, "paraview-solutions_vtu", "phasefieldx_p0_000080.vtu"))
 file_vtu.plot(scalars='u', cpos='xy', show_scalar_bar=True, show_edges=False)
 
 

@@ -4,7 +4,7 @@ r"""
 Single edge notched tension test
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-A well-known benchmark simulation in fracture mechanics is performed, relying on the simulation conducted by [Miehe]_. This simulation considers an anisotropic formulation with spectral energy decomposition, although we have also repeated the simulations with the isotropic formulation.
+A well-known benchmark simulation in fracture mechanics is performed, relying on the simulation conducted by :footcite:t:`phase_field_Miehe2010`. This simulation considers an anisotropic formulation with spectral energy decomposition, although we have also repeated the simulations with the isotropic formulation.
 
 The model consists of a square plate with a notch located halfway up, extending from the left to the center, as shown in the figure below. The bottom part is fixed in all directions, while the upper part can slide vertically. A vertical displacement is applied at the top. The geometry and boundary conditions are depicted in the figure. We discretize the model with triangular elements, refining the areas (element size h) where crack evolution is expected. The element size $h$ must be sufficiently small to avoid mesh dependencies.
 
@@ -41,7 +41,7 @@ The Young's modulus, Poisson's ratio, and the critical energy release rate are g
 | l  | 0.015   | mm     |
 +----+---------+--------+
 
-.. [Miehe] A phase field model for rate-independent crack propagation: Robust algorithmic implementation based on operator splits, https://doi.org/10.1016/j.cma.2010.04.011.
+.. footbibliography::
 
 """
 
@@ -61,7 +61,7 @@ import os
 # Import from phasefieldx package
 # -------------------------------
 from phasefieldx.Element.Phase_Field_Fracture.Input import Input
-from phasefieldx.Element.Phase_Field_Fracture.solver.solver import solve
+from phasefieldx.Element.Phase_Field_Fracture.solver.solver_history import solve
 from phasefieldx.Boundary.boundary_conditions import bc_xy, bc_y, get_ds_bound_from_marker
 from phasefieldx.PostProcessing.ReferenceResult import AllResults
 
@@ -113,8 +113,7 @@ Data = Input(E=210.0,   # young modulus
 # ---------------
 # The mesh is generated using Gmsh and saved as a 'mesh.msh' file. For more details 
 # on how to create the mesh, refer to the :ref:`ref_examples_91` examples.
-
-msh_file = os.path.join("mesh", "mesh.msh")  # Path to the mesh file
+msh_file = os.path.join("../GmshGeoFiles/9101_SingleNotchedTensionTest/mesh.msh")    # Path to the mesh file
 gdim = 2                                     # Geometric dimension of the mesh
 gmsh_model_rank = 0                          # Rank of the Gmsh model in a parallel setting
 mesh_comm = mpi4py.MPI.COMM_WORLD            # MPI communicator for parallel computation
@@ -135,12 +134,8 @@ fdim = msh.topology.dim - 1 # Dimension of the mesh facets
 #
 # - `bottom_facet_marker`: Refers to the bottom part of the specimen.
 # - `top_facet_marker`: Refers to the top part of the specimen.
-# - `right_facet_marker`: Refers to the right side of the specimen.
-# - `left_facet_marker`: Refers to the left side of the specimen.
-bottom_facet_marker = facet_markers.find(9)
-top_facet_marker = facet_markers.find(10)
-right_facet_marker = facet_markers.find(11)
-left_facet_marker = facet_markers.find(12)
+bottom_facet_marker = facet_markers.find(8)
+top_facet_marker = facet_markers.find(9)
 
 # %%
 # The `get_ds_bound_from_marker` function creates measures for applying boundary conditions

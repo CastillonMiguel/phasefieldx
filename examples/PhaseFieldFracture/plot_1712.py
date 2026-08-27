@@ -4,7 +4,7 @@ r"""
 Single edge notched shear test
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-A well-known benchmark simulation in fracture mechanics is performed, based on the work by [Miehe]_.
+A well-known benchmark simulation in fracture mechanics is performed, based on the work by :footcite:t:`phase_field_Miehe2010`.
 
 The model consists of a square plate with a notch located halfway up, extending from the left side to the center, as shown in the figure below. The bottom part is fixed in all directions, while the top part can slide horizontally. A horizontal displacement is applied at the top. The geometry and boundary conditions are depicted in the figure. We discretize the model by refining the areas where crack evolution is expected, ensuring that the element size $h$ is sufficiently small to avoid mesh dependency.
 
@@ -42,7 +42,7 @@ The Young's modulus, Poisson's ratio, and the critical energy release rate are g
 | l  | 0.015   | mm     |
 +----+---------+--------+
 
-.. [Miehe] A phase field model for rate-independent crack propagation: Robust algorithmic implementation based on operator splits, https://doi.org/10.1016/j.cma.2010.04.011.
+.. footbibliography::
 
 """
 
@@ -62,7 +62,7 @@ import os
 # Import from phasefieldx package
 # -------------------------------
 from phasefieldx.Element.Phase_Field_Fracture.Input import Input
-from phasefieldx.Element.Phase_Field_Fracture.solver.solver import solve
+from phasefieldx.Element.Phase_Field_Fracture.solver.solver_history import solve
 from phasefieldx.Boundary.boundary_conditions import bc_xy, bc_y, get_ds_bound_from_marker
 from phasefieldx.PostProcessing.ReferenceResult import AllResults
 
@@ -96,7 +96,7 @@ from phasefieldx.PostProcessing.ReferenceResult import AllResults
 Data = Input(E=210.0,    # young modulus
              nu=0.3,     # poisson
              Gc=0.0027,  # critical energy release rate
-             l=0.06,     # lenght scale parameter
+             l=0.015,     # lenght scale parameter
              degradation="anisotropic",  # "isotropic" "anisotropic"
              split_energy="spectral",    # "spectral" "deviatoric"
              degradation_function="quadratic",
@@ -114,10 +114,10 @@ Data = Input(E=210.0,    # young modulus
 # Mesh Definition
 # ---------------
 # The mesh is generated using Gmsh and saved as a 'mesh.msh' file. For more details 
-# on how to create the mesh, refer to the :ref:`ref_examples_91` examples.
+# on how to create the mesh, refer to the :ref:`ref_9102` examples.
 # The following lines 
 
-msh_file = os.path.join("mesh", "mesh_shear.msh")  # Path to the mesh file
+msh_file = os.path.join("../GmshGeoFiles/9102_SingleNotchedShearTest/mesh.msh")    # Path to the mesh file
 gdim = 2                                     # Geometric dimension of the mesh
 gmsh_model_rank = 0                          # Rank of the Gmsh model in a parallel setting
 mesh_comm = mpi4py.MPI.COMM_WORLD            # MPI communicator for parallel computation
@@ -140,10 +140,31 @@ fdim = msh.topology.dim - 1 # Dimension of the mesh facets
 # - `top_facet_marker`: Refers to the top part of the specimen.
 # - `right_facet_marker`: Refers to the right side of the specimen.
 # - `left_facet_marker`: Refers to the left side of the specimen.
-bottom_facet_marker = facet_markers.find(9)
-top_facet_marker = facet_markers.find(10)
-right_facet_marker = facet_markers.find(11)
-left_facet_marker = facet_markers.find(12)
+def bottom(x):
+    return np.isclose(x[1], -0.5)
+
+def top(x):
+    return np.isclose(x[1], 0.5)
+
+def left(x):
+    return np.isclose(x[0], -0.5)
+
+def right(x):
+    return np.isclose(x[0], 0.5)
+
+# %%
+# The `get_ds_bound_from_marker` function creates measures for applying boundary conditions
+# on specific facets. These measures are generated for:
+#
+# - `bottom_facet_marker` → Stored in `ds_bottom`
+# - `top_facet_marker` → Stored in `ds_top`
+
+bottom_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, bottom)
+top_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, top)
+left_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, left)
+right_facet_marker = dolfinx.mesh.locate_entities_boundary(msh, fdim, right)
+
+
 
 # %%
 # The `get_ds_bound_from_marker` function creates measures for applying boundary conditions
@@ -231,7 +252,7 @@ bcs_list_u_names = ["top", "bottom", "left", "right"]
 #   boundary displacements. It is essential for simulations that involve gradual loading or unloading,
 #   with a continuous linear displacement evolution along the x-direction over time.
 def update_boundary_conditions(bcs, time):
-    dt0 = 10**-4
+    dt0 = 10**-5
     val = time * dt0
     bcs_list_u[0].g.value[0] = petsc4py.PETSc.ScalarType(val)
     return val, 0, 0
@@ -289,7 +310,7 @@ bcs_list_phi = []
 # conditions and loading parameters.
 
 dt = 1.0
-final_time = 150.0
+final_time = 1800.0
 
 # %%
 # Uncomment the following lines to run the solver with the specified parameters.
@@ -310,7 +331,7 @@ final_time = 150.0
 #       path=None,
 #       bcs_list_u_names=bcs_list_u_names,
 #       min_stagger_iter=2,
-#       max_stagger_iter=500,
+#       max_stagger_iter=2,
 #       stagger_error_tol=1e-8)
 
 
@@ -326,14 +347,12 @@ S = AllResults(Data.results_folder_name)
 S.set_label('Simulation')
 S.set_color('b')
 
-
 ###############################################################################
 # Plot: phase-field $\phi$
 # ------------------------
 # The phase-field result saved in the .vtu file is shown.
 # For this, the file is loaded using PyVista.
-file_vtu = pv.read(os.path.join(Data.results_folder_name, "paraview-solutions_vtu", "phasefieldx_p0_000097.vtu"))
-
+file_vtu = pv.read(os.path.join(Data.results_folder_name, "paraview-solutions_vtu", "phasefieldx_p0_001247.vtu"))
 file_vtu.plot(scalars='phi', cpos='xy', show_scalar_bar=True, show_edges=False)
 
 
@@ -341,10 +360,8 @@ file_vtu.plot(scalars='phi', cpos='xy', show_scalar_bar=True, show_edges=False)
 # Plot: displacement $\boldsymbol u$
 # ----------------------------------
 # The displacements results saved in the .vtu file are shown.
-file_vtu = pv.read(os.path.join(Data.results_folder_name, "paraview-solutions_vtu", "phasefieldx_p0_000097.vtu"))
 file_vtu.plot(scalars='u', cpos='xy', show_scalar_bar=True, show_edges=False)
 
-plt.show()
 
 
 ###############################################################################
@@ -372,7 +389,9 @@ Miehe = np.loadtxt(os.path.join("reference_solutions", "miehe_solution_shear.csv
 fig, ax_reaction = plt.subplots()
 
 ax_reaction.plot(Miehe[:, 0], Miehe[:, 1], 'g-', linewidth=2.0, label='Miehe')
-ax_reaction.plot(displacement, -S.reaction_files['bottom.reaction']["Rx"], 'k.', linewidth=2.0, label=S.label)
+# ax_reaction.plot(displacement, -S.reaction_files['bottom.reaction']["Rx"], 'b.', linewidth=2.0, label=S.label)
+# ax_reaction.plot(displacement, -S.reaction_files['bottom.reaction']["Ry"], 'r.', linewidth=2.0, label=S.label)
+ax_reaction.plot(displacement, (S.reaction_files['bottom.reaction']["Rx"]**2 + S.reaction_files['bottom.reaction']["Ry"]**2)**0.5, 'k.', linewidth=2.0, label=S.label)
 ax_reaction.grid(color='k', linestyle='-', linewidth=0.3)
 ax_reaction.set_xlabel('displacement - u $[mm]$')
 ax_reaction.set_ylabel('reaction force - F $[kN]$')

@@ -19,7 +19,7 @@ def epsilon(u):
     Returns:
         ufl.Expr: The symmetric strain tensor calculated from the displacement vector.
     """
-    mesh_dim = u.ufl_domain().geometric_dimension()
+    mesh_dim = u.ufl_shape[0]
     return ufl.sym(ufl.grad(u)) if mesh_dim > 1 else ufl.grad(u)
 
 
@@ -39,7 +39,7 @@ def psi(u, lambda_, mu):
         ufl.Expr: The strain energy density calculated from the given parameters.
     """
     eps = epsilon(u)
-    mesh_dim = u.ufl_domain().geometric_dimension()
+    mesh_dim = u.ufl_shape[0]
 
     if mesh_dim == 1:
         return 0.5 * lambda_ * eps**2 + mu * eps**2
@@ -62,7 +62,7 @@ def sigma(u, lambda_, mu):
         ufl.Expr: The stress tensor calculated from the given parameters.
     """
     eps = epsilon(u)
-    mesh_dim = u.ufl_domain().geometric_dimension()
+    mesh_dim = u.ufl_shape[0]
 
     if mesh_dim == 1:
         return (lambda_ + 2 * mu) * eps
