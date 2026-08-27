@@ -79,7 +79,7 @@ Follow these steps to set up your environment:
    
    .. code-block:: sh
    
-      conda install -c conda-forge fenics-dolfinx=0.10.0 scifem mpi4py numpy pyvista pandas pyvista
+      conda install -c conda-forge fenics-dolfinx=0.11.0 scifem mpi4py numpy pyvista pandas
 
 4. Install `gmsh`
    
