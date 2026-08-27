@@ -1,7 +1,7 @@
-.. _theory_topology_optimization:
+.. _theory_solidification:
 
-Topology Optimization
-=====================
+Solidification
+==============
 
 .. note::
 

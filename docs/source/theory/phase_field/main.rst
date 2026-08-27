@@ -155,7 +155,6 @@ For the phase-field variable to remain physically admissible, it must satisfy th
   In contrast, the **AT1** and **Wu** models have non-zero derivatives at $\phi = 0$ ($\alpha'(0) = 1$ for AT1, $\alpha'(0) = 2$ for Wu). Without explicit enforcement of $\phi \ge 0$, unconstrained minimization can drive $\phi$ into negative values.
 
 - **Upper Bound ($\phi \le 1$):**
-  When coupled with mechanical energy in fracture simulations, upper bounds ($\phi \le 1$) are enforced via penalty methods, Lagrange multipliers, or history fields to prevent unphysical damage growth beyond 1.
 
 
 

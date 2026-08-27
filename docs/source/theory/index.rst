@@ -24,9 +24,9 @@ Problems of Application
 
 1. **Phase-Field Fracture/Fatigue** Phase-Field Fracture/Fatigue (:ref:`theory_phase_field_fracture`, :ref:`theory_phase_field_fatigue`): Integrates continuum elasticity with phase-field regularization to model the initiation, propagation, branching, coalescence, and fatigue-driven evolution of cracks without the need for explicit crack tracking.
 
-2. **Phase-Field Topology Optimization** *(Upcoming)*
+2. **Phase-Field Topology Optimization** *(Upcoming)* (:ref:`theory_topology_optimization`)
 
-3. **Phase-Field Solidification** *(Upcoming)*
+3. **Phase-Field Solidification** *(Upcoming)* (:ref:`theory_solidification`)
 
 
 Fundamental Building Blocks
