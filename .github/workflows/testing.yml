@@ -14,12 +14,12 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Set up Conda
       uses: conda-incubator/setup-miniconda@v3
       with:
-        python-version: "3.10"
+        python-version: "3.11"
         auto-update-conda: true
         auto-activate-base: false
 
