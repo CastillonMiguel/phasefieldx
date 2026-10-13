@@ -19,6 +19,15 @@ Solver
    :show-inheritance:
 
 
+Dynamic Solver
+--------------
+
+.. automodule:: phasefieldx.Element.Elasticity.solver.solver_dynamic
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
 Energy
 ------
 
