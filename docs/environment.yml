@@ -2,7 +2,7 @@ name: phasefieldx-docs-env
 channels:
   - conda-forge
 dependencies:
-  - python==3.11
+  - python==3.14
   - scifem==0.21.0
   - pandas
   - sympy
