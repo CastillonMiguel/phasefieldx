@@ -4,6 +4,7 @@ from .solver_history import *
 from .solver_penalty import *
 from .solver_ener_non_variational import *
 from .solver_ener_variational import *
+from .solver_dynamic import *
 from .staggered_convergence import *
 # Optionally, you can specify which symbols to export when using 'from
 # phasefieldx import *'
@@ -12,5 +13,6 @@ __all__ = [
     'solver_penalty',
     'solver_ener_non_variational',
     'solver_ener_variational',
+    'solver_dynamic',
     'staggered_convergence'
 ]
