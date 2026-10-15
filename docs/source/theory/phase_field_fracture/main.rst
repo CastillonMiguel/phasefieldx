@@ -1681,11 +1681,57 @@ predict crack propagation direction.
 
 
 
+.. _sec_pff_dynamic_fracture:
+
 Dynamic fracture
 ----------------
 
+In dynamic problems the inertia of the solid cannot be neglected
+:footcite:t:`phase_field_shear_boundary`. The kinetic energy
+$E_{\text{kin}}[\dot{\boldsymbol{u}}]=\frac{1}{2}\int_\Omega \rho\,\dot{\boldsymbol{u}}\cdot\dot{\boldsymbol{u}}\,\mathrm{d}\boldsymbol{x}$,
+with $\rho$ the mass density, is added to the Lagrangian of the problem, as in the
+:ref:`dynamic elasticity problem <theory_elasticity_dynamic>`. The phase field $\phi$ has no
+inertia, so the Lagrangian reads
 
+.. math::
+   :label: eq_pff_dynamic_lagrangian
 
+   \mathcal{L}[\boldsymbol{u}, \dot{\boldsymbol{u}}, \phi] = E_{\text{kin}}[\dot{\boldsymbol{u}}] - \mathcal{E}(\boldsymbol{u}, \phi),
+
+where $\mathcal{E}$ is the total energy :eq:`eq_pff_variational_formulation`. Hamilton's
+principle gives the same weak forms as the quasi-static case :eq:`eq_pff_weak_forms`, with the
+inertial term added to the mechanical equation only:
+
+.. math::
+   :label: eq_pff_dynamic_weak_forms
+
+   \int_\Omega \rho \, \ddot{\boldsymbol{u}} \cdot \delta \boldsymbol{u} \, \mathrm{d}\boldsymbol{x} + \mathcal{E}'_{\boldsymbol{u}}(\boldsymbol{u}, \phi) &= \boldsymbol{0}, \\
+   \mathcal{E}'_{\phi}(\boldsymbol{u}, \phi) &= 0,
+
+where $\mathcal{E}'_{\boldsymbol{u}}$ and $\mathcal{E}'_{\phi}$ are defined in
+:eq:`eq_pff_weak_forms` (the external loads are included in $\mathcal{E}'_{\boldsymbol{u}}$).
+The corresponding strong form is the balance of linear momentum coupled with the
+phase-field equation:
+
+.. math::
+   :label: eq_pff_dynamic_strong_forms
+
+   \rho \, \ddot{\boldsymbol{u}} - \nabla \cdot \left[g(\phi) \boldsymbol{\sigma}_a(\boldsymbol{\epsilon}(\boldsymbol{u})) + \boldsymbol{\sigma}_b(\boldsymbol{\epsilon}(\boldsymbol{u}))\right] &= \boldsymbol{f} \quad \text{in } \Omega, \\
+   g'(\phi)\, \psi_a(\boldsymbol{\epsilon}(\boldsymbol{u})) + \frac{G_c}{c_0} \left( \frac{\alpha'(\phi)}{l} - 2 l \Delta \phi \right) &= 0 \quad \text{in } \Omega,
+
+with the same boundary conditions as in :eq:`eq_pff_strong_forms` and the initial conditions
+$\boldsymbol{u}(\boldsymbol{x}, 0)$ and $\dot{\boldsymbol{u}}(\boldsymbol{x}, 0)$.
+
+The irreversibility of $\phi$ is enforced as in the quasi-static case, for instance with the
+:ref:`penalty formulation <sec_pff_penalty_model>`, which only modifies the phase-field equation.
+
+Time is discretized with the Newmark scheme, described in the
+:ref:`Newmark time integration <theory_elasticity_newmark>` section of the elasticity theory
+(PhaseFieldX uses $\beta=1/4$ and $\gamma=1/2$). At each time step $t_{n+1}$ the acceleration
+$\boldsymbol{a}_{n+1}$ in :eq:`eq_pff_dynamic_weak_forms` is written in terms of
+$\boldsymbol{u}_{n+1}$, and the displacement and phase-field equations are solved with a
+:ref:`staggered scheme <sec_pff_staggered_schemes>`. An example is given in
+:ref:`ref_dynamic_notched_tension`.
 
 
 .. footbibliography::
