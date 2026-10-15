@@ -68,7 +68,6 @@ import dolfinx
 import mpi4py
 import petsc4py
 import os
-from PIL import Image
 
 
 ###############################################################################
@@ -319,6 +318,8 @@ plt.show()
 # the displacement, together with the undeformed mesh as a reference. A frame is rendered every
 # `frame_stride` steps, and the color scale is fixed for all frames. The images are rendered off
 # screen and assembled with Pillow.
+
+# from PIL import Image
 # frame_stride = 4
 # factor = 500.0
 # fps = 20
