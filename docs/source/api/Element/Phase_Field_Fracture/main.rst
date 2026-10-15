@@ -60,6 +60,11 @@ Solvers
    :undoc-members:
    :show-inheritance:
 
+.. automodule:: phasefieldx.Element.Phase_Field_Fracture.solver.solver_dynamic
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 .. automodule:: phasefieldx.Element.Phase_Field_Fracture.solver.staggered_convergence
    :members:
    :undoc-members:
